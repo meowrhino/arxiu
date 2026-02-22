@@ -1,0 +1,100 @@
+name: Revisar Contenido +18
+
+on:
+  schedule:
+    # se ejecuta el día 11 de cada mes a las 04:00 UTC
+    - cron: "0 4 11 * *"
+  workflow_dispatch: # para ejecución manual
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 1. Clonar el repositorio
+        uses: actions/checkout@v3
+
+      - name: 2. Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: 3. Instalar dependencias
+        run: |
+          python -m pip install --upgrade pip
+          pip install pdfplumber
+
+      - name: 4. Ejecutar script de revisión
+        id: review_script
+        run: |
+          import json
+          import os
+          from pathlib import Path
+          import pdfplumber
+
+          # --- lista de palabras prohibidas (simple, para el ejemplo) ---
+          # en un caso real, esto podría ser más sofisticado
+          FORBIDDEN_WORDS = {
+              "palabrota1", "palabrota2", "ejemplo_prohibido"
+          }
+
+          json_path = Path("data.json")
+          data_dir = Path("data")
+          changes_made = False
+
+          if not json_path.exists() or not data_dir.exists():
+              print("data.json o el directorio /data no existen. saltando.")
+              exit()
+
+          with open(json_path, "r+", encoding="utf-8") as f:
+              data = json.load(f)
+              files_to_update = data.get("files", [])
+
+              for file_entry in files_to_update:
+                  # solo revisar si no está ya marcado como +18
+                  if file_entry.get("is_18_plus"):
+                      continue
+
+                  pdf_path = data_dir / file_entry["filename"]
+                  if not pdf_path.exists():
+                      print(f"aviso: {pdf_path} no encontrado, saltando.")
+                      continue
+
+                  try:
+                      print(f"revisando {pdf_path.name}...")
+                      found_forbidden = False
+                      with pdfplumber.open(pdf_path) as pdf:
+                          for page in pdf.pages:
+                              text = page.extract_text()
+                              if text:
+                                  for word in FORBIDDEN_WORDS:
+                                      if word in text.lower():
+                                          print(f"  -> ¡palabra prohibida '{word}' encontrada!")
+                                          file_entry["is_18_plus"] = True
+                                          changes_made = True
+                                          found_forbidden = True
+                                          break # ir a la siguiente página
+                              if found_forbidden: break # ir al siguiente archivo
+                  except Exception as e:
+                      print(f"error al procesar {pdf_path.name}: {e}")
+
+              # si hubo cambios, volver al inicio del archivo y escribir
+              if changes_made:
+                  print("se encontraron cambios, actualizando data.json...")
+                  f.seek(0)
+                  json.dump(data, f, indent=2, ensure_ascii=False)
+                  f.truncate()
+
+          # comunicar si hubo cambios al siguiente paso
+          with open(Path(os.environ["GITHUB_OUTPUT"]), "a") as f:
+              f.write(f"changes={str(changes_made).lower()}\n")
+
+        shell: python
+
+      - name: 5. Hacer commit de los cambios
+        if: steps.review_script.outputs.changes == 'true'
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add data.json
+          git commit -m "chore: marcar archivos como +18 automáticamente"
+          git push

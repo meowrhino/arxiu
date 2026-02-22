@@ -1,0 +1,64 @@
+name: Re-indexar Hashtags
+
+on:
+  schedule:
+    # se ejecuta cada domingo a las 03:00 UTC
+    - cron: "0 3 * * 0"
+  workflow_dispatch: # para ejecución manual
+
+jobs:
+  reindex:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 1. Clonar el repositorio
+        uses: actions/checkout@v3
+
+      - name: 2. Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: 3. Ejecutar script de re-indexado
+        id: reindex_script
+        run: |
+          import json
+          from pathlib import Path
+
+          json_path = Path("data.json")
+          if not json_path.exists():
+              print("data.json no encontrado. saltando.")
+              exit()
+
+          with open(json_path, "r", encoding="utf-8") as f:
+              data = json.load(f)
+
+          all_tags = set()
+          for file_entry in data.get("files", []):
+              for tag in file_entry.get("hashtags", []):
+                  all_tags.add(tag)
+
+          sorted_tags = sorted(list(all_tags))
+
+          if data.get("hashtags") == sorted_tags:
+              print("los hashtags no han cambiado. no se necesita commit.")
+              # importante: 'echo "::set-output name=changes::false"' está obsoleto
+              # ahora se escribe a un archivo de entorno
+              with open(Path(os.environ["GITHUB_OUTPUT"]), "a") as f:
+                  f.write("changes=false\n")
+          else:
+              print(f"hashtags actualizados: {len(sorted_tags)} encontrados.")
+              data["hashtags"] = sorted_tags
+              with open(json_path, "w", encoding="utf-8") as f:
+                  json.dump(data, f, indent=2, ensure_ascii=False)
+              with open(Path(os.environ["GITHUB_OUTPUT"]), "a") as f:
+                  f.write("changes=true\n")
+        shell: python
+
+      - name: 4. Hacer commit de los cambios
+        if: steps.reindex_script.outputs.changes == 'true'
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add data.json
+          git commit -m "chore: re-indexar hashtags automáticamente"
+          git push

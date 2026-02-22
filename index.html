@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>arxiu</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- =============================================
+       BARRA SUPERIOR: filtro de hashtags
+       ============================================= -->
+  <header id="topbar">
+    <div id="topbar-inner">
+      <span id="site-title">arxiu</span>
+      <nav id="hashtag-nav" aria-label="filtrar por hashtag">
+        <!-- se rellena dinámicamente desde app.js -->
+      </nav>
+    </div>
+  </header>
+
+  <!-- =============================================
+       CONTENIDO PRINCIPAL: lista de archivos
+       ============================================= -->
+  <main id="main">
+    <div id="file-grid">
+      <!-- se rellena dinámicamente desde app.js -->
+    </div>
+  </main>
+
+  <!-- =============================================
+       FOOTER: botones de acción
+       ============================================= -->
+  <footer id="footer">
+    <button id="btn-upload" class="btn-primary">subir pdf</button>
+    <button id="btn-18" class="btn-secondary">soy mayor de 18</button>
+  </footer>
+
+  <!-- =============================================
+       MODAL: subir PDF
+       ============================================= -->
+  <div id="modal-upload" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+    <div class="modal-box">
+      <button class="modal-close" id="modal-close-btn" aria-label="cerrar">×</button>
+      <h2 id="modal-title">subir pdf</h2>
+
+      <form id="upload-form" novalidate>
+
+        <label for="input-file">archivo (máx. 2 mb)</label>
+        <div id="drop-zone" role="button" tabindex="0" aria-label="zona de arrastre de archivo">
+          <span id="drop-label">arrastra aquí o haz clic para seleccionar</span>
+          <input type="file" id="input-file" accept=".pdf" hidden />
+        </div>
+        <p id="file-info" class="file-meta"></p>
+
+        <label for="input-hashtags">hashtags <span class="hint">(separados por coma)</span></label>
+        <input type="text" id="input-hashtags" placeholder="diseño, tipografía, referencia" autocomplete="off" />
+
+        <button type="submit" class="btn-primary" id="btn-submit">subir</button>
+      </form>
+
+      <!-- estado del proceso de subida -->
+      <div id="upload-status" hidden>
+        <p id="status-msg"></p>
+        <div id="progress-bar-wrap">
+          <div id="progress-bar"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- overlay oscuro para el modal -->
+  <div id="modal-overlay" hidden></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

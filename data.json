@@ -1,0 +1,35 @@
+{
+  "files": [
+    {
+      "id": "clzk1y2xq000008l6c8s1g2h7",
+      "filename": "ejemplo_diseno_logo.pdf",
+      "hashtags": ["logo", "diseño", "inspiración"],
+      "is_18_plus": false,
+      "upload_date": "2024-05-10T10:00:00Z"
+    },
+    {
+      "id": "clzk1y2xq000108l6e2h3a4b5",
+      "filename": "articulo_sobre_arte.pdf",
+      "hashtags": ["arte", "lectura", "investigación"],
+      "is_18_plus": false,
+      "upload_date": "2024-05-11T12:30:00Z"
+    },
+    {
+      "id": "clzk1y2xq000208l6fghj6k7l",
+      "filename": "manual_tecnico_avanzado.pdf",
+      "hashtags": ["técnico", "manual"],
+      "is_18_plus": true,
+      "upload_date": "2024-05-12T15:00:00Z"
+    }
+  ],
+  "hashtags": [
+    "logo",
+    "diseño",
+    "inspiración",
+    "arte",
+    "lectura",
+    "investigación",
+    "técnico",
+    "manual"
+  ]
+}

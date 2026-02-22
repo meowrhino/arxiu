@@ -1,0 +1,565 @@
+/* ============================================================
+   RESET Y BASE
+   ============================================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* --- tema normal (claro, windows-7-ish) --- */
+  --bg-color:         #e5e5f7;
+  --bg-dots-color:    #444cf7;
+  --bg-dot-size:      1.05px;
+  --bg-dot-spacing:   21px;
+  --bg-opacity:       0.8;
+
+  --panel-bg:         #f0eff5;
+  --panel-border:     #b0aec8;
+  --panel-shadow:     0 2px 12px rgba(68, 76, 247, 0.10);
+
+  --text-primary:     #1a1a2e;
+  --text-secondary:   #555577;
+  --text-muted:       #888899;
+
+  --tag-bg:           #e0dfee;
+  --tag-bg-active:    #444cf7;
+  --tag-color:        #444cf7;
+  --tag-color-active: #ffffff;
+  --tag-border:       #b0aec8;
+
+  --btn-primary-bg:   #444cf7;
+  --btn-primary-fg:   #ffffff;
+  --btn-secondary-bg: #e0dfee;
+  --btn-secondary-fg: #1a1a2e;
+  --btn-border:       #b0aec8;
+
+  --icon-bg:          #ffffff;
+  --icon-border:      #c8c6e0;
+  --icon-shadow:      0 1px 4px rgba(68, 76, 247, 0.08);
+
+  --topbar-bg:        rgba(240, 239, 245, 0.85);
+  --topbar-border:    #c8c6e0;
+
+  --footer-bg:        rgba(240, 239, 245, 0.92);
+  --footer-border:    #c8c6e0;
+
+  --modal-bg:         #f5f4fb;
+  --modal-border:     #b0aec8;
+  --modal-overlay:    rgba(68, 76, 247, 0.18);
+
+  --progress-bg:      #d0cfe8;
+  --progress-fill:    #444cf7;
+
+  --input-bg:         #ffffff;
+  --input-border:     #b0aec8;
+  --input-focus:      #444cf7;
+
+  --font-family:      system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-mono:        "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+}
+
+/* --- tema +18 (oscuro, amarillo) --- */
+body.mode-18 {
+  --bg-color:         #1a1500;
+  --bg-dots-color:    #f5c400;
+  --bg-opacity:       0.7;
+
+  --panel-bg:         #221e00;
+  --panel-border:     #5a4e00;
+  --panel-shadow:     0 2px 12px rgba(245, 196, 0, 0.12);
+
+  --text-primary:     #f5e87a;
+  --text-secondary:   #c9b830;
+  --text-muted:       #7a6e20;
+
+  --tag-bg:           #2e2800;
+  --tag-bg-active:    #f5c400;
+  --tag-color:        #f5c400;
+  --tag-color-active: #1a1500;
+  --tag-border:       #5a4e00;
+
+  --btn-primary-bg:   #f5c400;
+  --btn-primary-fg:   #1a1500;
+  --btn-secondary-bg: #2e2800;
+  --btn-secondary-fg: #f5e87a;
+  --btn-border:       #5a4e00;
+
+  --icon-bg:          #2e2800;
+  --icon-border:      #5a4e00;
+  --icon-shadow:      0 1px 4px rgba(245, 196, 0, 0.10);
+
+  --topbar-bg:        rgba(34, 30, 0, 0.90);
+  --topbar-border:    #5a4e00;
+
+  --footer-bg:        rgba(34, 30, 0, 0.95);
+  --footer-border:    #5a4e00;
+
+  --modal-bg:         #221e00;
+  --modal-border:     #5a4e00;
+  --modal-overlay:    rgba(245, 196, 0, 0.12);
+
+  --progress-bg:      #3a3200;
+  --progress-fill:    #f5c400;
+
+  --input-bg:         #2e2800;
+  --input-border:     #5a4e00;
+  --input-focus:      #f5c400;
+}
+
+
+/* ============================================================
+   FONDO CON TEXTURA DE PUNTOS
+   ============================================================ */
+body {
+  font-family:      var(--font-family);
+  font-size:        15px;
+  line-height:      1.5;
+  color:            var(--text-primary);
+  min-height:       100dvh;
+  display:          flex;
+  flex-direction:   column;
+
+  /* fondo de puntos usando las variables del tema */
+  background-color: var(--bg-color);
+  background-image: radial-gradient(
+    var(--bg-dots-color) var(--bg-dot-size),
+    var(--bg-color)      var(--bg-dot-size)
+  );
+  background-size:  var(--bg-dot-spacing) var(--bg-dot-spacing);
+  opacity:          1; /* el opacity lo controlamos solo en el bg */
+
+  transition:
+    background-color 0.4s ease,
+    color            0.4s ease;
+}
+
+/* truco para que el fondo tenga opacity sin afectar al contenido */
+body::before {
+  content:    "";
+  position:   fixed;
+  inset:      0;
+  z-index:    -1;
+  background-color: var(--bg-color);
+  background-image: radial-gradient(
+    var(--bg-dots-color) var(--bg-dot-size),
+    transparent          var(--bg-dot-size)
+  );
+  background-size: var(--bg-dot-spacing) var(--bg-dot-spacing);
+  opacity:    var(--bg-opacity);
+  transition: background-color 0.4s ease, opacity 0.4s ease;
+}
+
+
+/* ============================================================
+   BARRA SUPERIOR
+   ============================================================ */
+#topbar {
+  position:         sticky;
+  top:              0;
+  z-index:          100;
+  background:       var(--topbar-bg);
+  border-bottom:    1px solid var(--topbar-border);
+  backdrop-filter:  blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition:       background 0.4s ease, border-color 0.4s ease;
+}
+
+#topbar-inner {
+  max-width:      800px;
+  width:          70dvw;
+  margin:         0 auto;
+  padding:        0.6rem 0;
+  display:        flex;
+  align-items:    center;
+  gap:            1.2rem;
+  flex-wrap:      wrap;
+}
+
+#site-title {
+  font-size:      0.85rem;
+  font-family:    var(--font-mono);
+  color:          var(--text-muted);
+  letter-spacing: 0.08em;
+  flex-shrink:    0;
+}
+
+#hashtag-nav {
+  display:        flex;
+  flex-wrap:      wrap;
+  gap:            0.35rem;
+  flex:           1;
+}
+
+/* botones de hashtag en la barra */
+.tag-btn {
+  font:           inherit;
+  font-size:      0.75rem;
+  font-family:    var(--font-mono);
+  cursor:         pointer;
+  background:     var(--tag-bg);
+  color:          var(--tag-color);
+  border:         1px solid var(--tag-border);
+  padding:        0.2rem 0.55rem;
+  border-radius:  2px;
+  transition:     background 0.2s, color 0.2s, border-color 0.2s;
+  white-space:    nowrap;
+}
+
+.tag-btn:hover {
+  background:     var(--tag-bg-active);
+  color:          var(--tag-color-active);
+  border-color:   var(--tag-bg-active);
+}
+
+.tag-btn.active {
+  background:     var(--tag-bg-active);
+  color:          var(--tag-color-active);
+  border-color:   var(--tag-bg-active);
+}
+
+/* botón especial "todos" */
+.tag-btn.all-btn {
+  font-weight:    600;
+}
+
+
+/* ============================================================
+   ÁREA PRINCIPAL
+   ============================================================ */
+#main {
+  flex:           1;
+  display:        flex;
+  justify-content: center;
+  padding:        2rem 0 6rem; /* espacio para el footer fijo */
+}
+
+#file-grid {
+  max-width:      800px;
+  width:          70dvw;
+  display:        flex;
+  flex-direction: column;
+  gap:            0.5rem;
+}
+
+/* mensaje cuando no hay resultados */
+#empty-msg {
+  font-size:      0.9rem;
+  color:          var(--text-muted);
+  font-family:    var(--font-mono);
+  padding:        2rem 0;
+  text-align:     center;
+}
+
+
+/* ============================================================
+   TARJETA DE ARCHIVO (icono de PDF)
+   ============================================================ */
+.file-card {
+  display:        flex;
+  align-items:    center;
+  gap:            0.9rem;
+  background:     var(--icon-bg);
+  border:         1px solid var(--icon-border);
+  box-shadow:     var(--icon-shadow);
+  padding:        0.7rem 1rem;
+  border-radius:  3px;
+  cursor:         pointer;
+  text-decoration: none;
+  color:          inherit;
+  transition:     box-shadow 0.2s, border-color 0.2s, background 0.4s;
+}
+
+.file-card:hover {
+  border-color:   var(--tag-bg-active);
+  box-shadow:     0 2px 10px rgba(68, 76, 247, 0.15);
+}
+
+body.mode-18 .file-card:hover {
+  box-shadow:     0 2px 10px rgba(245, 196, 0, 0.15);
+}
+
+/* icono de documento PDF */
+.file-icon {
+  flex-shrink:    0;
+  width:          36px;
+  height:         44px;
+  position:       relative;
+  display:        flex;
+  align-items:    center;
+  justify-content: center;
+}
+
+.file-icon svg {
+  width:          100%;
+  height:         100%;
+}
+
+/* información del archivo */
+.file-info {
+  flex:           1;
+  min-width:      0; /* para que el texto se trunque correctamente */
+}
+
+.file-name {
+  font-size:      0.9rem;
+  font-weight:    500;
+  white-space:    nowrap;
+  overflow:       hidden;
+  text-overflow:  ellipsis;
+  color:          var(--text-primary);
+  margin-bottom:  0.2rem;
+}
+
+.file-tags {
+  display:        flex;
+  flex-wrap:      wrap;
+  gap:            0.25rem;
+}
+
+.file-tag {
+  font-size:      0.7rem;
+  font-family:    var(--font-mono);
+  color:          var(--text-secondary);
+  background:     var(--tag-bg);
+  border:         1px solid var(--tag-border);
+  padding:        0.1rem 0.35rem;
+  border-radius:  2px;
+}
+
+.file-date {
+  font-size:      0.7rem;
+  font-family:    var(--font-mono);
+  color:          var(--text-muted);
+  flex-shrink:    0;
+  white-space:    nowrap;
+}
+
+
+/* ============================================================
+   FOOTER FIJO
+   ============================================================ */
+#footer {
+  position:       fixed;
+  bottom:         0;
+  left:           0;
+  right:          0;
+  z-index:        90;
+  background:     var(--footer-bg);
+  border-top:     1px solid var(--footer-border);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display:        flex;
+  justify-content: center;
+  align-items:    center;
+  gap:            0.75rem;
+  padding:        0.75rem 1rem;
+  transition:     background 0.4s ease, border-color 0.4s ease;
+}
+
+/* botones generales */
+.btn-primary,
+.btn-secondary {
+  font:           inherit;
+  font-size:      0.8rem;
+  cursor:         pointer;
+  border-radius:  2px;
+  padding:        0.45rem 1rem;
+  border:         1px solid var(--btn-border);
+  transition:     background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.btn-primary {
+  background:     var(--btn-primary-bg);
+  color:          var(--btn-primary-fg);
+  border-color:   var(--btn-primary-bg);
+}
+
+.btn-primary:hover {
+  opacity:        0.85;
+}
+
+.btn-secondary {
+  background:     var(--btn-secondary-bg);
+  color:          var(--btn-secondary-fg);
+}
+
+.btn-secondary:hover {
+  border-color:   var(--btn-primary-bg);
+  color:          var(--btn-primary-bg);
+}
+
+/* cuando el modo +18 está activo, el botón cambia */
+body.mode-18 #btn-18 {
+  background:     var(--btn-primary-bg);
+  color:          var(--btn-primary-fg);
+  border-color:   var(--btn-primary-bg);
+}
+
+
+/* ============================================================
+   MODAL DE SUBIDA
+   ============================================================ */
+#modal-overlay {
+  position:       fixed;
+  inset:          0;
+  z-index:        200;
+  background:     var(--modal-overlay);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  transition:     background 0.4s;
+}
+
+#modal-upload {
+  position:       fixed;
+  inset:          0;
+  z-index:        210;
+  display:        flex;
+  align-items:    center;
+  justify-content: center;
+  pointer-events: none; /* el box sí recibe eventos */
+}
+
+#modal-upload:not([hidden]) {
+  pointer-events: auto;
+}
+
+.modal-box {
+  background:     var(--modal-bg);
+  border:         1px solid var(--modal-border);
+  border-radius:  4px;
+  padding:        2rem;
+  width:          min(480px, 90dvw);
+  position:       relative;
+  box-shadow:     0 8px 32px rgba(0,0,0,0.18);
+  transition:     background 0.4s, border-color 0.4s;
+}
+
+.modal-box h2 {
+  font-size:      1rem;
+  font-weight:    600;
+  margin-bottom:  1.4rem;
+  color:          var(--text-primary);
+}
+
+.modal-close {
+  position:       absolute;
+  top:            0.75rem;
+  right:          0.9rem;
+  font:           inherit;
+  font-size:      1.4rem;
+  line-height:    1;
+  cursor:         pointer;
+  background:     none;
+  border:         none;
+  color:          var(--text-muted);
+  transition:     color 0.2s;
+}
+
+.modal-close:hover {
+  color:          var(--text-primary);
+}
+
+/* formulario */
+#upload-form {
+  display:        flex;
+  flex-direction: column;
+  gap:            0.9rem;
+}
+
+#upload-form label {
+  font-size:      0.8rem;
+  color:          var(--text-secondary);
+  font-family:    var(--font-mono);
+}
+
+.hint {
+  color:          var(--text-muted);
+  font-size:      0.75rem;
+}
+
+/* zona de arrastre */
+#drop-zone {
+  border:         2px dashed var(--input-border);
+  border-radius:  3px;
+  padding:        1.2rem;
+  text-align:     center;
+  cursor:         pointer;
+  color:          var(--text-muted);
+  font-size:      0.82rem;
+  transition:     border-color 0.2s, background 0.2s;
+}
+
+#drop-zone:hover,
+#drop-zone.drag-over {
+  border-color:   var(--input-focus);
+  background:     var(--tag-bg);
+  color:          var(--text-primary);
+}
+
+.file-meta {
+  font-size:      0.78rem;
+  font-family:    var(--font-mono);
+  color:          var(--text-secondary);
+  min-height:     1.2em;
+}
+
+/* input de texto */
+#upload-form input[type="text"] {
+  background:     var(--input-bg);
+  border:         1px solid var(--input-border);
+  border-radius:  2px;
+  padding:        0.5rem 0.7rem;
+  font:           inherit;
+  font-size:      0.85rem;
+  color:          var(--text-primary);
+  outline:        none;
+  transition:     border-color 0.2s;
+}
+
+#upload-form input[type="text"]:focus {
+  border-color:   var(--input-focus);
+}
+
+/* estado de subida */
+#upload-status {
+  margin-top:     1rem;
+}
+
+#status-msg {
+  font-size:      0.82rem;
+  font-family:    var(--font-mono);
+  color:          var(--text-secondary);
+  margin-bottom:  0.5rem;
+}
+
+#progress-bar-wrap {
+  height:         4px;
+  background:     var(--progress-bg);
+  border-radius:  2px;
+  overflow:       hidden;
+}
+
+#progress-bar {
+  height:         100%;
+  width:          0%;
+  background:     var(--progress-fill);
+  border-radius:  2px;
+  transition:     width 0.3s ease;
+}
+
+
+/* ============================================================
+   RESPONSIVE: móvil
+   ============================================================ */
+@media (max-width: 600px) {
+  #topbar-inner,
+  #file-grid {
+    width:          92dvw;
+  }
+
+  .file-date {
+    display:        none;
+  }
+}
