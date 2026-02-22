@@ -19,3 +19,34 @@ la arquitectura se basa en un único archivo `data.json` que actúa como base de
 - `.github/workflows/update-hashtags.yml` — github action que se ejecuta cada domingo a las 03:00 utc. lee todos los hashtags de los archivos en data.json, los deduplica, los ordena y actualiza el campo `hashtags` del json.
 - `.github/workflows/content-filter.yml` — github action que se ejecuta el día 11 de cada mes a las 04:00 utc. usa `pdfplumber` para extraer el texto de cada pdf y comprobarlo contra una lista de palabras prohibidas. si encuentra alguna, marca el archivo como `is_18_plus: true` en el data.json.
 - `manus/proceso.md` — este archivo.
+
+---
+
+## 2026-02-23 — segunda iteración: rediseño completo
+
+**sinopsis:** rediseño completo de la interfaz con estética finder/windows-antiguo + pixel-art, añadido campo autor, velo de confirmación de edad +18, y refactorización modular del código.
+
+**cambios realizados:**
+
+### index.html
+- añadido el `#age-veil`: una capa fija con blur y un cuadro de diálogo que bloquea la pantalla antes de activar el modo +18. tiene dos botones: "sí, tengo 18 o más" y "no, volver".
+- el modal de subida ahora incluye el campo `autor` como primer campo del formulario, antes del nombre y los hashtags.
+- los iconos de documento en el grid son SVGs pixel-art inline generados dinámicamente desde `app.js`.
+- la ventana principal tiene una titlebar con los tres puntos de color (rojo/amarillo/verde) al estilo macOS/finder.
+
+### style.css
+- reescrito completamente con variables CSS para los dos temas: normal (gris-azulado, windows-7-ish) y +18 (oscuro, amarillo).
+- el fondo de puntos usa `body::before` con `opacity` independiente para que no afecte al contenido.
+- los iconos usan `image-rendering: pixelated` para mantener la estética pixel-art al escalar.
+- la ventana tiene `max-height: 88dvh` y el área de contenido tiene `overflow-y: auto` para el scroll.
+- el velo `#age-veil` usa `backdrop-filter: blur(6px)` y `z-index: 300` para estar siempre encima de todo.
+
+### app.js
+- refactorizado en módulos claros: CONFIG, state, dom, arranque, carga de datos, renderizado de hashtags, renderizado de archivos, modo +18 + velo, modal, drag & drop, subida a github, helpers de api, utilidades, binding de eventos.
+- el campo `author` se guarda en cada entrada del `data.json` como `"author": "nombre"` o `null` si está vacío.
+- el velo de confirmación de edad intercepta el clic en "soy mayor de 18" antes de activar el modo.
+- todos los mensajes de estado y error van a la consola del navegador (`console.log`, `console.error`, `console.warn`).
+
+### data.json
+- añadido el campo `author` a todas las entradas de ejemplo.
+- los ejemplos usan nombres de autores reales del diseño gráfico como referencia.

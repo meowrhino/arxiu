@@ -3,76 +3,157 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>arxiu</title>
+  <title>arxiu — meowrhino.studio</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
   <!-- =============================================
-       BARRA SUPERIOR: filtro de hashtags
+       VELO DE CONFIRMACIÓN DE EDAD (+18)
+       Se muestra encima de todo cuando el usuario
+       hace clic en "soy mayor de 18".
        ============================================= -->
-  <header id="topbar">
-    <div id="topbar-inner">
-      <span id="site-title">arxiu</span>
+  <div id="age-veil" hidden>
+    <div id="age-veil-box">
+      <p id="age-veil-title">contenido para mayores de 18</p>
+      <p id="age-veil-desc">
+        este archivo contiene contenido marcado como +18.<br>
+        confirma que tienes 18 años o más para continuar.
+      </p>
+      <div id="age-veil-buttons">
+        <button id="age-confirm-yes" class="btn-primary">sí, tengo 18 o más</button>
+        <button id="age-confirm-no"  class="btn-secondary">no, volver</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================================
+       VENTANA PRINCIPAL (estilo finder/explorador)
+       ============================================= -->
+  <div id="window-frame">
+
+    <!-- barra de título de la ventana -->
+    <div id="window-titlebar">
+      <div id="window-dots">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+      </div>
+      <span id="window-title">arxiu</span>
+      <span id="window-subtitle">meowrhino.studio</span>
+    </div>
+
+    <!-- barra de herramientas: filtro de hashtags -->
+    <div id="window-toolbar">
       <nav id="hashtag-nav" aria-label="filtrar por hashtag">
         <!-- se rellena dinámicamente desde app.js -->
       </nav>
     </div>
-  </header>
 
-  <!-- =============================================
-       CONTENIDO PRINCIPAL: lista de archivos
-       ============================================= -->
-  <main id="main">
-    <div id="file-grid">
-      <!-- se rellena dinámicamente desde app.js -->
+    <!-- área de contenido: grid de iconos -->
+    <div id="window-content">
+      <div id="file-grid">
+        <!-- se rellena dinámicamente desde app.js -->
+      </div>
     </div>
-  </main>
 
-  <!-- =============================================
-       FOOTER: botones de acción
-       ============================================= -->
-  <footer id="footer">
-    <button id="btn-upload" class="btn-primary">subir pdf</button>
-    <button id="btn-18" class="btn-secondary">soy mayor de 18</button>
-  </footer>
+    <!-- barra de estado inferior -->
+    <div id="window-statusbar">
+      <span id="status-count"></span>
+      <div id="footer-buttons">
+        <button id="btn-upload" class="btn-primary">subir pdf</button>
+        <button id="btn-18"     class="btn-secondary">soy mayor de 18</button>
+      </div>
+    </div>
+
+  </div><!-- /window-frame -->
+
 
   <!-- =============================================
        MODAL: subir PDF
        ============================================= -->
-  <div id="modal-upload" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+  <div id="modal-overlay" hidden></div>
+
+  <div id="modal-upload" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
     <div class="modal-box">
-      <button class="modal-close" id="modal-close-btn" aria-label="cerrar">×</button>
-      <h2 id="modal-title">subir pdf</h2>
 
-      <form id="upload-form" novalidate>
-
-        <label for="input-file">archivo (máx. 2 mb)</label>
-        <div id="drop-zone" role="button" tabindex="0" aria-label="zona de arrastre de archivo">
-          <span id="drop-label">arrastra aquí o haz clic para seleccionar</span>
-          <input type="file" id="input-file" accept=".pdf" hidden />
-        </div>
-        <p id="file-info" class="file-meta"></p>
-
-        <label for="input-hashtags">hashtags <span class="hint">(separados por coma)</span></label>
-        <input type="text" id="input-hashtags" placeholder="diseño, tipografía, referencia" autocomplete="off" />
-
-        <button type="submit" class="btn-primary" id="btn-submit">subir</button>
-      </form>
-
-      <!-- estado del proceso de subida -->
-      <div id="upload-status" hidden>
-        <p id="status-msg"></p>
-        <div id="progress-bar-wrap">
-          <div id="progress-bar"></div>
-        </div>
+      <!-- titlebar del modal (mismo estilo ventana) -->
+      <div class="modal-titlebar">
+        <button class="modal-close" id="modal-close-btn" aria-label="cerrar">×</button>
+        <span id="modal-title">subir pdf</span>
       </div>
 
-    </div>
-  </div>
+      <div class="modal-body">
+        <form id="upload-form" novalidate>
 
-  <!-- overlay oscuro para el modal -->
-  <div id="modal-overlay" hidden></div>
+          <!-- campo: autor -->
+          <div class="form-row">
+            <label for="input-author">autor</label>
+            <input
+              type="text"
+              id="input-author"
+              placeholder="nombre del autor o autora"
+              autocomplete="off"
+            />
+          </div>
+
+          <!-- campo: hashtags -->
+          <div class="form-row">
+            <label for="input-hashtags">
+              hashtags
+              <span class="hint">(separados por coma)</span>
+            </label>
+            <input
+              type="text"
+              id="input-hashtags"
+              placeholder="diseño, tipografía, referencia"
+              autocomplete="off"
+            />
+          </div>
+
+          <!-- zona de arrastre de archivo -->
+          <div class="form-row">
+            <label>archivo <span class="hint">(pdf, máx. 2 mb)</span></label>
+            <div id="drop-zone" role="button" tabindex="0" aria-label="zona de arrastre">
+              <div id="drop-icon">
+                <!-- icono pixel-art de documento -->
+                <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+                  <rect x="2"  y="0"  width="9"  height="1" fill="currentColor"/>
+                  <rect x="2"  y="1"  width="1"  height="13" fill="currentColor"/>
+                  <rect x="10" y="1"  width="1"  height="4" fill="currentColor"/>
+                  <rect x="11" y="4"  width="1"  height="1" fill="currentColor"/>
+                  <rect x="12" y="5"  width="1"  height="9" fill="currentColor"/>
+                  <rect x="2"  y="14" width="11" height="1" fill="currentColor"/>
+                  <rect x="10" y="1"  width="2"  height="1" fill="currentColor"/>
+                  <rect x="11" y="2"  width="2"  height="1" fill="currentColor"/>
+                  <rect x="12" y="3"  width="1"  height="1" fill="currentColor"/>
+                  <rect x="5"  y="5"  width="5"  height="1" fill="currentColor" opacity="0.4"/>
+                  <rect x="5"  y="7"  width="6"  height="1" fill="currentColor" opacity="0.4"/>
+                  <rect x="5"  y="9"  width="4"  height="1" fill="currentColor" opacity="0.4"/>
+                  <rect x="5"  y="11" width="5"  height="1" fill="currentColor" opacity="0.4"/>
+                </svg>
+              </div>
+              <span id="drop-label">arrastra aquí o haz clic</span>
+              <input type="file" id="input-file" accept=".pdf" hidden />
+            </div>
+            <p id="file-info" class="file-meta"></p>
+          </div>
+
+          <button type="submit" class="btn-primary full-width" id="btn-submit">subir</button>
+        </form>
+
+        <!-- estado del proceso de subida -->
+        <div id="upload-status" hidden>
+          <p id="status-msg"></p>
+          <div id="progress-bar-wrap">
+            <div id="progress-bar"></div>
+          </div>
+        </div>
+      </div><!-- /modal-body -->
+
+    </div><!-- /modal-box -->
+  </div><!-- /modal-upload -->
+
 
   <script src="app.js"></script>
 </body>
