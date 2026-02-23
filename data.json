@@ -5,7 +5,7 @@
       "filename": "test_diseno_grafico.pdf",
       "author": "manu",
       "hashtags": [
-        "diseÃÂÃÂÃÂÃÂ±o",
+        "diseÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ±o",
         "test"
       ],
       "is_18_plus": false,
@@ -60,11 +60,19 @@
       ],
       "is_18_plus": false,
       "upload_date": "2026-02-23T16:26:53.111Z"
+    },
+    {
+      "id": "mlzeec4ztwm8",
+      "filename": "Test_acentos.pdf",
+      "author": null,
+      "hashtags": [],
+      "is_18_plus": false,
+      "upload_date": "2026-02-23T16:35:38.867Z"
     }
   ],
   "hashtags": [
     "a",
-    "diseÃÂÃÂÃÂÃÂ±o",
+    "diseÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂ±o",
     "prueba",
     "test",
     "texto",
