@@ -1,12 +1,11 @@
 /* ============================================================
    CONFIGURACIÓN
+   cambia WORKER_URL por la url de tu cloudflare worker
+   una vez desplegado.
    ============================================================ */
 const CONFIG = {
-  GITHUB_USER:   "meowrhino",
-  GITHUB_REPO:   "arxiu",
-  GITHUB_BRANCH: "main",
+  WORKER_URL:    "https://arxiu-worker.TUSUBDOMINIO.workers.dev",
   MAX_FILE_SIZE:  2 * 1024 * 1024, // 2 mb
-  TOKEN_KEY:     "arxiu_github_token", // clave para localStorage
 };
 
 
@@ -38,12 +37,6 @@ const dom = {
   ageVeil:         document.getElementById("age-veil"),
   ageYes:          document.getElementById("age-yes"),
   ageNo:           document.getElementById("age-no"),
-
-  /* velo de token */
-  tokenVeil:       document.getElementById("token-veil"),
-  inputToken:      document.getElementById("input-token"),
-  tokenSave:       document.getElementById("token-save"),
-  tokenCancel:     document.getElementById("token-cancel"),
 
   /* modal de subida */
   modalUpload:     document.getElementById("modal-upload"),
@@ -82,12 +75,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
 /* ============================================================
    CARGA DE DATOS
+   carga desde el worker (que lee directamente de github,
+   sin caché de github pages) con fallback al data.json local.
    ============================================================ */
 async function loadData() {
   try {
-    const res = await fetch(`data.json?t=${Date.now()}`);
-    if (!res.ok) throw new Error(`http ${res.status}`);
-    const json = await res.json();
+    /* intentar cargar desde el worker (datos frescos) */
+    let json;
+    try {
+      const res = await fetch(CONFIG.WORKER_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "get_index" }),
+      });
+      if (res.ok) {
+        json = await res.json();
+        console.log("[arxiu] datos cargados desde el worker");
+      }
+    } catch (workerErr) {
+      console.warn("[arxiu] worker no disponible, usando data.json local");
+    }
+
+    /* fallback: data.json local (puede estar cacheado) */
+    if (!json) {
+      const res = await fetch(`data.json?t=${Date.now()}`);
+      if (!res.ok) throw new Error(`http ${res.status}`);
+      json = await res.json();
+      console.log("[arxiu] datos cargados desde data.json local");
+    }
 
     state.files    = json.files    || [];
     state.hashtags = json.hashtags || [];
@@ -96,7 +111,7 @@ async function loadData() {
     renderHashtags();
     renderFiles();
   } catch (err) {
-    console.error("[arxiu] error al cargar data.json:", err);
+    console.error("[arxiu] error al cargar datos:", err);
     dom.fileGrid.innerHTML = `<p id="empty-msg">error al cargar archivos.</p>`;
   }
 }
@@ -273,64 +288,6 @@ function hideVeil(el) { el.hidden = true; }
 
 
 /* ============================================================
-   TOKEN DE GITHUB (integrado en la UI)
-   se guarda en localStorage para no pedirlo cada vez.
-   ============================================================ */
-function getToken() {
-  return localStorage.getItem(CONFIG.TOKEN_KEY) || null;
-}
-
-function saveToken(token) {
-  localStorage.setItem(CONFIG.TOKEN_KEY, token);
-  console.log("[arxiu] token guardado en localStorage");
-}
-
-function clearToken() {
-  localStorage.removeItem(CONFIG.TOKEN_KEY);
-}
-
-/* pide el token mostrando el velo integrado.
-   devuelve una promesa que se resuelve con el token o null. */
-function requestToken() {
-  return new Promise(resolve => {
-    dom.inputToken.value = "";
-    showVeil(dom.tokenVeil);
-    dom.inputToken.focus();
-
-    const cleanup = () => {
-      hideVeil(dom.tokenVeil);
-      dom.tokenSave.removeEventListener("click", onSave);
-      dom.tokenCancel.removeEventListener("click", onCancel);
-    };
-
-    const onSave = () => {
-      const val = dom.inputToken.value.trim();
-      if (val) {
-        saveToken(val);
-        cleanup();
-        resolve(val);
-      }
-    };
-
-    const onCancel = () => {
-      cleanup();
-      resolve(null);
-    };
-
-    dom.tokenSave.addEventListener("click", onSave);
-    dom.tokenCancel.addEventListener("click", onCancel);
-  });
-}
-
-/* obtiene el token (de localStorage o pidiéndolo) */
-async function ensureToken() {
-  let token = getToken();
-  if (token) return token;
-  return requestToken();
-}
-
-
-/* ============================================================
    MODAL DE SUBIDA
    ============================================================ */
 function openModal() {
@@ -424,7 +381,9 @@ function handleFileSelection(file) {
 
 
 /* ============================================================
-   SUBIDA A GITHUB VIA API REST
+   SUBIDA VIA CLOUDFLARE WORKER
+   el worker actúa de proxy seguro: guarda el token de github
+   como variable de entorno y el visitante no necesita nada.
    ============================================================ */
 async function handleUpload(e) {
   e.preventDefault();
@@ -432,13 +391,6 @@ async function handleUpload(e) {
   const file = dom.inputFile.files[0];
   if (!file) {
     dom.fileInfo.textContent = "selecciona un archivo primero.";
-    return;
-  }
-
-  /* obtener token */
-  const token = await ensureToken();
-  if (!token) {
-    console.log("[arxiu] subida cancelada: sin token");
     return;
   }
 
@@ -453,24 +405,24 @@ async function handleUpload(e) {
 
   /* cambiar a vista de progreso */
   switchToProgress(filename);
+  dom.btnSubmit.disabled = true;
 
   try {
     /* paso 1: leer archivo como base64 */
     updateProgress("leyendo archivo...", 10);
     const base64 = await fileToBase64(file);
 
-    /* paso 2: subir el pdf a /data/ */
+    /* paso 2: subir el pdf via worker */
     updateProgress("subiendo pdf...", 30);
-    await githubPutFile(token, `data/${filename}`, base64, `subir: ${filename}`);
+    const uploadRes = await workerPost("upload_pdf", {
+      filename: filename,
+      content_base64: base64,
+    });
+    if (!uploadRes.ok) throw new Error(uploadRes.error || "error al subir pdf");
 
-    /* paso 3: leer data.json actual */
-    updateProgress("leyendo índice...", 55);
-    const { content: rawContent, sha: jsonSha } = await githubGetFile(token, "data.json");
-    const data = JSON.parse(atob(rawContent.replace(/\n/g, "")));
-
-    /* paso 4: añadir entrada */
-    updateProgress("indexando...", 75);
-    const newEntry = {
+    /* paso 3: actualizar el índice via worker */
+    updateProgress("indexando...", 65);
+    const entry = {
       id:          generateId(),
       filename:    filename,
       author:      author,
@@ -478,27 +430,26 @@ async function handleUpload(e) {
       is_18_plus:  false,
       upload_date: new Date().toISOString(),
     };
-    data.files.push(newEntry);
+    const indexRes = await workerPost("update_index", { entry });
+    if (!indexRes.ok && !indexRes.files) throw new Error(indexRes.error || "error al indexar");
 
-    /* actualizar hashtags únicos */
-    hashtags.forEach(tag => {
-      if (!data.hashtags.includes(tag)) data.hashtags.push(tag);
-    });
-    data.hashtags.sort();
-
-    /* paso 5: subir data.json actualizado */
-    updateProgress("guardando índice...", 90);
-    const updatedBase64 = btoa(unescape(encodeURIComponent(
-      JSON.stringify(data, null, 2)
-    )));
-    await githubPutFile(token, "data.json", updatedBase64, `index: añadir ${filename}`, jsonSha);
-
-    /* listo */
+    /* paso 4: actualizar interfaz con los datos devueltos */
     updateProgress("¡listo!", 100);
 
-    /* actualizar interfaz */
-    state.files    = data.files;
-    state.hashtags = data.hashtags;
+    /* el worker devuelve el data.json actualizado */
+    const data = indexRes.data || indexRes;
+    if (data.files) {
+      state.files    = data.files;
+      state.hashtags = data.hashtags || state.hashtags;
+    } else {
+      /* fallback: añadir localmente */
+      state.files.push(entry);
+      hashtags.forEach(tag => {
+        if (!state.hashtags.includes(tag)) state.hashtags.push(tag);
+      });
+      state.hashtags.sort();
+    }
+
     renderHashtags();
     renderFiles();
 
@@ -508,53 +459,19 @@ async function handleUpload(e) {
   } catch (err) {
     console.error("[arxiu] error en la subida:", err);
     updateProgress(`error: ${err.message}`, 0);
-
-    /* si es 401, limpiar token para que se pida de nuevo */
-    if (err.message.includes("401") || err.message.includes("Bad credentials")) {
-      clearToken();
-      console.log("[arxiu] token inválido, se pedirá de nuevo");
-    }
   }
 }
 
 
 /* ============================================================
-   HELPERS DE LA API DE GITHUB
+   HELPER: llamada al worker
    ============================================================ */
-async function githubGetFile(token, path) {
-  const url = `https://api.github.com/repos/${CONFIG.GITHUB_USER}/${CONFIG.GITHUB_REPO}/contents/${path}?ref=${CONFIG.GITHUB_BRANCH}`;
-  const res = await fetch(url, {
-    headers: {
-      "Authorization": `Bearer ${token}`,
-      "Accept":        "application/vnd.github+json",
-    },
+async function workerPost(action, data = {}) {
+  const res = await fetch(CONFIG.WORKER_URL, {
+    method:  "POST",
+    headers: { "Content-Type": "application/json" },
+    body:    JSON.stringify({ action, ...data }),
   });
-  if (!res.ok) {
-    const err = await res.json();
-    throw new Error(err.message || `error al leer ${path}`);
-  }
-  return res.json();
-}
-
-async function githubPutFile(token, path, base64Content, message, sha = undefined) {
-  const url  = `https://api.github.com/repos/${CONFIG.GITHUB_USER}/${CONFIG.GITHUB_REPO}/contents/${path}`;
-  const body = { message, content: base64Content, branch: CONFIG.GITHUB_BRANCH };
-  if (sha) body.sha = sha;
-
-  const res = await fetch(url, {
-    method:  "PUT",
-    headers: {
-      "Authorization": `Bearer ${token}`,
-      "Accept":        "application/vnd.github+json",
-      "Content-Type":  "application/json",
-    },
-    body: JSON.stringify(body),
-  });
-
-  if (!res.ok) {
-    const err = await res.json();
-    throw new Error(err.message || `error al escribir ${path}`);
-  }
   return res.json();
 }
 
@@ -608,7 +525,6 @@ function bindEvents() {
     if (e.key === "Escape") {
       closeModal();
       hideVeil(dom.ageVeil);
-      hideVeil(dom.tokenVeil);
     }
   });
 

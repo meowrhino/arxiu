@@ -1,84 +1,126 @@
 # arxiu
 
-un repositorio de pdfs con interfaz web minimalista. fondo de puntos, lista de archivos, filtro por hashtags, y modo +18.
+un sistema de archivo de PDFs minimalista, anónimo y auto-alojado. la interfaz es una simple página web que imita un explorador de archivos retro. cualquiera puede subir un PDF sin necesidad de tener cuenta de github.
 
-hecho por [meowrhino.studio](https://meowrhino.studio)
+![screenshot de arxiu](https://raw.githubusercontent.com/meowrhino/arxiu/main/manus/screenshot.png)
+
+---
+
+## cómo funciona
+
+el sistema se divide en tres partes que se comunican entre sí:
+
+1.  **frontend (github pages)**: la página web estática (html/css/js) que ve el visitante. desde aquí se pueden ver los archivos y subir nuevos.
+2.  **backend (cloudflare worker)**: un pequeño script que actúa como intermediario seguro. recibe los archivos del visitante y los sube a github usando tu token personal.
+3.  **base de datos (github repo)**: el propio repositorio de github actúa como base de datos. los PDFs se guardan en la carpeta `/data` y el índice de archivos en `data.json`.
+
+```mermaid
+graph TD
+    A[visitante] -->|1. sube pdf| B(frontend);
+    B -->|2. envía pdf al worker| C(cloudflare worker);
+    C -->|3. usa tu token para subir a github| D(github repo);
+    D -->|4. guarda pdf en /data| D;
+    D -->|5. actualiza data.json| D;
+```
+
+este método permite que cualquiera suba archivos sin que tú tengas que exponer tu token de github en el código del frontend.
+
+---
+
+## stack tecnológico
+
+-   **frontend**: html, css y javascript vainilla (sin frameworks).
+-   **backend**: cloudflare workers (javascript).
+-   **automatización**: github actions (para re-indexar hashtags y filtrar contenido).
+-   **hosting**: github pages (frontend) y cloudflare (backend), ambos gratuitos.
+
+---
+
+## setup y mantenimiento (guía para el dueño del repo)
+
+para que todo funcione, necesitas configurar tres cosas: el **frontend**, el **backend (worker)** y los **workflows**.
+
+### paso 1: desplegar el frontend en github pages
+
+1.  ve a la pestaña `settings` de tu repositorio en github.
+2.  en el menú de la izquierda, ve a `pages`.
+3.  en `source`, selecciona la rama `main` y la carpeta `/ (root)`.
+4.  haz clic en `save`.
+
+en unos minutos, tu página estará disponible en `https://TUNOMBRE.github.io/arxiu`.
+
+### paso 2: desplegar el backend en cloudflare workers
+
+1.  **instala wrangler**, la herramienta de línea de comandos de cloudflare:
+    ```bash
+    npm install -g wrangler
+    ```
+2.  **inicia sesión** en tu cuenta de cloudflare:
+    ```bash
+    wrangler login
+    ```
+3.  **navega a la carpeta `worker`** del proyecto:
+    ```bash
+    cd worker
+    ```
+4.  **publica el worker** por primera vez:
+    ```bash
+    wrangler deploy
+    ```
+    la primera vez te hará algunas preguntas. puedes aceptar los valores por defecto. al final te dará una url tipo `https://arxiu-worker.TUNOMBRE.workers.dev`.
+
+5.  **configura las variables secretas**:
+    -   **`GITHUB_TOKEN`**: necesitas un [personal access token](https://github.com/settings/tokens/new) con permisos de `repo` (control total de repositorios privados y públicos).
+        ```bash
+        wrangler secret put GITHUB_TOKEN
+        ```
+        pega tu token (empieza por `ghp_...`) y pulsa enter.
+
+    -   **`ALLOWED_ORIGIN`**: la url de tu github pages para evitar que otras webs usen tu worker.
+        ```bash
+        wrangler secret put ALLOWED_ORIGIN
+        ```
+        pega la url de tu github pages (ej: `https://meowrhino.github.io`).
+
+6.  **actualiza la url del worker en `app.js`**:
+    -   abre el archivo `app.js`.
+    -   en la línea 5, cambia la `WORKER_URL` por la url que te dio wrangler en el paso 4.
+    -   guarda, haz commit y push de este cambio.
+
+### paso 3: subir los workflows de github actions
+
+el token de integración de manus no tiene permisos para crear workflows (es una restricción de seguridad de github). tienes que subirlos tú manualmente:
+
+1.  en la web de github, ve a tu repositorio.
+2.  haz clic en `add file > create new file`.
+3.  en el nombre del archivo, escribe `.github/workflows/update-hashtags.yml`.
+4.  copia y pega el contenido del archivo `update-hashtags.yml` que está en la carpeta `worker` de este proyecto.
+5.  haz clic en `commit new file`.
+6.  repite los pasos 2-5 para el archivo `content-filter.yml`.
 
 ---
 
 ## estructura del proyecto
 
 ```
-arxiu/
-├── index.html                          # interfaz principal
-├── style.css                           # estilos (tema normal + tema +18)
-├── app.js                              # lógica de la app
-├── data.json                           # base de datos de archivos
-├── data/                               # carpeta donde van los pdfs
-│   └── (tus archivos .pdf)
-├── .github/
-│   └── workflows/
-│       ├── update-hashtags.yml         # re-indexa hashtags cada domingo
-│       └── content-filter.yml         # revisa contenido +18 el día 11
-└── manus/
-    └── proceso.md                      # documentación del proceso
+/arxiu
+├── .github/workflows/   # automatizaciones
+│   ├── content-filter.yml # revisa pdfs en busca de palabrotas
+│   └── update-hashtags.yml# actualiza la lista de hashtags
+├── data/                # aquí se guardan los pdfs subidos
+│   └── .gitkeep         # placeholder para que la carpeta exista
+├── manus/               # notas del proceso de creación
+│   └── ...
+├── worker/              # código del backend (cloudflare worker)
+│   ├── worker.js        # la lógica del proxy seguro
+│   └── wrangler.toml    # configuración del worker
+├── app.js               # toda la lógica del frontend
+├── data.json            # el índice de todos los archivos
+├── index.html           # la estructura de la página
+├── README.md            # esta guía
+└── style.css            # todos los estilos visuales
 ```
 
 ---
 
-## cómo usar
-
-### 1. activar github pages
-
-en los ajustes del repositorio (`settings > pages`), selecciona la rama `main` y la carpeta raíz (`/`) como fuente. en unos minutos tendrás la app en `https://meowrhino.github.io/arxiu`.
-
-### 2. crear un personal access token (pat)
-
-para poder subir archivos desde la interfaz web, necesitas un token de github con permisos de escritura:
-
-1. ve a `github.com > settings > developer settings > personal access tokens > tokens (classic)`
-2. crea un nuevo token con el permiso `repo` (o `contents: write` si usas fine-grained tokens)
-3. guárdalo en un lugar seguro. se te pedirá la primera vez que intentes subir un pdf.
-
-### 3. subir un pdf
-
-1. abre la app en el navegador
-2. haz clic en **subir pdf**
-3. arrastra o selecciona un pdf de menos de 2 mb
-4. escribe los hashtags separados por coma
-5. haz clic en **subir**
-6. introduce tu pat cuando se te pida (solo la primera vez por sesión)
-
-### 4. modo +18
-
-haz clic en **soy mayor de 18** para ver todos los archivos, incluidos los marcados como `is_18_plus: true`. el tema de la interfaz cambia a oscuro/amarillo.
-
----
-
-## automatizaciones
-
-| workflow | cuándo | qué hace |
-|---|---|---|
-| `update-hashtags.yml` | cada domingo a las 03:00 utc | re-indexa todos los hashtags del data.json y los ordena |
-| `content-filter.yml` | el día 11 de cada mes a las 04:00 utc | extrae el texto de los pdfs y marca como `+18` los que contengan palabras de la lista |
-
-para editar la lista de palabras prohibidas, abre `.github/workflows/content-filter.yml` y modifica el array `FORBIDDEN_WORDS`.
-
----
-
-## estructura del data.json
-
-```json
-{
-  "files": [
-    {
-      "id": "identificador único",
-      "filename": "nombre_del_archivo.pdf",
-      "hashtags": ["tag1", "tag2"],
-      "is_18_plus": false,
-      "upload_date": "2026-02-23T12:00:00Z"
-    }
-  ],
-  "hashtags": ["tag1", "tag2"]
-}
-```
+creado por [meowrhino.studio](https://meowrhino.studio)

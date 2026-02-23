@@ -29,38 +29,6 @@
   </div>
 
 
-  <!-- =============================================
-       CONFIGURACIÓN DE TOKEN (primera vez)
-       se muestra integrado en la ventana cuando
-       el usuario intenta subir sin token.
-       ============================================= -->
-  <div id="token-veil" class="veil" hidden>
-    <div class="veil-box">
-      <p class="veil-title">conectar con github</p>
-      <p class="veil-desc">
-        para subir archivos necesitas un<br>
-        <a href="https://github.com/settings/tokens/new?scopes=repo&description=arxiu" target="_blank" rel="noopener">
-          personal access token
-        </a>
-        con permisos de escritura.
-      </p>
-      <div class="token-input-row">
-        <input
-          type="password"
-          id="input-token"
-          placeholder="ghp_xxxxxxxxxxxx"
-          autocomplete="off"
-          spellcheck="false"
-        />
-      </div>
-      <div class="veil-buttons">
-        <button id="token-save" class="btn btn-yes">guardar</button>
-        <button id="token-cancel" class="btn btn-no">cancelar</button>
-      </div>
-      <p class="veil-hint">se guarda solo en tu navegador (localStorage).</p>
-    </div>
-  </div>
-
 
   <!-- =============================================
        VENTANA PRINCIPAL (estilo finder / explorador)

@@ -1,0 +1,11 @@
+# configuración del cloudflare worker para arxiu
+# documentación: https://developers.cloudflare.com/workers/
+
+name = "arxiu-worker"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+# las variables secretas (GITHUB_TOKEN, ALLOWED_ORIGIN)
+# se configuran con:
+#   npx wrangler secret put GITHUB_TOKEN
+#   npx wrangler secret put ALLOWED_ORIGIN

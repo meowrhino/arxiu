@@ -92,3 +92,39 @@ reescritura total de los tres archivos principales (html, css, js) para cumplir 
 
 **estructura de archivos:**
 - creada carpeta /data con .gitkeep como placeholder
+
+---
+
+## 2026-02-23 — iteración 4: cloudflare worker como proxy seguro
+
+### sinopsis
+se elimina el sistema de token que pedía al visitante un PAT de github. se reemplaza por un cloudflare worker que actúa de intermediario: el token se guarda como variable de entorno en cloudflare y el visitante no necesita nada.
+
+### cambios realizados
+
+**nuevo: `worker/worker.js`**
+el código del worker. tiene 3 acciones:
+- `upload_pdf`: sube un pdf a /data/ via la api de github
+- `update_index`: lee data.json, añade la nueva entrada, guarda
+- `get_index`: lee data.json fresco sin caché de github pages
+
+**nuevo: `worker/wrangler.toml`**
+configuración para desplegar el worker con `wrangler deploy`. las variables secretas (GITHUB_TOKEN, ALLOWED_ORIGIN) se configuran con `wrangler secret put`.
+
+**modificado: `app.js`**
+- eliminado todo lo relacionado con el token del visitante: localStorage, velo de token, requestToken(), ensureToken(), githubGetFile(), githubPutFile()
+- añadido `workerPost(action, data)` como helper genérico para hablar con el worker
+- `loadData()` ahora intenta cargar desde el worker primero (datos frescos) con fallback al data.json local
+- `handleUpload()` ahora envía el pdf y la entrada al worker en vez de usar la api de github directamente
+
+**modificado: `index.html`**
+- eliminado el bloque completo del velo de token (#token-veil)
+
+**modificado: `README.md`**
+- reescrito completamente con:
+  - explicación del flujo (frontend → worker → github)
+  - diagrama mermaid
+  - guía paso a paso para desplegar el worker
+  - guía para configurar github pages
+  - guía para subir los workflows manualmente
+  - estructura del proyecto actualizada
