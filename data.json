@@ -5,7 +5,7 @@
       "filename": "test_diseno_grafico.pdf",
       "author": "manu",
       "hashtags": [
-        "diseÃÂ±o",
+        "diseÃÂÃÂ±o",
         "test"
       ],
       "is_18_plus": false,
@@ -42,10 +42,18 @@
       ],
       "is_18_plus": false,
       "upload_date": "2026-02-23T15:46:07.542Z"
+    },
+    {
+      "id": "mlzdlak17ugx",
+      "filename": "Test_Markdown_Editor.pdf",
+      "author": null,
+      "hashtags": [],
+      "is_18_plus": false,
+      "upload_date": "2026-02-23T16:13:03.793Z"
     }
   ],
   "hashtags": [
-    "diseÃÂ±o",
+    "diseÃÂÃÂ±o",
     "prueba",
     "test",
     "texto",
