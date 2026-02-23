@@ -1,0 +1,57 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [7 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Oblique /Encoding /WinAnsiEncoding >>
+endobj
+6 0 obj
+<< /Length 616 >>
+stream
+BT /F2 28 Tf 60 754 Td (Test Markdown Editor) Tj ET
+BT /F2 28 Tf 60 670 Td (Primer Heading) Tj ET
+BT 60 632 Td
+/F1 11 Tf (Este es un texto normal con ) Tj
+/F2 11 Tf (negrita) Tj
+/F1 11 Tf ( y ) Tj
+/F3 11 Tf (cursiva) Tj
+/F1 11 Tf (.) Tj
+ET
+BT /F2 22 Tf 60 592 Td (Segundo nivel) Tj ET
+BT /F1 11 Tf 60 556 Td (  • elemento uno) Tj ET
+BT /F1 11 Tf 60 540 Td (  • elemento dos) Tj ET
+BT /F2 16 Tf 60 506 Td (Tercer nivel) Tj ET
+BT /F1 11 Tf 60 472 Td (  1. primero) Tj ET
+BT /F1 11 Tf 60 456 Td (  2. segundo) Tj ET
+q 0.7 G 0.5 w 60 436 m 535 436 l S Q
+BT /F1 11 Tf 60 404 Td (Texto final despues del separador.) Tj ET
+
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 6 0 R /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> >>
+endobj
+xref
+0 8
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000212 00000 n 
+0000000314 00000 n 
+0000000419 00000 n 
+0000001086 00000 n 
+trailer
+<< /Size 8 /Root 1 0 R >>
+startxref
+1232
+%%EOF
