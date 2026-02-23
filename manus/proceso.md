@@ -50,3 +50,45 @@ la arquitectura se basa en un único archivo `data.json` que actúa como base de
 ### data.json
 - añadido el campo `author` a todas las entradas de ejemplo.
 - los ejemplos usan nombres de autores reales del diseño gráfico como referencia.
+
+---
+
+## 2026-02-23 — iteración 3: reescritura completa
+
+### sinopsis
+reescritura total de los tres archivos principales (html, css, js) para cumplir con el brief completo del usuario.
+
+### cambios realizados
+
+**estructura (index.html):**
+- botones "subir pdf" y "soy mayor de 18" movidos FUERA de la ventana, debajo del div principal
+- velo de confirmación de edad como capa independiente con blur
+- velo de configuración de token de github integrado en la UI (sin prompt() del navegador)
+- modal de subida con dos vistas: formulario y progreso tipo transferencia de archivo
+- campo "autor:" añadido antes de los hashtags en el modal
+- campo "nombre:" que se rellena automáticamente al seleccionar archivo
+- titlebar con tres dots (rojo, amarillo, verde) estilo finder
+
+**estética (style.css):**
+- estética windows clásico / retro completa:
+  - bordes 3d outset/inset en ventana, botones, inputs, barra de progreso
+  - gradiente azul clásico en titlebar (como windows xp/2000)
+  - scrollbar estilizada con bordes retro
+  - sin border-radius en ningún elemento (todo recto, pixel-perfect)
+  - fuente "lucida console" / "courier new" para monospace
+  - fuente "segoe ui" / tahoma para el body
+- tema normal: grises claros (#ece9d8), azul oscuro (#0a246a), blanco
+- tema +18: negro (#0a0a00), amarillo (#f5c400), dorado
+- barra de progreso con patrón de rayas animadas tipo windows
+- fondo de puntos con los valores exactos del prompt original
+
+**lógica (app.js):**
+- token de github guardado en localStorage (no se pide cada vez)
+- velo integrado para pedir el token la primera vez (con link directo a crear PAT)
+- progreso de subida en vista tipo "transferencia de archivo" dentro del modal
+- sanitizeFilename() ya no elimina caracteres unicode (acentos, ñ, etc.)
+- si el token es inválido (401), se limpia y se pide de nuevo
+- código modular con secciones claras
+
+**estructura de archivos:**
+- creada carpeta /data con .gitkeep como placeholder
