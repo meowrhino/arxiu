@@ -4,7 +4,10 @@
       "id": "test001",
       "filename": "test_diseno_grafico.pdf",
       "author": "manu",
-      "hashtags": ["diseño", "test"],
+      "hashtags": [
+        "diseÃ±o",
+        "test"
+      ],
       "is_18_plus": false,
       "upload_date": "2026-02-23T14:51:00Z"
     },
@@ -12,14 +15,30 @@
       "id": "test002",
       "filename": "test_tipografia.pdf",
       "author": "manu",
-      "hashtags": ["tipografia", "test"],
+      "hashtags": [
+        "tipografia",
+        "test"
+      ],
       "is_18_plus": false,
       "upload_date": "2026-02-23T14:51:00Z"
+    },
+    {
+      "id": "mlz932n88qvr",
+      "filename": "Prueba_de_texto.pdf",
+      "author": "manu",
+      "hashtags": [
+        "texto",
+        "prueba"
+      ],
+      "is_18_plus": false,
+      "upload_date": "2026-02-23T14:06:55.268Z"
     }
   ],
   "hashtags": [
-    "diseño",
+    "diseÃ±o",
+    "prueba",
     "test",
+    "texto",
     "tipografia"
   ]
 }
