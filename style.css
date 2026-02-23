@@ -952,13 +952,13 @@ body.mode-18 .btn-action-alt {
 
 .editor-tool {
   font:           inherit;
-  font-size:      12px;
+  font-size:      13px;
   font-family:    var(--font-mono);
   cursor:         pointer;
-  padding:        2px 7px;
+  padding:        4px 10px;
   background:     var(--btn-bg);
   color:          var(--btn-fg);
-  min-width:      26px;
+  min-width:      32px;
   text-align:     center;
   border: 1px solid;
   border-color: var(--btn-border-hi) var(--btn-border-lo) var(--btn-border-lo) var(--btn-border-hi);
@@ -975,37 +975,29 @@ body.mode-18 .btn-action-alt {
 
 .editor-tool-sep {
   width:      1px;
-  height:     18px;
+  height:     22px;
   background: var(--tool-border);
-  margin:     0 2px;
+  margin:     0 3px;
 }
 
-.editor-tool-select {
-  font:           inherit;
-  font-size:      11px;
-  font-family:    var(--font-mono);
-  cursor:         pointer;
-  padding:        2px 4px;
-  background:     var(--input-bg);
-  color:          var(--text-primary);
-  border: 2px solid;
-  border-color: var(--win-border-dk) var(--win-border-hi) var(--win-border-hi) var(--win-border-dk);
-  outline: none;
-}
-
-/* área de texto editable (contenteditable) */
+/* área de texto markdown (textarea) */
 #editor-content {
   background:     var(--input-bg);
   color:          var(--text-primary);
-  font:           inherit;
   font-size:      13px;
+  font-family:    var(--font-mono);
   line-height:    1.6;
   padding:        8px 10px;
   min-height:     200px;
   max-height:     40dvh;
   overflow-y:     auto;
   outline:        none;
+  resize:         vertical;
   transition:     border-color 0.1s;
+  width:          100%;
+  box-sizing:     border-box;
+  white-space:    pre-wrap;
+  tab-size:       2;
 
   /* borde inset retro */
   border: 2px solid;
@@ -1016,19 +1008,9 @@ body.mode-18 .btn-action-alt {
   border-color: var(--input-focus);
 }
 
-/* placeholder para el editor vacío */
-#editor-content:empty::before {
-  content:    "escribe aquí tu texto...";
+#editor-content::placeholder {
   color:      var(--text-muted);
   font-style: italic;
-  pointer-events: none;
-}
-
-/* estilos dentro del editor */
-#editor-content ul,
-#editor-content ol {
-  padding-left: 20px;
-  margin: 4px 0;
 }
 
 /* formulario del editor */

@@ -228,34 +228,41 @@
             />
           </div>
 
-          <!-- barra de herramientas del editor -->
+          <!-- barra de herramientas del editor (markdown) -->
           <div class="field">
-            <label>contenido:</label>
+            <label>contenido: <span class="hint">(markdown)</span></label>
             <div id="editor-toolbar">
-              <button type="button" class="editor-tool" data-cmd="bold" title="negrita"><b>N</b></button>
-              <button type="button" class="editor-tool" data-cmd="italic" title="cursiva"><i>C</i></button>
-              <button type="button" class="editor-tool" data-cmd="underline" title="subrayado"><u>S</u></button>
+              <button type="button" class="editor-tool" data-md="bold" title="negrita **"><b>N</b></button>
+              <button type="button" class="editor-tool" data-md="italic" title="cursiva *"><i>C</i></button>
               <span class="editor-tool-sep"></span>
-              <button type="button" class="editor-tool" data-cmd="insertUnorderedList" title="lista">&#8226;</button>
-              <button type="button" class="editor-tool" data-cmd="insertOrderedList" title="lista numerada">1.</button>
+              <button type="button" class="editor-tool" data-md="h1" title="título #">H1</button>
+              <button type="button" class="editor-tool" data-md="h2" title="subtítulo ##">H2</button>
+              <button type="button" class="editor-tool" data-md="h3" title="sección ###">H3</button>
               <span class="editor-tool-sep"></span>
-              <select id="editor-fontsize" class="editor-tool-select" title="tamaño">
-                <option value="2">pequeño</option>
-                <option value="3" selected>normal</option>
-                <option value="4">grande</option>
-                <option value="5">titulo</option>
-              </select>
+              <button type="button" class="editor-tool" data-md="ul" title="lista - ">&#8226;</button>
+              <button type="button" class="editor-tool" data-md="ol" title="lista 1. ">1.</button>
+              <span class="editor-tool-sep"></span>
+              <button type="button" class="editor-tool" data-md="hr" title="separador ---">―</button>
             </div>
 
-            <!-- área de texto editable -->
-            <div
+            <!-- área de texto markdown -->
+            <textarea
               id="editor-content"
-              contenteditable="true"
               spellcheck="true"
-              role="textbox"
-              aria-multiline="true"
-              aria-label="contenido del documento"
-            ></div>
+              aria-label="contenido del documento en markdown"
+              placeholder="escribe aquí en markdown...
+
+# título grande
+## subtítulo
+### sección
+
+texto normal, **negrita** y *cursiva*.
+
+- lista
+- de items
+
+---"
+            ></textarea>
           </div>
 
           <button type="submit" class="btn btn-submit" id="btn-create-submit">crear</button>

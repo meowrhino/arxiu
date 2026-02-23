@@ -140,35 +140,67 @@ nuevo botón "crear texto" que abre un editor rich-text integrado. el usuario es
 
 **modificado: `index.html`**
 - añadido botón "crear texto" entre "subir pdf" y "soy mayor de 18" en `#actions`
-- nuevo modal `#modal-editor` con:
-  - titlebar estilo finder con tres dots y título "crear texto"
-  - campo "titulo:" para el nombre del documento
-  - campo "autor:" y "hashtags:" iguales al modal de subida
-  - barra de herramientas con: negrita (N), cursiva (C), subrayado (S), lista (•), lista numerada (1.), selector de tamaño (pequeño/normal/grande/titulo)
-  - área de texto `contenteditable` con placeholder y scroll
-  - botón "crear" en lugar de "subir"
-  - vista de progreso tipo transferencia de archivo (reutiliza el patrón del modal de subida)
+- nuevo modal `#modal-editor` con titlebar finder, campos titulo/autor/hashtags, toolbar, textarea y vista de progreso
 
 **modificado: `style.css`**
-- estilos para `#modal-editor` con fix de `[hidden]` para que `display: flex` no override el atributo hidden
-- `.modal-window-wide` para el ancho del editor (520px)
-- `#editor-toolbar`: barra de herramientas con botones retro, separadores y selector de tamaño
-- `.editor-tool`, `.editor-tool-sep`, `.editor-tool-select`: botones con bordes 3d y hover
-- `#editor-content`: área editable con borde inset retro, placeholder via `::before`, scroll vertical
-- estilos de progreso reutilizables con clases `.transfer-info`, `.progress-track-el`, `.progress-fill-el`, `.progress-percent-el`
-- responsive: `#editor-content { min-height: 150px }` en móvil
+- estilos completos para el modal editor, toolbar, textarea y progreso
 
 **modificado: `app.js`**
-- añadidas referencias DOM para todos los elementos del editor (modalEditor, editorCloseDot, editorForm, editorTitle, editorAuthor, editorHashtags, editorContent, editorFontsize, btnCreateSubmit, vistas de progreso)
-- `openEditorModal()` / `closeEditorModal()`: abrir y cerrar el modal del editor
-- `editorSwitchToProgress()` / `editorUpdateProgress()`: cambiar a vista de progreso dentro del modal
-- `bindEditorToolbar()`: vincula los botones de formato usando `document.execCommand()` (bold, italic, underline, insertUnorderedList, insertOrderedList) y el selector de tamaño con `fontSize`
-- `handleCreateText(e)`: handler del submit que valida titulo y contenido, genera el PDF, lo sube via worker, actualiza el índice y refresca la interfaz
-- `htmlToPdfBase64(title, htmlContent)`: generador de PDF completo sin dependencias externas:
-  - extrae texto plano del HTML respetando saltos de línea (`<br>`, `<p>`, `<div>`, `<li>`)
-  - word-wrap a 72 caracteres por línea
-  - paginación automática en A4 (595×842 puntos)
-  - título en Helvetica-Bold 18pt, cuerpo en Helvetica 11pt
-  - tabla de referencias cruzadas (xref) válida
-  - devuelve base64 listo para subir
-- `bindEvents()` actualizado: añadidos listeners para btnCreate, editorCloseDot, editorForm submit, y bindEditorToolbar(). escape y overlay ahora cierran también el editor
+- funciones del editor: open/close modal, progreso, toolbar, submit handler, generador de PDF
+- `bindEvents()` actualizado con los listeners del editor
+
+---
+
+## 2026-02-23 — iteración 6: editor markdown, fix post-subida, links directos
+
+### sinopsis
+tres mejoras importantes: (1) el editor pasa de contenteditable+execCommand a textarea con markdown, (2) los archivos recién subidos ya no aparecen como fantasmas en el grid, y (3) los links de los PDFs apuntan al visor de github en vez de a github pages (disponibilidad instantánea).
+
+### cambios realizados
+
+**modificado: `index.html`**
+- reemplazado `<div contenteditable>` por `<textarea>` con placeholder que muestra la sintaxis markdown
+- toolbar actualizada: quitado subrayado (S) y selector de tamaño. añadidos botones H1, H2, H3 y separador (―)
+- cada botón usa `data-md` en vez de `data-cmd` para identificar la acción markdown
+- label del contenido indica "(markdown)" para que el usuario sepa que puede usar sintaxis
+
+**modificado: `style.css`**
+- `#editor-content` adaptado de contenteditable a textarea: añadido `resize: vertical`, `font-family: monospace`, `white-space: pre-wrap`, `tab-size: 2`, `width: 100%`, `box-sizing: border-box`
+- quitado `#editor-content:empty::before` (ya no necesario, textarea tiene placeholder nativo)
+- añadido `#editor-content::placeholder` con estilo italic y color muted
+- botones toolbar más grandes y accesibles: `padding: 4px 10px`, `min-width: 32px`, `font-size: 13px`
+- separadores toolbar más altos: `height: 22px`
+- eliminado `.editor-tool-select` (ya no hay select de tamaños)
+
+**modificado: `app.js`**
+
+*editor markdown:*
+- eliminada referencia DOM `editorFontsize` (ya no existe el select)
+- `bindEditorToolbar()` reescrito: usa `data-md` con switch (bold, italic, h1, h2, h3, ul, ol, hr) en vez de `document.execCommand()`
+- nueva función `insertMarkdownWrap(before, after)`: envuelve la selección del textarea con marcadores markdown (ej: `**texto**`). si no hay selección, inserta placeholder "texto"
+- nueva función `insertMarkdownLine(prefix)`: inserta prefijo al inicio de la línea actual (ej: `# `, `- `). funciona como toggle: si el prefijo ya está, lo quita. si hay otro prefijo (heading/lista), lo reemplaza
+- nueva función `insertMarkdownBlock(block)`: inserta un bloque en la posición del cursor (ej: `\n---\n`)
+- `handleCreateText()` lee `dom.editorContent.value` en vez de `.innerHTML`
+- `openEditorModal()` usa `.value = ""` en vez de `.innerHTML = ""`
+
+*generador de pdf:*
+- `htmlToPdfBase64()` eliminada, reemplazada por `markdownToPdfBase64(title, markdown)`
+- parser de markdown línea por línea que genera bloques tipados: text, richtext, space, hr, title
+- 4 niveles de tamaño con diferencias claras: H1 (28pt), H2 (22pt), H3 (16pt), cuerpo (11pt)
+- 3 fonts PDF: Helvetica (/F1), Helvetica-Bold (/F2), Helvetica-Oblique (/F3)
+- inline markdown: `**bold**` → Helvetica-Bold, `*italic*` → Helvetica-Oblique, con cambio de font dentro de la misma línea
+- listas desordenadas con prefijo `- ` (en vez de bullet unicode que causaba problemas de encoding)
+- listas ordenadas con prefijo numérico
+- separadores `---` como línea horizontal con stroke gris
+- paginación automática con salto de página cuando el contenido excede el espacio disponible
+- función `esc()` mejorada: reemplaza caracteres unicode problemáticos (comillas curvas, em-dash, bullet) por equivalentes latin1, filtra caracteres fuera del rango 0x00-0xFF
+- conversión a base64 con `btoa()` directo (sin `unescape(encodeURIComponent())`) porque el PDF es puro latin1
+
+*fix post-subida (archivo fantasma):*
+- `handleUpload()`: ya no añade la entrada a `state.files` ni re-renderiza el grid tras subir. muestra "¡listo! estará disponible en ~2 min. recarga para verlo." y no cierra el modal automáticamente
+- `handleCreateText()`: mismo comportamiento — no cierra el modal, el usuario lo cierra con dot rojo o Escape
+- el `data.json` sí se actualiza en github (via worker), así que al recargar la página el archivo aparece
+
+*links directos a github:*
+- `createFileCard()`: el `href` de cada archivo cambiado de `data/${filename}` (github pages, tarda ~2 min) a `https://github.com/meowrhino/arxiu/blob/main/data/${filename}` (visor de github, disponible al instante)
+- el filename se codifica con `encodeURIComponent()` para manejar espacios y caracteres especiales

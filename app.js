@@ -70,7 +70,6 @@ const dom = {
   editorAuthor:          document.getElementById("editor-author"),
   editorHashtags:        document.getElementById("editor-hashtags"),
   editorContent:         document.getElementById("editor-content"),
-  editorFontsize:        document.getElementById("editor-fontsize"),
   btnCreateSubmit:       document.getElementById("btn-create-submit"),
 
   /* vistas del modal editor */
@@ -198,7 +197,8 @@ function renderFiles() {
 function createFileCard(file) {
   const card = document.createElement("a");
   card.className = "file-card";
-  card.href      = `data/${file.filename}`;
+  /* enlace al visor de github (disponible al instante, sin esperar github pages) */
+  card.href      = `https://github.com/meowrhino/arxiu/blob/main/data/${encodeURIComponent(file.filename)}`;
   card.target    = "_blank";
   card.rel       = "noopener noreferrer";
   card.title     = file.filename;
@@ -455,28 +455,13 @@ async function handleUpload(e) {
     const indexRes = await workerPost("update_index", { entry });
     if (!indexRes.ok && !indexRes.files) throw new Error(indexRes.error || "error al indexar");
 
-    /* paso 4: actualizar interfaz con los datos devueltos */
-    updateProgress("¡listo!", 100);
+    /* paso 4: archivo subido — no añadir al grid todavía
+       github pages tarda ~2 min en publicar, así que el
+       enlace daría 404. mejor avisar al usuario. */
+    updateProgress("¡listo! estará disponible en ~2 min. recarga para verlo.", 100);
 
-    /* el worker devuelve el data.json actualizado */
-    const data = indexRes.data || indexRes;
-    if (data.files) {
-      state.files    = data.files;
-      state.hashtags = data.hashtags || state.hashtags;
-    } else {
-      /* fallback: añadir localmente */
-      state.files.push(entry);
-      hashtags.forEach(tag => {
-        if (!state.hashtags.includes(tag)) state.hashtags.push(tag);
-      });
-      state.hashtags.sort();
-    }
-
-    renderHashtags();
-    renderFiles();
-
-    /* cerrar modal tras un momento */
-    setTimeout(closeModal, 2000);
+    /* NO cerrar el modal automáticamente:
+       el usuario cierra con el dot rojo o Escape */
 
   } catch (err) {
     console.error("[arxiu] error en la subida:", err);
@@ -497,7 +482,7 @@ function openEditorModal() {
   dom.editorProgressView.hidden = true;
 
   dom.editorForm.reset();
-  dom.editorContent.innerHTML = "";
+  dom.editorContent.value = "";
   dom.btnCreateSubmit.disabled = false;
   dom.editorTitle.focus();
 }
@@ -525,23 +510,77 @@ function editorUpdateProgress(status, percent) {
 
 
 /* ============================================================
-   EDITOR: barra de herramientas
+   EDITOR: barra de herramientas (markdown)
    ============================================================ */
 function bindEditorToolbar() {
-  /* botones de formato (bold, italic, underline, listas) */
-  document.querySelectorAll(".editor-tool[data-cmd]").forEach(btn => {
+  document.querySelectorAll(".editor-tool[data-md]").forEach(btn => {
+    btn.addEventListener("mousedown", e => e.preventDefault());
     btn.addEventListener("click", (e) => {
       e.preventDefault();
-      document.execCommand(btn.dataset.cmd, false, null);
-      dom.editorContent.focus();
+      const action = btn.dataset.md;
+      switch (action) {
+        case "bold":   insertMarkdownWrap("**", "**"); break;
+        case "italic": insertMarkdownWrap("*", "*"); break;
+        case "h1":     insertMarkdownLine("# "); break;
+        case "h2":     insertMarkdownLine("## "); break;
+        case "h3":     insertMarkdownLine("### "); break;
+        case "ul":     insertMarkdownLine("- "); break;
+        case "ol":     insertMarkdownLine("1. "); break;
+        case "hr":     insertMarkdownBlock("\n---\n"); break;
+      }
     });
   });
+}
 
-  /* selector de tamaño */
-  dom.editorFontsize.addEventListener("change", () => {
-    document.execCommand("fontSize", false, dom.editorFontsize.value);
-    dom.editorContent.focus();
-  });
+/* insertar markdown alrededor de la selección en el textarea */
+function insertMarkdownWrap(before, after) {
+  const ta = dom.editorContent;
+  const start = ta.selectionStart;
+  const end   = ta.selectionEnd;
+  const text  = ta.value;
+  const selected = text.substring(start, end) || "texto";
+
+  const insert = before + selected + after;
+  ta.setRangeText(insert, start, end, "select");
+
+  /* seleccionar solo el texto interior (sin los marcadores) */
+  ta.selectionStart = start + before.length;
+  ta.selectionEnd   = start + before.length + selected.length;
+  ta.focus();
+}
+
+/* insertar prefijo markdown al inicio de la línea actual */
+function insertMarkdownLine(prefix) {
+  const ta = dom.editorContent;
+  const start = ta.selectionStart;
+  const text  = ta.value;
+
+  /* encontrar el inicio de la línea */
+  const lineStart = text.lastIndexOf("\n", start - 1) + 1;
+
+  /* comprobar si el prefijo ya está — toggle */
+  const currentLine = text.substring(lineStart);
+  if (currentLine.startsWith(prefix)) {
+    /* quitar el prefijo */
+    ta.setRangeText("", lineStart, lineStart + prefix.length, "end");
+  } else {
+    /* si hay otro heading/list prefix, reemplazarlo */
+    const existingPrefix = currentLine.match(/^(#{1,3}\s|[-*]\s|\d+\.\s)/);
+    if (existingPrefix) {
+      ta.setRangeText(prefix, lineStart, lineStart + existingPrefix[0].length, "end");
+    } else {
+      ta.setRangeText(prefix, lineStart, lineStart, "end");
+    }
+  }
+  ta.focus();
+}
+
+/* insertar un bloque markdown (ej: separador) */
+function insertMarkdownBlock(block) {
+  const ta = dom.editorContent;
+  const start = ta.selectionStart;
+  ta.setRangeText(block, start, ta.selectionEnd, "end");
+  ta.focus();
 }
 
 
@@ -554,7 +593,7 @@ async function handleCreateText(e) {
   e.preventDefault();
 
   const title   = dom.editorTitle.value.trim();
-  const content = dom.editorContent.innerHTML.trim();
+  const content = dom.editorContent.value.trim();
 
   if (!title) {
     dom.editorTitle.focus();
@@ -562,7 +601,7 @@ async function handleCreateText(e) {
     setTimeout(() => dom.editorTitle.style.borderColor = "", 2000);
     return;
   }
-  if (!content || dom.editorContent.textContent.trim() === "") {
+  if (!content) {
     dom.editorContent.focus();
     dom.editorContent.style.borderColor = "#cc0000";
     setTimeout(() => dom.editorContent.style.borderColor = "", 2000);
@@ -583,7 +622,7 @@ async function handleCreateText(e) {
   try {
     /* paso 1: generar el PDF */
     editorUpdateProgress("generando pdf...", 15);
-    const pdfBase64 = await htmlToPdfBase64(title, content);
+    const pdfBase64 = await markdownToPdfBase64(title, content);
 
     /* paso 2: subir el PDF via worker */
     editorUpdateProgress("subiendo pdf...", 40);
@@ -606,25 +645,11 @@ async function handleCreateText(e) {
     const indexRes = await workerPost("update_index", { entry });
     if (!indexRes.ok && !indexRes.files) throw new Error(indexRes.error || "error al indexar");
 
-    /* paso 4: actualizar interfaz */
-    editorUpdateProgress("¡listo!", 100);
+    /* paso 4: archivo subido — no añadir al grid todavía
+       github pages tarda ~2 min en publicar */
+    editorUpdateProgress("¡listo! estará disponible en ~2 min. recarga para verlo.", 100);
 
-    const data = indexRes.data || indexRes;
-    if (data.files) {
-      state.files    = data.files;
-      state.hashtags = data.hashtags || state.hashtags;
-    } else {
-      state.files.push(entry);
-      hashtags.forEach(tag => {
-        if (!state.hashtags.includes(tag)) state.hashtags.push(tag);
-      });
-      state.hashtags.sort();
-    }
-
-    renderHashtags();
-    renderFiles();
-
-    setTimeout(closeEditorModal, 2000);
+    /* NO cerrar automáticamente */
 
   } catch (err) {
     console.error("[arxiu] error al crear texto:", err);
@@ -634,164 +659,316 @@ async function handleCreateText(e) {
 
 
 /* ============================================================
-   GENERADOR DE PDF DESDE HTML
-   construye un PDF válido con texto plano extraído del editor.
-   sin dependencias externas — genera la estructura PDF a mano.
+   GENERADOR DE PDF DESDE MARKDOWN
+   parsea markdown básico y genera un PDF válido a mano.
+   sin dependencias externas.
+
+   soporta: # h1, ## h2, ### h3, **bold**, *italic*,
+   - listas, 1. listas numeradas, --- separador
    ============================================================ */
-function htmlToPdfBase64(title, htmlContent) {
+function markdownToPdfBase64(title, markdown) {
   return new Promise((resolve) => {
-    /* extraer texto plano del HTML, respetando saltos de línea */
-    const temp = document.createElement("div");
-    temp.innerHTML = htmlContent;
 
-    /* convertir <br>, <p>, <div>, <li> en saltos de línea */
-    temp.querySelectorAll("br").forEach(el => el.replaceWith("\n"));
-    temp.querySelectorAll("div, p").forEach(el => {
-      el.prepend("\n");
-    });
-    temp.querySelectorAll("li").forEach(el => {
-      el.prepend("\n  - ");
-    });
-
-    const rawText = temp.textContent || "";
-    const lines = rawText.split("\n").filter((l, i) => i > 0 || l.trim() !== "");
-
-    /* parámetros de página A4 en puntos (72 dpi) */
+    /* ---- parámetros de página A4 ---- */
     const pageW  = 595;
     const pageH  = 842;
     const margin = 60;
-    const lineH  = 16;
-    const titleH = 24;
-    const maxLineChars = 72;
-    const contentStartY = pageH - margin - titleH - 20;
+    const usableW = pageW - margin * 2;
 
-    /* partir líneas largas en trozos que quepan */
-    const wrappedLines = [];
-    lines.forEach(line => {
-      if (line.trim() === "") {
-        wrappedLines.push("");
+    /* tamaños para cada nivel */
+    const SIZES = {
+      h1:   { font: "F2", size: 28, lineH: 36, spaceAfter: 12 },
+      h2:   { font: "F2", size: 22, lineH: 30, spaceAfter: 10 },
+      h3:   { font: "F2", size: 16, lineH: 24, spaceAfter: 8 },
+      body: { font: "F1", size: 11, lineH: 16, spaceAfter: 0 },
+      bold: { font: "F2", size: 11 },
+      italic: { font: "F3", size: 11 },
+    };
+
+    /* ---- anchos aproximados de caracteres (Helvetica, en unidades/1000) ---- */
+    /* simplificación: ancho medio por carácter según el font-size */
+    function approxCharsPerLine(fontSize) {
+      /* Helvetica tiene ~500 units de ancho medio, a 1000 units = 1 pt */
+      const charWidth = fontSize * 0.52;
+      return Math.floor(usableW / charWidth);
+    }
+
+    /* ---- escapar paréntesis para PDF y filtrar a latin1 ---- */
+    function esc(str) {
+      /* reemplazar caracteres fuera de latin1 por equivalentes seguros */
+      let s = str
+        .replace(/[\u2018\u2019]/g, "'")
+        .replace(/[\u201C\u201D]/g, '"')
+        .replace(/\u2026/g, "...")
+        .replace(/\u2014/g, "--")
+        .replace(/\u2013/g, "-")
+        .replace(/\u2022/g, "-");
+      /* escapar caracteres especiales de PDF */
+      s = s.replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)");
+      /* eliminar cualquier carácter fuera de latin1 (>255) que pueda quedar */
+      s = s.replace(/[^\x00-\xFF]/g, "?");
+      return s;
+    }
+
+    /* ---- word-wrap una línea ---- */
+    function wrapLine(text, maxChars) {
+      if (text.length <= maxChars) return [text];
+      const result = [];
+      while (text.length > maxChars) {
+        let breakAt = text.lastIndexOf(" ", maxChars);
+        if (breakAt <= 0) breakAt = maxChars;
+        result.push(text.substring(0, breakAt));
+        text = text.substring(breakAt).trimStart();
+      }
+      if (text) result.push(text);
+      return result;
+    }
+
+    /* ---- parsear markdown a bloques ---- */
+    const rawLines = markdown.split("\n");
+    const blocks = []; /* { type, text, font, size, lineH, spaceAfter } */
+
+    rawLines.forEach(raw => {
+      const trimmed = raw.trim();
+
+      /* línea vacía → espacio */
+      if (trimmed === "") {
+        blocks.push({ type: "space", height: 10 });
         return;
       }
-      while (line.length > maxLineChars) {
-        /* buscar el último espacio antes del límite */
-        let breakAt = line.lastIndexOf(" ", maxLineChars);
-        if (breakAt <= 0) breakAt = maxLineChars;
-        wrappedLines.push(line.substring(0, breakAt));
-        line = line.substring(breakAt).trimStart();
+
+      /* separador horizontal */
+      if (/^-{3,}$/.test(trimmed) || /^\*{3,}$/.test(trimmed)) {
+        blocks.push({ type: "hr" });
+        return;
       }
-      wrappedLines.push(line);
+
+      /* headings */
+      const hMatch = trimmed.match(/^(#{1,3})\s+(.*)$/);
+      if (hMatch) {
+        const level = `h${hMatch[1].length}`;
+        const s = SIZES[level];
+        const maxC = approxCharsPerLine(s.size);
+        wrapLine(hMatch[2], maxC).forEach(wl => {
+          blocks.push({ type: "text", text: wl, font: s.font, size: s.size, lineH: s.lineH });
+        });
+        blocks.push({ type: "space", height: s.spaceAfter });
+        return;
+      }
+
+      /* lista desordenada */
+      const ulMatch = trimmed.match(/^[-*+]\s+(.*)$/);
+      if (ulMatch) {
+        const s = SIZES.body;
+        const prefix = "  - ";
+        const maxC = approxCharsPerLine(s.size) - prefix.length;
+        const wrapped = wrapLine(ulMatch[1], maxC);
+        wrapped.forEach((wl, i) => {
+          blocks.push({ type: "text", text: (i === 0 ? prefix : "    ") + wl, font: s.font, size: s.size, lineH: s.lineH });
+        });
+        return;
+      }
+
+      /* lista ordenada */
+      const olMatch = trimmed.match(/^(\d+)\.\s+(.*)$/);
+      if (olMatch) {
+        const s = SIZES.body;
+        const prefix = `  ${olMatch[1]}. `;
+        const maxC = approxCharsPerLine(s.size) - prefix.length;
+        const wrapped = wrapLine(olMatch[2], maxC);
+        wrapped.forEach((wl, i) => {
+          blocks.push({ type: "text", text: (i === 0 ? prefix : "      ") + wl, font: s.font, size: s.size, lineH: s.lineH });
+        });
+        return;
+      }
+
+      /* texto normal con inline markdown (**bold**, *italic*) */
+      const s = SIZES.body;
+      const maxC = approxCharsPerLine(s.size);
+
+      /* quitar markdown inline para medir el wrap (texto plano) */
+      const plainText = trimmed.replace(/\*\*(.+?)\*\*/g, "$1").replace(/\*(.+?)\*/g, "$1");
+      const wrappedPlain = wrapLine(plainText, maxC);
+
+      /* para cada línea wrapeada, reconstruir los segments inline */
+      /* simplificación: si tiene inline md, parsear segmentos */
+      if (/\*/.test(trimmed)) {
+        /* parsear la línea completa en segmentos y luego wrapear */
+        const segments = parseInlineMarkdown(trimmed);
+        const flatText = segments.map(s => s.text).join("");
+        const wrapped = wrapLine(flatText, maxC);
+
+        wrapped.forEach(wl => {
+          /* mapear los segmentos a esta línea wrapeada */
+          blocks.push({ type: "richtext", segments: mapSegmentsToLine(segments, wl), lineH: s.lineH });
+        });
+      } else {
+        wrappedPlain.forEach(wl => {
+          blocks.push({ type: "text", text: wl, font: s.font, size: s.size, lineH: s.lineH });
+        });
+      }
     });
 
-    /* calcular cuántas líneas caben por página */
-    const linesPerPage = Math.floor(contentStartY / lineH);
+    /* ---- parsear inline markdown (**bold**, *italic*) ---- */
+    function parseInlineMarkdown(text) {
+      const segments = [];
+      const regex = /(\*\*(.+?)\*\*|\*(.+?)\*)/g;
+      let lastIdx = 0;
+      let match;
 
-    /* dividir en páginas */
-    const pages = [];
-    for (let i = 0; i < wrappedLines.length; i += linesPerPage) {
-      pages.push(wrappedLines.slice(i, i + linesPerPage));
+      while ((match = regex.exec(text)) !== null) {
+        /* texto antes del match */
+        if (match.index > lastIdx) {
+          segments.push({ text: text.substring(lastIdx, match.index), font: "F1", size: 11 });
+        }
+        if (match[2]) {
+          /* **bold** */
+          segments.push({ text: match[2], font: "F2", size: 11 });
+        } else if (match[3]) {
+          /* *italic* */
+          segments.push({ text: match[3], font: "F3", size: 11 });
+        }
+        lastIdx = match.index + match[0].length;
+      }
+      /* texto después del último match */
+      if (lastIdx < text.length) {
+        segments.push({ text: text.substring(lastIdx), font: "F1", size: 11 });
+      }
+      if (segments.length === 0) {
+        segments.push({ text, font: "F1", size: 11 });
+      }
+      return segments;
     }
-    if (pages.length === 0) pages.push([""]);
 
-    /* escapar paréntesis para PDF */
-    function esc(str) {
-      return str.replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)");
+    /* mapear segmentos al texto de una línea wrapeada */
+    function mapSegmentsToLine(allSegments, lineText) {
+      const result = [];
+      let remaining = lineText;
+
+      for (const seg of allSegments) {
+        if (!remaining) break;
+        if (remaining.startsWith(seg.text)) {
+          result.push({ ...seg });
+          remaining = remaining.substring(seg.text.length);
+        } else if (seg.text.length > 0 && remaining.startsWith(seg.text.substring(0, 1))) {
+          /* parcial: el segmento se corta por el wrap */
+          const take = remaining.length < seg.text.length ? remaining.length : seg.text.length;
+          const chunk = remaining.substring(0, take);
+          if (chunk) result.push({ text: chunk, font: seg.font, size: seg.size });
+          remaining = remaining.substring(take);
+        }
+      }
+      /* si queda remaining no mapeado, ponerlo como body */
+      if (remaining) {
+        result.push({ text: remaining, font: "F1", size: 11 });
+      }
+      return result;
     }
 
-    /* construir el PDF objeto por objeto */
+    /* ---- paginar los bloques ---- */
+    const pageBlocks = [[]]; /* array de páginas, cada una array de bloques */
+    let curY = pageH - margin;
+
+    /* primera página: título del documento */
+    const titleLineH = SIZES.h1.lineH;
+    curY -= SIZES.h1.size; /* bajar al baseline del título */
+
+    /* título como primer bloque especial */
+    pageBlocks[0].push({ type: "title", text: title, y: curY });
+    curY -= titleLineH + 12; /* espacio después del título */
+
+    blocks.forEach(block => {
+      let blockH;
+      if (block.type === "space") {
+        blockH = block.height;
+      } else if (block.type === "hr") {
+        blockH = 16;
+      } else {
+        blockH = block.lineH || 16;
+      }
+
+      /* ¿cabe en la página actual? */
+      if (curY - blockH < margin) {
+        pageBlocks.push([]);
+        curY = pageH - margin;
+      }
+
+      curY -= blockH;
+      block.y = curY;
+      pageBlocks[pageBlocks.length - 1].push(block);
+    });
+
+    /* ---- construir objetos PDF ---- */
     const objects = [];
     let objCount = 0;
-
     function addObj(content) {
       objCount++;
       objects.push({ id: objCount, content });
       return objCount;
     }
 
-    /* obj 1: catalog */
-    const catalogId = addObj(""); // placeholder
-    /* obj 2: pages container */
-    const pagesId = addObj(""); // placeholder
+    const catalogId  = addObj(""); /* placeholder */
+    const pagesId    = addObj(""); /* placeholder */
+    const fontRegId  = addObj(`<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>`);
+    const fontBoldId = addObj(`<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>`);
+    const fontItalId = addObj(`<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Oblique /Encoding /WinAnsiEncoding >>`);
 
-    /* obj 3: font Helvetica */
-    const fontId = addObj(
-      `<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>`
-    );
-
-    /* obj 4: font Helvetica-Bold */
-    const fontBoldId = addObj(
-      `<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>`
-    );
-
-    /* crear cada página */
     const pageIds = [];
-    pages.forEach((pageLines, pageIdx) => {
-      /* stream de contenido para esta página */
-      let stream = "BT\n";
+    pageBlocks.forEach(pBlocks => {
+      let stream = "";
 
-      /* título solo en la primera página */
-      if (pageIdx === 0) {
-        stream += `/F2 18 Tf\n`;
-        stream += `${margin} ${pageH - margin} Td\n`;
-        stream += `(${esc(title)}) Tj\n`;
-        stream += `0 -${titleH + 10} Td\n`;
-        stream += `/F1 11 Tf\n`;
-      } else {
-        stream += `/F1 11 Tf\n`;
-        stream += `${margin} ${pageH - margin} Td\n`;
-      }
-
-      /* líneas de texto */
-      pageLines.forEach((line, i) => {
-        if (i > 0 || pageIdx > 0) {
-          stream += `0 -${lineH} Td\n`;
+      pBlocks.forEach(block => {
+        if (block.type === "title") {
+          stream += `BT /F2 ${SIZES.h1.size} Tf ${margin} ${block.y} Td (${esc(block.text)}) Tj ET\n`;
+        } else if (block.type === "text") {
+          stream += `BT /${block.font} ${block.size} Tf ${margin} ${block.y} Td (${esc(block.text)}) Tj ET\n`;
+        } else if (block.type === "richtext") {
+          /* múltiples segmentos con distinto font en la misma línea */
+          stream += `BT ${margin} ${block.y} Td\n`;
+          block.segments.forEach(seg => {
+            stream += `/${seg.font} ${seg.size} Tf (${esc(seg.text)}) Tj\n`;
+          });
+          stream += `ET\n`;
+        } else if (block.type === "hr") {
+          const y = block.y + 6;
+          stream += `q 0.7 G 0.5 w ${margin} ${y} m ${pageW - margin} ${y} l S Q\n`;
         }
-        stream += `(${esc(line)}) Tj\n`;
+        /* "space" no genera stream, solo ocupa espacio */
       });
 
-      stream += "ET";
-
-      const contentId = addObj(
-        `<< /Length ${stream.length} >>\nstream\n${stream}\nendstream`
-      );
-
+      const contentId = addObj(`<< /Length ${stream.length} >>\nstream\n${stream}\nendstream`);
       const pageId = addObj(
         `<< /Type /Page /Parent ${pagesId} 0 R /MediaBox [0 0 ${pageW} ${pageH}] ` +
         `/Contents ${contentId} 0 R ` +
-        `/Resources << /Font << /F1 ${fontId} 0 R /F2 ${fontBoldId} 0 R >> >> >>`
+        `/Resources << /Font << /F1 ${fontRegId} 0 R /F2 ${fontBoldId} 0 R /F3 ${fontItalId} 0 R >> >> >>`
       );
       pageIds.push(pageId);
     });
 
-    /* actualizar catalog */
+    /* actualizar catalog y pages */
     objects[catalogId - 1].content = `<< /Type /Catalog /Pages ${pagesId} 0 R >>`;
-
-    /* actualizar pages container */
     const kidsStr = pageIds.map(id => `${id} 0 R`).join(" ");
-    objects[pagesId - 1].content =
-      `<< /Type /Pages /Kids [${kidsStr}] /Count ${pageIds.length} >>`;
+    objects[pagesId - 1].content = `<< /Type /Pages /Kids [${kidsStr}] /Count ${pageIds.length} >>`;
 
-    /* serializar el PDF completo */
+    /* ---- serializar PDF ---- */
     let pdf = "%PDF-1.4\n";
     const offsets = [];
-
     objects.forEach(obj => {
       offsets.push(pdf.length);
       pdf += `${obj.id} 0 obj\n${obj.content}\nendobj\n`;
     });
 
-    /* tabla de referencias cruzadas */
     const xrefOffset = pdf.length;
     pdf += `xref\n0 ${objCount + 1}\n`;
     pdf += "0000000000 65535 f \n";
     offsets.forEach(off => {
       pdf += String(off).padStart(10, "0") + " 00000 n \n";
     });
-
     pdf += `trailer\n<< /Size ${objCount + 1} /Root ${catalogId} 0 R >>\n`;
     pdf += `startxref\n${xrefOffset}\n%%EOF`;
 
-    /* convertir a base64 */
-    const base64 = btoa(unescape(encodeURIComponent(pdf)));
+    /* base64 — el PDF es puro latin1 así que btoa funciona directo */
+    const base64 = btoa(pdf);
     resolve(base64);
   });
 }
