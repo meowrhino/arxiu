@@ -915,6 +915,197 @@ body.mode-18 .btn-action-alt {
 
 
 /* ============================================================
+   MODAL: editor de texto (crear texto → PDF)
+   ============================================================ */
+#modal-editor {
+  position:   fixed;
+  inset:      0;
+  z-index:    210;
+  display:    flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+#modal-editor[hidden] {
+  display: none;
+}
+#modal-editor:not([hidden]) {
+  pointer-events: auto;
+}
+
+.modal-window-wide {
+  width: min(520px, 92dvw);
+}
+
+/* barra de herramientas del editor */
+#editor-toolbar {
+  display:    flex;
+  align-items: center;
+  gap:        2px;
+  padding:    3px 4px;
+  background: var(--tool-bg);
+  border: 2px solid;
+  border-color: var(--win-border-hi) var(--win-border-lo) var(--win-border-lo) var(--win-border-hi);
+  border-bottom: none;
+  flex-wrap:  wrap;
+}
+
+.editor-tool {
+  font:           inherit;
+  font-size:      12px;
+  font-family:    var(--font-mono);
+  cursor:         pointer;
+  padding:        2px 7px;
+  background:     var(--btn-bg);
+  color:          var(--btn-fg);
+  min-width:      26px;
+  text-align:     center;
+  border: 1px solid;
+  border-color: var(--btn-border-hi) var(--btn-border-lo) var(--btn-border-lo) var(--btn-border-hi);
+}
+
+.editor-tool:hover {
+  background: var(--tag-bg-active);
+  color:      var(--tag-text-active);
+}
+
+.editor-tool:active {
+  border-color: var(--btn-border-lo) var(--btn-border-hi) var(--btn-border-hi) var(--btn-border-lo);
+}
+
+.editor-tool-sep {
+  width:      1px;
+  height:     18px;
+  background: var(--tool-border);
+  margin:     0 2px;
+}
+
+.editor-tool-select {
+  font:           inherit;
+  font-size:      11px;
+  font-family:    var(--font-mono);
+  cursor:         pointer;
+  padding:        2px 4px;
+  background:     var(--input-bg);
+  color:          var(--text-primary);
+  border: 2px solid;
+  border-color: var(--win-border-dk) var(--win-border-hi) var(--win-border-hi) var(--win-border-dk);
+  outline: none;
+}
+
+/* área de texto editable (contenteditable) */
+#editor-content {
+  background:     var(--input-bg);
+  color:          var(--text-primary);
+  font:           inherit;
+  font-size:      13px;
+  line-height:    1.6;
+  padding:        8px 10px;
+  min-height:     200px;
+  max-height:     40dvh;
+  overflow-y:     auto;
+  outline:        none;
+  transition:     border-color 0.1s;
+
+  /* borde inset retro */
+  border: 2px solid;
+  border-color: var(--win-border-dk) var(--win-border-hi) var(--win-border-hi) var(--win-border-dk);
+}
+
+#editor-content:focus {
+  border-color: var(--input-focus);
+}
+
+/* placeholder para el editor vacío */
+#editor-content:empty::before {
+  content:    "escribe aquí tu texto...";
+  color:      var(--text-muted);
+  font-style: italic;
+  pointer-events: none;
+}
+
+/* estilos dentro del editor */
+#editor-content ul,
+#editor-content ol {
+  padding-left: 20px;
+  margin: 4px 0;
+}
+
+/* formulario del editor */
+#editor-form {
+  display:        flex;
+  flex-direction: column;
+  gap:            10px;
+}
+
+/* progreso del editor (reutiliza estilos del upload) */
+.transfer-info {
+  display:    flex;
+  align-items: center;
+  gap:        10px;
+  margin-bottom: 10px;
+}
+
+.transfer-icon-el {
+  font-size:  32px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.transfer-details-el {
+  flex: 1;
+  min-width: 0;
+}
+
+.transfer-details-el p:first-child {
+  font-size:      12px;
+  font-family:    var(--font-mono);
+  color:          var(--text-primary);
+  white-space:    nowrap;
+  overflow:       hidden;
+  text-overflow:  ellipsis;
+}
+
+.transfer-details-el p:last-child {
+  font-size:      11px;
+  font-family:    var(--font-mono);
+  color:          var(--text-muted);
+}
+
+.progress-track-el {
+  height:         16px;
+  background:     var(--progress-bg);
+  overflow:       hidden;
+  border: 2px solid;
+  border-color: var(--win-border-dk) var(--win-border-hi) var(--win-border-hi) var(--win-border-dk);
+}
+
+.progress-fill-el {
+  height:         100%;
+  width:          0%;
+  background:     var(--progress-fill);
+  transition:     width 0.3s ease;
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 4px,
+    rgba(255,255,255,0.15) 4px,
+    rgba(255,255,255,0.15) 8px
+  );
+  background-size: 200% 100%;
+  animation: progress-stripes 1s linear infinite;
+}
+
+.progress-percent-el {
+  font-size:      11px;
+  font-family:    var(--font-mono);
+  color:          var(--text-secondary);
+  text-align:     right;
+  margin-top:     4px;
+}
+
+
+/* ============================================================
    RESPONSIVE: móvil
    ============================================================ */
 @media (max-width: 600px) {
@@ -935,5 +1126,9 @@ body.mode-18 .btn-action-alt {
 
   #status-info {
     display: none;
+  }
+
+  #editor-content {
+    min-height: 150px;
   }
 }

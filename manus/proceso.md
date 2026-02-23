@@ -128,3 +128,47 @@ configuración para desplegar el worker con `wrangler deploy`. las variables sec
   - guía para configurar github pages
   - guía para subir los workflows manualmente
   - estructura del proyecto actualizada
+
+---
+
+## 2026-02-23 — iteración 5: editor de texto con generación de PDF
+
+### sinopsis
+nuevo botón "crear texto" que abre un editor rich-text integrado. el usuario escribe directamente en el navegador, y al darle a "crear" se genera un PDF válido sin dependencias externas y se sube a github via el worker, igual que los PDFs subidos manualmente.
+
+### cambios realizados
+
+**modificado: `index.html`**
+- añadido botón "crear texto" entre "subir pdf" y "soy mayor de 18" en `#actions`
+- nuevo modal `#modal-editor` con:
+  - titlebar estilo finder con tres dots y título "crear texto"
+  - campo "titulo:" para el nombre del documento
+  - campo "autor:" y "hashtags:" iguales al modal de subida
+  - barra de herramientas con: negrita (N), cursiva (C), subrayado (S), lista (•), lista numerada (1.), selector de tamaño (pequeño/normal/grande/titulo)
+  - área de texto `contenteditable` con placeholder y scroll
+  - botón "crear" en lugar de "subir"
+  - vista de progreso tipo transferencia de archivo (reutiliza el patrón del modal de subida)
+
+**modificado: `style.css`**
+- estilos para `#modal-editor` con fix de `[hidden]` para que `display: flex` no override el atributo hidden
+- `.modal-window-wide` para el ancho del editor (520px)
+- `#editor-toolbar`: barra de herramientas con botones retro, separadores y selector de tamaño
+- `.editor-tool`, `.editor-tool-sep`, `.editor-tool-select`: botones con bordes 3d y hover
+- `#editor-content`: área editable con borde inset retro, placeholder via `::before`, scroll vertical
+- estilos de progreso reutilizables con clases `.transfer-info`, `.progress-track-el`, `.progress-fill-el`, `.progress-percent-el`
+- responsive: `#editor-content { min-height: 150px }` en móvil
+
+**modificado: `app.js`**
+- añadidas referencias DOM para todos los elementos del editor (modalEditor, editorCloseDot, editorForm, editorTitle, editorAuthor, editorHashtags, editorContent, editorFontsize, btnCreateSubmit, vistas de progreso)
+- `openEditorModal()` / `closeEditorModal()`: abrir y cerrar el modal del editor
+- `editorSwitchToProgress()` / `editorUpdateProgress()`: cambiar a vista de progreso dentro del modal
+- `bindEditorToolbar()`: vincula los botones de formato usando `document.execCommand()` (bold, italic, underline, insertUnorderedList, insertOrderedList) y el selector de tamaño con `fontSize`
+- `handleCreateText(e)`: handler del submit que valida titulo y contenido, genera el PDF, lo sube via worker, actualiza el índice y refresca la interfaz
+- `htmlToPdfBase64(title, htmlContent)`: generador de PDF completo sin dependencias externas:
+  - extrae texto plano del HTML respetando saltos de línea (`<br>`, `<p>`, `<div>`, `<li>`)
+  - word-wrap a 72 caracteres por línea
+  - paginación automática en A4 (595×842 puntos)
+  - título en Helvetica-Bold 18pt, cuerpo en Helvetica 11pt
+  - tabla de referencias cruzadas (xref) válida
+  - devuelve base64 listo para subir
+- `bindEvents()` actualizado: añadidos listeners para btnCreate, editorCloseDot, editorForm submit, y bindEditorToolbar(). escape y overlay ahora cierran también el editor

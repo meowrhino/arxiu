@@ -31,6 +31,7 @@ const dom = {
 
   /* botones fuera de la ventana */
   btnUpload:       document.getElementById("btn-upload"),
+  btnCreate:       document.getElementById("btn-create"),
   btn18:           document.getElementById("btn-18"),
 
   /* velo de confirmación de edad */
@@ -60,6 +61,27 @@ const dom = {
   transferStatus:   document.getElementById("transfer-status"),
   progressFill:     document.getElementById("progress-fill"),
   progressPercent:  document.getElementById("progress-percent"),
+
+  /* modal del editor de texto */
+  modalEditor:           document.getElementById("modal-editor"),
+  editorCloseDot:        document.getElementById("editor-close-dot"),
+  editorForm:            document.getElementById("editor-form"),
+  editorTitle:           document.getElementById("editor-title"),
+  editorAuthor:          document.getElementById("editor-author"),
+  editorHashtags:        document.getElementById("editor-hashtags"),
+  editorContent:         document.getElementById("editor-content"),
+  editorFontsize:        document.getElementById("editor-fontsize"),
+  btnCreateSubmit:       document.getElementById("btn-create-submit"),
+
+  /* vistas del modal editor */
+  editorFormView:        document.getElementById("editor-form-view"),
+  editorProgressView:    document.getElementById("editor-progress-view"),
+
+  /* progreso del editor */
+  editorTransferFilename: document.getElementById("editor-transfer-filename"),
+  editorTransferStatus:   document.getElementById("editor-transfer-status"),
+  editorProgressFill:     document.getElementById("editor-progress-fill"),
+  editorProgressPercent:  document.getElementById("editor-progress-percent"),
 };
 
 
@@ -464,6 +486,318 @@ async function handleUpload(e) {
 
 
 /* ============================================================
+   MODAL DEL EDITOR DE TEXTO
+   ============================================================ */
+function openEditorModal() {
+  dom.modalEditor.hidden  = false;
+  dom.modalOverlay.hidden = false;
+
+  /* mostrar formulario, ocultar progreso */
+  dom.editorFormView.hidden     = false;
+  dom.editorProgressView.hidden = true;
+
+  dom.editorForm.reset();
+  dom.editorContent.innerHTML = "";
+  dom.btnCreateSubmit.disabled = false;
+  dom.editorTitle.focus();
+}
+
+function closeEditorModal() {
+  dom.modalEditor.hidden  = true;
+  dom.modalOverlay.hidden = true;
+}
+
+function editorSwitchToProgress(filename) {
+  dom.editorFormView.hidden     = true;
+  dom.editorProgressView.hidden = false;
+  dom.editorTransferFilename.textContent = filename;
+  dom.editorTransferStatus.textContent   = "preparando...";
+  dom.editorProgressFill.style.width     = "0%";
+  dom.editorProgressPercent.textContent  = "0%";
+}
+
+function editorUpdateProgress(status, percent) {
+  dom.editorTransferStatus.textContent  = status;
+  dom.editorProgressFill.style.width    = `${percent}%`;
+  dom.editorProgressPercent.textContent = `${percent}%`;
+  console.log(`[arxiu] editor: ${status} (${percent}%)`);
+}
+
+
+/* ============================================================
+   EDITOR: barra de herramientas
+   ============================================================ */
+function bindEditorToolbar() {
+  /* botones de formato (bold, italic, underline, listas) */
+  document.querySelectorAll(".editor-tool[data-cmd]").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      document.execCommand(btn.dataset.cmd, false, null);
+      dom.editorContent.focus();
+    });
+  });
+
+  /* selector de tamaño */
+  dom.editorFontsize.addEventListener("change", () => {
+    document.execCommand("fontSize", false, dom.editorFontsize.value);
+    dom.editorContent.focus();
+  });
+}
+
+
+/* ============================================================
+   EDITOR: generar PDF desde HTML y subir
+   genera un PDF usando un canvas oculto para renderizar
+   el contenido del editor como páginas A4.
+   ============================================================ */
+async function handleCreateText(e) {
+  e.preventDefault();
+
+  const title   = dom.editorTitle.value.trim();
+  const content = dom.editorContent.innerHTML.trim();
+
+  if (!title) {
+    dom.editorTitle.focus();
+    dom.editorTitle.style.borderColor = "#cc0000";
+    setTimeout(() => dom.editorTitle.style.borderColor = "", 2000);
+    return;
+  }
+  if (!content || dom.editorContent.textContent.trim() === "") {
+    dom.editorContent.focus();
+    dom.editorContent.style.borderColor = "#cc0000";
+    setTimeout(() => dom.editorContent.style.borderColor = "", 2000);
+    return;
+  }
+
+  const author = dom.editorAuthor.value.trim() || null;
+  const hashtags = dom.editorHashtags.value
+    .split(",")
+    .map(t => t.trim().replace(/^#/, "").toLowerCase())
+    .filter(t => t.length > 0);
+
+  const filename = sanitizeFilename(title) + ".pdf";
+
+  editorSwitchToProgress(filename);
+  dom.btnCreateSubmit.disabled = true;
+
+  try {
+    /* paso 1: generar el PDF */
+    editorUpdateProgress("generando pdf...", 15);
+    const pdfBase64 = await htmlToPdfBase64(title, content);
+
+    /* paso 2: subir el PDF via worker */
+    editorUpdateProgress("subiendo pdf...", 40);
+    const uploadRes = await workerPost("upload_pdf", {
+      filename: filename,
+      content_base64: pdfBase64,
+    });
+    if (!uploadRes.ok) throw new Error(uploadRes.error || "error al subir pdf");
+
+    /* paso 3: actualizar el índice */
+    editorUpdateProgress("indexando...", 70);
+    const entry = {
+      id:          generateId(),
+      filename:    filename,
+      author:      author,
+      hashtags:    hashtags,
+      is_18_plus:  false,
+      upload_date: new Date().toISOString(),
+    };
+    const indexRes = await workerPost("update_index", { entry });
+    if (!indexRes.ok && !indexRes.files) throw new Error(indexRes.error || "error al indexar");
+
+    /* paso 4: actualizar interfaz */
+    editorUpdateProgress("¡listo!", 100);
+
+    const data = indexRes.data || indexRes;
+    if (data.files) {
+      state.files    = data.files;
+      state.hashtags = data.hashtags || state.hashtags;
+    } else {
+      state.files.push(entry);
+      hashtags.forEach(tag => {
+        if (!state.hashtags.includes(tag)) state.hashtags.push(tag);
+      });
+      state.hashtags.sort();
+    }
+
+    renderHashtags();
+    renderFiles();
+
+    setTimeout(closeEditorModal, 2000);
+
+  } catch (err) {
+    console.error("[arxiu] error al crear texto:", err);
+    editorUpdateProgress(`error: ${err.message}`, 0);
+  }
+}
+
+
+/* ============================================================
+   GENERADOR DE PDF DESDE HTML
+   construye un PDF válido con texto plano extraído del editor.
+   sin dependencias externas — genera la estructura PDF a mano.
+   ============================================================ */
+function htmlToPdfBase64(title, htmlContent) {
+  return new Promise((resolve) => {
+    /* extraer texto plano del HTML, respetando saltos de línea */
+    const temp = document.createElement("div");
+    temp.innerHTML = htmlContent;
+
+    /* convertir <br>, <p>, <div>, <li> en saltos de línea */
+    temp.querySelectorAll("br").forEach(el => el.replaceWith("\n"));
+    temp.querySelectorAll("div, p").forEach(el => {
+      el.prepend("\n");
+    });
+    temp.querySelectorAll("li").forEach(el => {
+      el.prepend("\n  - ");
+    });
+
+    const rawText = temp.textContent || "";
+    const lines = rawText.split("\n").filter((l, i) => i > 0 || l.trim() !== "");
+
+    /* parámetros de página A4 en puntos (72 dpi) */
+    const pageW  = 595;
+    const pageH  = 842;
+    const margin = 60;
+    const lineH  = 16;
+    const titleH = 24;
+    const maxLineChars = 72;
+    const contentStartY = pageH - margin - titleH - 20;
+
+    /* partir líneas largas en trozos que quepan */
+    const wrappedLines = [];
+    lines.forEach(line => {
+      if (line.trim() === "") {
+        wrappedLines.push("");
+        return;
+      }
+      while (line.length > maxLineChars) {
+        /* buscar el último espacio antes del límite */
+        let breakAt = line.lastIndexOf(" ", maxLineChars);
+        if (breakAt <= 0) breakAt = maxLineChars;
+        wrappedLines.push(line.substring(0, breakAt));
+        line = line.substring(breakAt).trimStart();
+      }
+      wrappedLines.push(line);
+    });
+
+    /* calcular cuántas líneas caben por página */
+    const linesPerPage = Math.floor(contentStartY / lineH);
+
+    /* dividir en páginas */
+    const pages = [];
+    for (let i = 0; i < wrappedLines.length; i += linesPerPage) {
+      pages.push(wrappedLines.slice(i, i + linesPerPage));
+    }
+    if (pages.length === 0) pages.push([""]);
+
+    /* escapar paréntesis para PDF */
+    function esc(str) {
+      return str.replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)");
+    }
+
+    /* construir el PDF objeto por objeto */
+    const objects = [];
+    let objCount = 0;
+
+    function addObj(content) {
+      objCount++;
+      objects.push({ id: objCount, content });
+      return objCount;
+    }
+
+    /* obj 1: catalog */
+    const catalogId = addObj(""); // placeholder
+    /* obj 2: pages container */
+    const pagesId = addObj(""); // placeholder
+
+    /* obj 3: font Helvetica */
+    const fontId = addObj(
+      `<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>`
+    );
+
+    /* obj 4: font Helvetica-Bold */
+    const fontBoldId = addObj(
+      `<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>`
+    );
+
+    /* crear cada página */
+    const pageIds = [];
+    pages.forEach((pageLines, pageIdx) => {
+      /* stream de contenido para esta página */
+      let stream = "BT\n";
+
+      /* título solo en la primera página */
+      if (pageIdx === 0) {
+        stream += `/F2 18 Tf\n`;
+        stream += `${margin} ${pageH - margin} Td\n`;
+        stream += `(${esc(title)}) Tj\n`;
+        stream += `0 -${titleH + 10} Td\n`;
+        stream += `/F1 11 Tf\n`;
+      } else {
+        stream += `/F1 11 Tf\n`;
+        stream += `${margin} ${pageH - margin} Td\n`;
+      }
+
+      /* líneas de texto */
+      pageLines.forEach((line, i) => {
+        if (i > 0 || pageIdx > 0) {
+          stream += `0 -${lineH} Td\n`;
+        }
+        stream += `(${esc(line)}) Tj\n`;
+      });
+
+      stream += "ET";
+
+      const contentId = addObj(
+        `<< /Length ${stream.length} >>\nstream\n${stream}\nendstream`
+      );
+
+      const pageId = addObj(
+        `<< /Type /Page /Parent ${pagesId} 0 R /MediaBox [0 0 ${pageW} ${pageH}] ` +
+        `/Contents ${contentId} 0 R ` +
+        `/Resources << /Font << /F1 ${fontId} 0 R /F2 ${fontBoldId} 0 R >> >> >>`
+      );
+      pageIds.push(pageId);
+    });
+
+    /* actualizar catalog */
+    objects[catalogId - 1].content = `<< /Type /Catalog /Pages ${pagesId} 0 R >>`;
+
+    /* actualizar pages container */
+    const kidsStr = pageIds.map(id => `${id} 0 R`).join(" ");
+    objects[pagesId - 1].content =
+      `<< /Type /Pages /Kids [${kidsStr}] /Count ${pageIds.length} >>`;
+
+    /* serializar el PDF completo */
+    let pdf = "%PDF-1.4\n";
+    const offsets = [];
+
+    objects.forEach(obj => {
+      offsets.push(pdf.length);
+      pdf += `${obj.id} 0 obj\n${obj.content}\nendobj\n`;
+    });
+
+    /* tabla de referencias cruzadas */
+    const xrefOffset = pdf.length;
+    pdf += `xref\n0 ${objCount + 1}\n`;
+    pdf += "0000000000 65535 f \n";
+    offsets.forEach(off => {
+      pdf += String(off).padStart(10, "0") + " 00000 n \n";
+    });
+
+    pdf += `trailer\n<< /Size ${objCount + 1} /Root ${catalogId} 0 R >>\n`;
+    pdf += `startxref\n${xrefOffset}\n%%EOF`;
+
+    /* convertir a base64 */
+    const base64 = btoa(unescape(encodeURIComponent(pdf)));
+    resolve(base64);
+  });
+}
+
+
+/* ============================================================
    HELPER: llamada al worker
    ============================================================ */
 async function workerPost(action, data = {}) {
@@ -507,6 +841,7 @@ function generateId() {
 function bindEvents() {
   /* botones fuera de la ventana */
   dom.btnUpload.addEventListener("click", openModal);
+  dom.btnCreate.addEventListener("click", openEditorModal);
   dom.btn18.addEventListener("click", handleBtn18Click);
 
   /* velo de confirmación de edad */
@@ -518,18 +853,27 @@ function bindEvents() {
     hideVeil(dom.ageVeil);
   });
 
-  /* cerrar modal */
+  /* cerrar modales */
   dom.modalCloseDot.addEventListener("click", closeModal);
-  dom.modalOverlay.addEventListener("click", closeModal);
+  dom.editorCloseDot.addEventListener("click", closeEditorModal);
+  dom.modalOverlay.addEventListener("click", () => {
+    closeModal();
+    closeEditorModal();
+  });
   document.addEventListener("keydown", e => {
     if (e.key === "Escape") {
       closeModal();
+      closeEditorModal();
       hideVeil(dom.ageVeil);
     }
   });
 
   /* formulario de subida */
   dom.uploadForm.addEventListener("submit", handleUpload);
+
+  /* formulario del editor de texto */
+  dom.editorForm.addEventListener("submit", handleCreateText);
+  bindEditorToolbar();
 
   /* zona de arrastre */
   bindDropZone();

@@ -74,6 +74,7 @@
        ============================================= -->
   <div id="actions">
     <button id="btn-upload" class="btn btn-action">subir pdf</button>
+    <button id="btn-create" class="btn btn-action">crear texto</button>
     <button id="btn-18" class="btn btn-action-alt">soy mayor de 18</button>
   </div>
 
@@ -168,6 +169,116 @@
 
     </div><!-- /modal-window -->
   </div><!-- /modal-upload -->
+
+
+
+  <!-- =============================================
+       MODAL: crear texto (editor rich-text → PDF)
+       ventana con editor y mismos campos que subir.
+       ============================================= -->
+  <div id="modal-editor" role="dialog" aria-modal="true" hidden>
+    <div class="modal-window modal-window-wide">
+
+      <!-- titlebar del modal -->
+      <div class="modal-titlebar">
+        <div class="modal-dots">
+          <span class="dot dot-close" id="editor-close-dot"></span>
+          <span class="dot dot-minimize"></span>
+          <span class="dot dot-maximize"></span>
+        </div>
+        <span class="modal-name">crear texto</span>
+      </div>
+
+      <!-- cuerpo del modal: formulario + editor -->
+      <div class="modal-body" id="editor-form-view">
+        <form id="editor-form" novalidate>
+
+          <!-- campo: titulo del documento -->
+          <div class="field">
+            <label for="editor-title">titulo:</label>
+            <input
+              type="text"
+              id="editor-title"
+              placeholder="nombre del documento"
+              autocomplete="off"
+            />
+          </div>
+
+          <!-- campo: autor -->
+          <div class="field">
+            <label for="editor-author">autor:</label>
+            <input
+              type="text"
+              id="editor-author"
+              placeholder="nombre del autor o autora"
+              autocomplete="off"
+            />
+          </div>
+
+          <!-- campo: hashtags -->
+          <div class="field">
+            <label for="editor-hashtags">
+              hashtags: <span class="hint">(separados por coma)</span>
+            </label>
+            <input
+              type="text"
+              id="editor-hashtags"
+              placeholder="texto, ensayo, notas"
+              autocomplete="off"
+            />
+          </div>
+
+          <!-- barra de herramientas del editor -->
+          <div class="field">
+            <label>contenido:</label>
+            <div id="editor-toolbar">
+              <button type="button" class="editor-tool" data-cmd="bold" title="negrita"><b>N</b></button>
+              <button type="button" class="editor-tool" data-cmd="italic" title="cursiva"><i>C</i></button>
+              <button type="button" class="editor-tool" data-cmd="underline" title="subrayado"><u>S</u></button>
+              <span class="editor-tool-sep"></span>
+              <button type="button" class="editor-tool" data-cmd="insertUnorderedList" title="lista">&#8226;</button>
+              <button type="button" class="editor-tool" data-cmd="insertOrderedList" title="lista numerada">1.</button>
+              <span class="editor-tool-sep"></span>
+              <select id="editor-fontsize" class="editor-tool-select" title="tamaño">
+                <option value="2">pequeño</option>
+                <option value="3" selected>normal</option>
+                <option value="4">grande</option>
+                <option value="5">titulo</option>
+              </select>
+            </div>
+
+            <!-- área de texto editable -->
+            <div
+              id="editor-content"
+              contenteditable="true"
+              spellcheck="true"
+              role="textbox"
+              aria-multiline="true"
+              aria-label="contenido del documento"
+            ></div>
+          </div>
+
+          <button type="submit" class="btn btn-submit" id="btn-create-submit">crear</button>
+        </form>
+      </div>
+
+      <!-- cuerpo del modal: progreso (reutiliza el mismo estilo) -->
+      <div class="modal-body" id="editor-progress-view" hidden>
+        <div id="editor-transfer-info" class="transfer-info">
+          <div class="transfer-icon-el">📄</div>
+          <div class="transfer-details-el">
+            <p id="editor-transfer-filename"></p>
+            <p id="editor-transfer-status">preparando...</p>
+          </div>
+        </div>
+        <div class="progress-track-el">
+          <div id="editor-progress-fill" class="progress-fill-el"></div>
+        </div>
+        <p id="editor-progress-percent" class="progress-percent-el">0%</p>
+      </div>
+
+    </div><!-- /modal-window -->
+  </div><!-- /modal-editor -->
 
 
   <script src="app.js"></script>
