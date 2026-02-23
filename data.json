@@ -5,7 +5,7 @@
       "filename": "test_diseno_grafico.pdf",
       "author": "manu",
       "hashtags": [
-        "diseÃ±o",
+        "diseÃÂ±o",
         "test"
       ],
       "is_18_plus": false,
@@ -32,10 +32,20 @@
       ],
       "is_18_plus": false,
       "upload_date": "2026-02-23T14:06:55.268Z"
+    },
+    {
+      "id": "mlzcmng69xel",
+      "filename": "test.pdf",
+      "author": "manu",
+      "hashtags": [
+        "test"
+      ],
+      "is_18_plus": false,
+      "upload_date": "2026-02-23T15:46:07.542Z"
     }
   ],
   "hashtags": [
-    "diseÃ±o",
+    "diseÃÂ±o",
     "prueba",
     "test",
     "texto",
