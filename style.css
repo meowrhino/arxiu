@@ -569,6 +569,9 @@ body.mode-18 .btn-action-alt {
   justify-content: center;
   transition: background 0.3s;
 }
+.veil[hidden] {
+  display: none;
+}
 
 .veil-box {
   background:     var(--veil-box-bg);
@@ -681,6 +684,9 @@ body.mode-18 .btn-action-alt {
   align-items: center;
   justify-content: center;
   pointer-events: none;
+}
+#modal-upload[hidden] {
+  display: none;
 }
 
 #modal-upload:not([hidden]) {

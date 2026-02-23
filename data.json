@@ -1,37 +1,25 @@
 {
   "files": [
     {
-      "id": "ejemplo001",
-      "filename": "manual_tipografia_basica.pdf",
-      "author": "jan tschichold",
-      "hashtags": ["tipografía", "diseño", "referencia"],
+      "id": "test001",
+      "filename": "test_diseno_grafico.pdf",
+      "author": "manu",
+      "hashtags": ["diseño", "test"],
       "is_18_plus": false,
-      "upload_date": "2026-01-10T12:00:00Z"
+      "upload_date": "2026-02-23T14:51:00Z"
     },
     {
-      "id": "ejemplo002",
-      "filename": "grid_systems_in_graphic_design.pdf",
-      "author": "josef müller-brockmann",
-      "hashtags": ["grid", "diseño", "referencia"],
+      "id": "test002",
+      "filename": "test_tipografia.pdf",
+      "author": "manu",
+      "hashtags": ["tipografia", "test"],
       "is_18_plus": false,
-      "upload_date": "2026-01-22T09:30:00Z"
-    },
-    {
-      "id": "ejemplo003",
-      "filename": "zine_cuerpos_y_pantallas.pdf",
-      "author": null,
-      "hashtags": ["zine", "cuerpo", "digital"],
-      "is_18_plus": true,
-      "upload_date": "2026-02-01T17:45:00Z"
+      "upload_date": "2026-02-23T14:51:00Z"
     }
   ],
   "hashtags": [
-    "cuerpo",
-    "digital",
     "diseño",
-    "grid",
-    "referencia",
-    "tipografía",
-    "zine"
+    "test",
+    "tipografia"
   ]
 }

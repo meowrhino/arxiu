@@ -4,7 +4,7 @@
    una vez desplegado.
    ============================================================ */
 const CONFIG = {
-  WORKER_URL:    "https://arxiu-worker.TUSUBDOMINIO.workers.dev",
+  WORKER_URL:    "https://arxiu-worker.manuellatourf.workers.dev",
   MAX_FILE_SIZE:  2 * 1024 * 1024, // 2 mb
 };
 
