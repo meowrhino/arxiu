@@ -100,8 +100,7 @@ async function handleUpdateIndex(body, env) {
 
   const fileData = await getRes.json();
   const currentSha = fileData.sha;
-  const decoded = atob(fileData.content.replace(/\n/g, ""));
-  const data = JSON.parse(decoded);
+  const data = parseJsonFromBase64(fileData.content);
 
   /* añadir la nueva entrada */
   data.files.push(entry);
@@ -114,7 +113,7 @@ async function handleUpdateIndex(body, env) {
 
   /* guardar data.json */
   const updatedJson = JSON.stringify(data, null, 2);
-  const updatedBase64 = btoa(unescape(encodeURIComponent(updatedJson)));
+  const updatedBase64 = utf8ToBase64(updatedJson);
 
   const putRes = await githubPut(
     env,
@@ -144,8 +143,7 @@ async function handleGetIndex(env) {
   }
 
   const fileData = await getRes.json();
-  const decoded = atob(fileData.content.replace(/\n/g, ""));
-  const data = JSON.parse(decoded);
+  const data = parseJsonFromBase64(fileData.content);
 
   return jsonResponse(200, data);
 }
@@ -195,6 +193,25 @@ function jsonResponse(status, data) {
     status,
     headers: { "Content-Type": "application/json" },
   });
+}
+
+function parseJsonFromBase64(base64Content) {
+  const jsonText = base64ToUtf8(base64Content);
+  return JSON.parse(jsonText);
+}
+
+function base64ToUtf8(base64Content) {
+  const binary = atob(base64Content.replace(/\n/g, ""));
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder("utf-8").decode(bytes);
+}
+
+function utf8ToBase64(text) {
+  const bytes = new TextEncoder().encode(text);
+  let binary = "";
+  for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+  return btoa(binary);
 }
 
 function corsResponse(env, response) {

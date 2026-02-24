@@ -6,6 +6,9 @@
 const CONFIG = {
   WORKER_URL:    "https://arxiu-worker.manuellatourf.workers.dev",
   MAX_FILE_SIZE:  2 * 1024 * 1024, // 2 mb
+  GITHUB_USER:   "meowrhino",
+  GITHUB_REPO:   "arxiu",
+  GITHUB_BRANCH: "main",
 };
 
 
@@ -197,9 +200,8 @@ function renderFiles() {
 function createFileCard(file) {
   const card = document.createElement("a");
   card.className = "file-card";
-  /* enlace relativo al pdf — el navegador lo abrirá con su visor nativo.
-     github pages sirve con content-type application/pdf correcto. */
-  card.href      = `data/${encodeURIComponent(file.filename)}`;
+  /* abrir en github para evitar desfase de propagación en github pages */
+  card.href      = getPdfUrl(file.filename);
   card.target    = "_blank";
   card.rel       = "noopener noreferrer";
   card.title     = file.filename;
@@ -243,6 +245,11 @@ function createFileCard(file) {
   card.appendChild(tags);
 
   return card;
+}
+
+function getPdfUrl(filename) {
+  const encodedName = encodeURIComponent(filename);
+  return `https://github.com/${CONFIG.GITHUB_USER}/${CONFIG.GITHUB_REPO}/blob/${CONFIG.GITHUB_BRANCH}/data/${encodedName}`;
 }
 
 /* SVG pixel-art de documento (16×20 viewbox) */
