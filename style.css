@@ -20,6 +20,7 @@
   --bg-dot-size:    1.05px;
   --bg-dot-gap:     21px;
   --bg-opacity:     0.8;
+  --bg-glow:        rgba(200, 200, 240, 0.35);
 
   /* ventana */
   --win-bg:         #ece9d8;
@@ -109,6 +110,7 @@ body.mode-18 {
   --bg:             #0a0a00;
   --bg-dot:         #f5c400;
   --bg-opacity:     0.5;
+  --bg-glow:        rgba(80, 70, 0, 0.3);
 
   --win-bg:         #1a1800;
   --win-border-hi:  #4a4200;
@@ -205,6 +207,21 @@ body::before {
   background-size:  var(--bg-dot-gap) var(--bg-dot-gap);
   opacity:    var(--bg-opacity);
   transition: background-color 0.3s, opacity 0.3s;
+}
+
+/* capa de degradado radial suave (tipo claude.ai) */
+body::after {
+  content:    "";
+  position:   fixed;
+  inset:      0;
+  z-index:    -1;
+  background: radial-gradient(
+    ellipse at 50% 50%,
+    var(--bg-glow) 0%,
+    transparent    70%
+  );
+  pointer-events: none;
+  transition: background 0.3s;
 }
 
 

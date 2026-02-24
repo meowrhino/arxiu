@@ -197,8 +197,9 @@ function renderFiles() {
 function createFileCard(file) {
   const card = document.createElement("a");
   card.className = "file-card";
-  /* enlace al visor de github (disponible al instante, sin esperar github pages) */
-  card.href      = `https://github.com/meowrhino/arxiu/blob/main/data/${encodeURIComponent(file.filename)}`;
+  /* enlace relativo al pdf — el navegador lo abrirá con su visor nativo.
+     github pages sirve con content-type application/pdf correcto. */
+  card.href      = `data/${encodeURIComponent(file.filename)}`;
   card.target    = "_blank";
   card.rel       = "noopener noreferrer";
   card.title     = file.filename;
@@ -455,13 +456,23 @@ async function handleUpload(e) {
     const indexRes = await workerPost("update_index", { entry });
     if (!indexRes.ok && !indexRes.files) throw new Error(indexRes.error || "error al indexar");
 
-    /* paso 4: archivo subido — no añadir al grid todavía
-       github pages tarda ~2 min en publicar, así que el
-       enlace daría 404. mejor avisar al usuario. */
-    updateProgress("¡listo! estará disponible en ~2 min. recarga para verlo.", 100);
+    /* paso 4: añadir al grid y cerrar */
+    updateProgress("¡listo!", 100);
 
-    /* NO cerrar el modal automáticamente:
-       el usuario cierra con el dot rojo o Escape */
+    /* actualizar estado local con los datos frescos del worker */
+    if (indexRes.data) {
+      state.files    = indexRes.data.files    || state.files;
+      state.hashtags = indexRes.data.hashtags || state.hashtags;
+    } else {
+      state.files.push(entry);
+    }
+    renderHashtags();
+    renderFiles();
+
+    /* cerrar el modal tras un breve momento */
+    setTimeout(() => {
+      closeModal();
+    }, 800);
 
   } catch (err) {
     console.error("[arxiu] error en la subida:", err);
@@ -645,11 +656,23 @@ async function handleCreateText(e) {
     const indexRes = await workerPost("update_index", { entry });
     if (!indexRes.ok && !indexRes.files) throw new Error(indexRes.error || "error al indexar");
 
-    /* paso 4: archivo subido — no añadir al grid todavía
-       github pages tarda ~2 min en publicar */
-    editorUpdateProgress("¡listo! estará disponible en ~2 min. recarga para verlo.", 100);
+    /* paso 4: añadir al grid y cerrar */
+    editorUpdateProgress("¡listo!", 100);
 
-    /* NO cerrar automáticamente */
+    /* actualizar estado local con los datos frescos del worker */
+    if (indexRes.data) {
+      state.files    = indexRes.data.files    || state.files;
+      state.hashtags = indexRes.data.hashtags || state.hashtags;
+    } else {
+      state.files.push(entry);
+    }
+    renderHashtags();
+    renderFiles();
+
+    /* cerrar el modal tras un breve momento */
+    setTimeout(() => {
+      closeEditorModal();
+    }, 800);
 
   } catch (err) {
     console.error("[arxiu] error al crear texto:", err);
