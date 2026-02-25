@@ -4,10 +4,11 @@
    una vez desplegado.
    ============================================================ */
 const CONFIG = {
-  WORKER_URL:       "https://arxiu-worker.manuellatourf.workers.dev",
-  MAX_FILE_SIZE:     2 * 1024 * 1024, // 2 mb
-  PAGES_POLL_MS:     3000,
-  PAGES_TIMEOUT_MS:  120000,
+  WORKER_URL:              "https://arxiu-worker.manuellatourf.workers.dev",
+  MAX_FILE_SIZE:            2 * 1024 * 1024, // 2 mb
+  PAGES_POLL_MS:            3000,
+  PAGES_TIMEOUT_MS:         120000,
+  PAGES_RECONCILE_POLL_MS:  15000,
 };
 
 
@@ -15,10 +16,12 @@ const CONFIG = {
    ESTADO GLOBAL
    ============================================================ */
 const state = {
-  files:       [],
-  hashtags:    [],
-  activeTag:   null,
-  mode18:      false,
+  files:                [],
+  hashtags:             [],
+  activeTag:            null,
+  mode18:               false,
+  reconcilingPublished: false,
+  reconcileScheduled:   false,
 };
 
 
@@ -127,12 +130,13 @@ async function loadData() {
       console.log("[arxiu] datos cargados desde data.json local");
     }
 
-    state.files    = json.files    || [];
+    state.files    = normalizeFiles(json.files || []);
     state.hashtags = json.hashtags || [];
 
     console.log(`[arxiu] ${state.files.length} archivos cargados`);
     renderHashtags();
     renderFiles();
+    schedulePublishedReconcile();
   } catch (err) {
     console.error("[arxiu] error al cargar datos:", err);
     dom.fileGrid.innerHTML = `<p id="empty-msg">error al cargar archivos.</p>`;
@@ -179,6 +183,8 @@ function renderFiles() {
   dom.fileGrid.innerHTML = "";
 
   const visible = state.files.filter(f => {
+    /* ocultar hasta que esté realmente publicado en github pages */
+    if (f.is_published === false) return false;
     /* ocultar +18 si el modo no está activo */
     if (f.is_18_plus && !state.mode18) return false;
     /* filtrar por hashtag activo */
@@ -466,11 +472,14 @@ async function handleUpload(e) {
     const published = await waitForPdfOnPages(filename, updateProgress);
 
     if (published) {
+      updateProgress("confirmando publicación...", 92);
+      await markPublished(entry.id);
       updateProgress("actualizando lista...", 98);
       await loadData();
       updateProgress("¡listo!", 100);
     } else {
-      updateProgress("subido e indexado; aparecerá al propagarse en pages.", 100);
+      updateProgress("subido e indexado; aparecerá al publicarse en pages.", 100);
+      schedulePublishedReconcile();
     }
 
     /* cerrar el modal tras un breve momento */
@@ -665,11 +674,14 @@ async function handleCreateText(e) {
     const published = await waitForPdfOnPages(filename, editorUpdateProgress);
 
     if (published) {
+      editorUpdateProgress("confirmando publicación...", 92);
+      await markPublished(entry.id);
       editorUpdateProgress("actualizando lista...", 98);
       await loadData();
       editorUpdateProgress("¡listo!", 100);
     } else {
-      editorUpdateProgress("subido e indexado; aparecerá al propagarse en pages.", 100);
+      editorUpdateProgress("subido e indexado; aparecerá al publicarse en pages.", 100);
+      schedulePublishedReconcile();
     }
 
     /* cerrar el modal tras un breve momento */
@@ -1012,6 +1024,19 @@ async function workerPost(action, data = {}) {
   return res.json();
 }
 
+async function markPublished(fileId) {
+  const res = await workerPost("mark_published", { id: fileId });
+  const errorMsg = String(res.error || "").toLowerCase();
+  if (!res.ok && (errorMsg.includes("acción desconocida") || errorMsg.includes("accion desconocida"))) {
+    /* compatibilidad con workers antiguos sin esta acción */
+    return { ok: true, legacy: true };
+  }
+  if (!res.ok) {
+    throw new Error(res.error || "error al confirmar publicación");
+  }
+  return res;
+}
+
 
 /* ============================================================
    UTILIDADES
@@ -1042,6 +1067,58 @@ async function waitForPdfOnPages(filename, updateProgressFn) {
   }
 
   return false;
+}
+
+function schedulePublishedReconcile(delay = CONFIG.PAGES_RECONCILE_POLL_MS) {
+  if (state.reconcileScheduled) return;
+  state.reconcileScheduled = true;
+
+  setTimeout(() => {
+    state.reconcileScheduled = false;
+    void reconcilePublishedFiles();
+  }, delay);
+}
+
+async function reconcilePublishedFiles() {
+  if (state.reconcilingPublished) return;
+
+  const pending = state.files.filter(f => f.is_published === false);
+  if (pending.length === 0) return;
+
+  state.reconcilingPublished = true;
+  let changed = false;
+
+  try {
+    for (const file of pending) {
+      const published = await isPdfPublishedOnPages(file.filename);
+      if (!published) continue;
+
+      try {
+        await markPublished(file.id);
+        changed = true;
+      } catch (err) {
+        console.warn("[arxiu] no se pudo confirmar publicación:", err);
+      }
+    }
+  } finally {
+    state.reconcilingPublished = false;
+  }
+
+  if (changed) {
+    await loadData();
+    return;
+  }
+
+  if (state.files.some(f => f.is_published === false)) {
+    schedulePublishedReconcile();
+  }
+}
+
+function normalizeFiles(files) {
+  return files.map(file => ({
+    ...file,
+    is_published: file.is_published !== false,
+  }));
 }
 
 async function isPdfPublishedOnPages(filename) {

@@ -40,6 +40,9 @@ export default {
       if (action === "update_index") {
         return corsResponse(env, await handleUpdateIndex(body, env));
       }
+      if (action === "mark_published") {
+        return corsResponse(env, await handleMarkPublished(body, env));
+      }
       if (action === "get_index") {
         return corsResponse(env, await handleGetIndex(env));
       }
@@ -92,41 +95,53 @@ async function handleUpdateIndex(body, env) {
     return jsonResponse(400, { error: "falta entry o entry.filename" });
   }
 
-  /* leer data.json actual */
-  const getRes = await githubGet(env, "data.json");
-  if (!getRes.ok) {
-    return jsonResponse(getRes.status, { error: "no se pudo leer data.json" });
-  }
+  const { data, sha: currentSha, error, status } = await readIndex(env);
+  if (!data) return jsonResponse(status, { error });
 
-  const fileData = await getRes.json();
-  const currentSha = fileData.sha;
-  const data = parseJsonFromBase64(fileData.content);
+  const normalizedEntry = {
+    ...entry,
+    hashtags: Array.isArray(entry.hashtags) ? entry.hashtags : [],
+    is_18_plus: Boolean(entry.is_18_plus),
+    is_published: false,
+  };
 
   /* añadir la nueva entrada */
-  data.files.push(entry);
+  data.files.push(normalizedEntry);
 
   /* actualizar hashtags únicos */
-  (entry.hashtags || []).forEach(tag => {
+  (normalizedEntry.hashtags || []).forEach(tag => {
     if (!data.hashtags.includes(tag)) data.hashtags.push(tag);
   });
   data.hashtags.sort();
 
-  /* guardar data.json */
-  const updatedJson = JSON.stringify(data, null, 2);
-  const updatedBase64 = utf8ToBase64(updatedJson);
+  const putRes = await writeIndex(env, data, `index: añadir ${normalizedEntry.filename}`, currentSha);
+  if (!putRes.ok) return putRes;
 
-  const putRes = await githubPut(
-    env,
-    "data.json",
-    updatedBase64,
-    `index: añadir ${entry.filename}`,
-    currentSha
-  );
+  return jsonResponse(200, { ok: true, data });
+}
 
-  if (!putRes.ok) {
-    const err = await putRes.json();
-    return jsonResponse(putRes.status, { error: err.message || "error al guardar índice" });
+/* ============================================================
+   ACCIÓN: marcar entrada como publicada en github pages
+   body: { action, id }
+   ============================================================ */
+async function handleMarkPublished(body, env) {
+  const { id } = body;
+  if (!id) return jsonResponse(400, { error: "falta id" });
+
+  const { data, sha: currentSha, error, status } = await readIndex(env);
+  if (!data) return jsonResponse(status, { error });
+
+  const target = data.files.find(file => file.id === id);
+  if (!target) return jsonResponse(404, { error: "entrada no encontrada" });
+
+  if (target.is_published === true) {
+    return jsonResponse(200, { ok: true, data });
   }
+
+  target.is_published = true;
+
+  const putRes = await writeIndex(env, data, `index: publicar ${target.filename}`, currentSha);
+  if (!putRes.ok) return putRes;
 
   return jsonResponse(200, { ok: true, data });
 }
@@ -137,13 +152,8 @@ async function handleUpdateIndex(body, env) {
    de la caché de github pages)
    ============================================================ */
 async function handleGetIndex(env) {
-  const getRes = await githubGet(env, "data.json");
-  if (!getRes.ok) {
-    return jsonResponse(getRes.status, { error: "no se pudo leer data.json" });
-  }
-
-  const fileData = await getRes.json();
-  const data = parseJsonFromBase64(fileData.content);
+  const { data, error, status } = await readIndex(env);
+  if (!data) return jsonResponse(status, { error });
 
   return jsonResponse(200, data);
 }
@@ -212,6 +222,42 @@ function utf8ToBase64(text) {
   let binary = "";
   for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
   return btoa(binary);
+}
+
+async function readIndex(env) {
+  const getRes = await githubGet(env, "data.json");
+  if (!getRes.ok) {
+    return { data: null, error: "no se pudo leer data.json", status: getRes.status };
+  }
+
+  const fileData = await getRes.json();
+  const rawData = parseJsonFromBase64(fileData.content);
+  const data = normalizeIndexData(rawData);
+
+  return { data, sha: fileData.sha };
+}
+
+function normalizeIndexData(raw) {
+  return {
+    files: (raw.files || []).map(file => ({
+      ...file,
+      hashtags: Array.isArray(file.hashtags) ? file.hashtags : [],
+      is_published: file.is_published !== false,
+      is_18_plus: Boolean(file.is_18_plus),
+    })),
+    hashtags: Array.isArray(raw.hashtags) ? raw.hashtags : [],
+  };
+}
+
+async function writeIndex(env, data, message, currentSha) {
+  const updatedJson = JSON.stringify(data, null, 2);
+  const updatedBase64 = utf8ToBase64(updatedJson);
+
+  const putRes = await githubPut(env, "data.json", updatedBase64, message, currentSha);
+  if (putRes.ok) return { ok: true };
+
+  const err = await putRes.json();
+  return jsonResponse(putRes.status, { error: err.message || "error al guardar índice" });
 }
 
 function corsResponse(env, response) {
