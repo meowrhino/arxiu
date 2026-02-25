@@ -4,11 +4,10 @@
    una vez desplegado.
    ============================================================ */
 const CONFIG = {
-  WORKER_URL:    "https://arxiu-worker.manuellatourf.workers.dev",
-  MAX_FILE_SIZE:  2 * 1024 * 1024, // 2 mb
-  GITHUB_USER:   "meowrhino",
-  GITHUB_REPO:   "arxiu",
-  GITHUB_BRANCH: "main",
+  WORKER_URL:       "https://arxiu-worker.manuellatourf.workers.dev",
+  MAX_FILE_SIZE:     2 * 1024 * 1024, // 2 mb
+  PAGES_POLL_MS:     3000,
+  PAGES_TIMEOUT_MS:  120000,
 };
 
 
@@ -200,7 +199,7 @@ function renderFiles() {
 function createFileCard(file) {
   const card = document.createElement("a");
   card.className = "file-card";
-  /* abrir en github para evitar desfase de propagación en github pages */
+  /* abrir en github pages (ruta pública del repo) */
   card.href      = getPdfUrl(file.filename);
   card.target    = "_blank";
   card.rel       = "noopener noreferrer";
@@ -248,8 +247,7 @@ function createFileCard(file) {
 }
 
 function getPdfUrl(filename) {
-  const encodedName = encodeURIComponent(filename);
-  return `https://github.com/${CONFIG.GITHUB_USER}/${CONFIG.GITHUB_REPO}/blob/${CONFIG.GITHUB_BRANCH}/data/${encodedName}`;
+  return `data/${encodeURIComponent(filename)}`;
 }
 
 /* SVG pixel-art de documento (16×20 viewbox) */
@@ -463,23 +461,22 @@ async function handleUpload(e) {
     const indexRes = await workerPost("update_index", { entry });
     if (!indexRes.ok && !indexRes.files) throw new Error(indexRes.error || "error al indexar");
 
-    /* paso 4: añadir al grid y cerrar */
-    updateProgress("¡listo!", 100);
+    /* paso 4: esperar a que github pages sirva el pdf y luego refrescar */
+    updateProgress("esperando publicación en github pages...", 80);
+    const published = await waitForPdfOnPages(filename, updateProgress);
 
-    /* actualizar estado local con los datos frescos del worker */
-    if (indexRes.data) {
-      state.files    = indexRes.data.files    || state.files;
-      state.hashtags = indexRes.data.hashtags || state.hashtags;
+    if (published) {
+      updateProgress("actualizando lista...", 98);
+      await loadData();
+      updateProgress("¡listo!", 100);
     } else {
-      state.files.push(entry);
+      updateProgress("subido e indexado; aparecerá al propagarse en pages.", 100);
     }
-    renderHashtags();
-    renderFiles();
 
     /* cerrar el modal tras un breve momento */
     setTimeout(() => {
       closeModal();
-    }, 800);
+    }, published ? 800 : 1400);
 
   } catch (err) {
     console.error("[arxiu] error en la subida:", err);
@@ -663,23 +660,22 @@ async function handleCreateText(e) {
     const indexRes = await workerPost("update_index", { entry });
     if (!indexRes.ok && !indexRes.files) throw new Error(indexRes.error || "error al indexar");
 
-    /* paso 4: añadir al grid y cerrar */
-    editorUpdateProgress("¡listo!", 100);
+    /* paso 4: esperar a que github pages sirva el pdf y luego refrescar */
+    editorUpdateProgress("esperando publicación en github pages...", 80);
+    const published = await waitForPdfOnPages(filename, editorUpdateProgress);
 
-    /* actualizar estado local con los datos frescos del worker */
-    if (indexRes.data) {
-      state.files    = indexRes.data.files    || state.files;
-      state.hashtags = indexRes.data.hashtags || state.hashtags;
+    if (published) {
+      editorUpdateProgress("actualizando lista...", 98);
+      await loadData();
+      editorUpdateProgress("¡listo!", 100);
     } else {
-      state.files.push(entry);
+      editorUpdateProgress("subido e indexado; aparecerá al propagarse en pages.", 100);
     }
-    renderHashtags();
-    renderFiles();
 
     /* cerrar el modal tras un breve momento */
     setTimeout(() => {
       closeEditorModal();
-    }, 800);
+    }, published ? 800 : 1400);
 
   } catch (err) {
     console.error("[arxiu] error al crear texto:", err);
@@ -1027,6 +1023,52 @@ function fileToBase64(file) {
     reader.onerror = reject;
     reader.readAsDataURL(file);
   });
+}
+
+async function waitForPdfOnPages(filename, updateProgressFn) {
+  const start = Date.now();
+  const deadline = start + CONFIG.PAGES_TIMEOUT_MS;
+
+  while (Date.now() < deadline) {
+    const published = await isPdfPublishedOnPages(filename);
+    if (published) return true;
+
+    const elapsed = Date.now() - start;
+    const ratio = Math.min(elapsed / CONFIG.PAGES_TIMEOUT_MS, 1);
+    const percent = Math.min(96, Math.round(80 + ratio * 16));
+    updateProgressFn("esperando publicación en github pages...", percent);
+
+    await sleep(CONFIG.PAGES_POLL_MS);
+  }
+
+  return false;
+}
+
+async function isPdfPublishedOnPages(filename) {
+  const url = new URL(getPdfUrl(filename), window.location.href).toString();
+
+  try {
+    const headRes = await fetch(url, { method: "HEAD", cache: "no-store" });
+    if (headRes.ok) return true;
+    if (headRes.status !== 403 && headRes.status !== 405) return false;
+  } catch {
+    return false;
+  }
+
+  try {
+    const getRes = await fetch(url, {
+      method: "GET",
+      headers: { Range: "bytes=0-0" },
+      cache: "no-store",
+    });
+    return getRes.ok || getRes.status === 206;
+  } catch {
+    return false;
+  }
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 /* limpia el nombre pero conserva caracteres unicode (acentos, ñ, etc.) */
