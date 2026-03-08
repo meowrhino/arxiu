@@ -22,6 +22,7 @@ jobs:
         id: reindex_script
         run: |
           import json
+          import os
           from pathlib import Path
 
           json_path = Path("data.json")
