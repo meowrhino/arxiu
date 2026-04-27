@@ -1,27 +1,14 @@
-/* ============================================================
-   CONFIGURACIÓN
-   cambia WORKER_URL por la url de tu cloudflare worker
-   una vez desplegado.
-   ============================================================ */
 const CONFIG = {
-  WORKER_URL:              "https://arxiu-worker.manuellatourf.workers.dev",
-  MAX_FILE_SIZE:            2 * 1024 * 1024, // 2 mb
-  PAGES_POLL_MS:            3000,
-  PAGES_TIMEOUT_MS:         120000,
-  PAGES_RECONCILE_POLL_MS:  15000,
+  API_URL:       "https://api.arxiu.meowrhino.studio",
+  MAX_FILE_SIZE: 2 * 1024 * 1024,
 };
 
 
-/* ============================================================
-   ESTADO GLOBAL
-   ============================================================ */
 const state = {
-  files:                [],
-  hashtags:             [],
-  activeTag:            null,
-  mode18:               false,
-  reconcilingPublished: false,
-  reconcileScheduled:   false,
+  files:     [],
+  hashtags:  [],
+  activeTag: null,
+  mode18:    false,
 };
 
 
@@ -99,44 +86,18 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-/* ============================================================
-   CARGA DE DATOS
-   carga desde el worker (que lee directamente de github,
-   sin caché de github pages) con fallback al data.json local.
-   ============================================================ */
 async function loadData() {
   try {
-    /* intentar cargar desde el worker (datos frescos) */
-    let json;
-    try {
-      const res = await fetch(CONFIG.WORKER_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "get_index" }),
-      });
-      if (res.ok) {
-        json = await res.json();
-        console.log("[arxiu] datos cargados desde el worker");
-      }
-    } catch (workerErr) {
-      console.warn("[arxiu] worker no disponible, usando data.json local");
-    }
+    const res = await fetch(`${CONFIG.API_URL}/files`, { cache: "no-store" });
+    if (!res.ok) throw new Error(`http ${res.status}`);
+    const json = await res.json();
 
-    /* fallback: data.json local (puede estar cacheado) */
-    if (!json) {
-      const res = await fetch(`data.json?t=${Date.now()}`);
-      if (!res.ok) throw new Error(`http ${res.status}`);
-      json = await res.json();
-      console.log("[arxiu] datos cargados desde data.json local");
-    }
-
-    state.files    = normalizeFiles(json.files || []);
+    state.files    = json.files || [];
     state.hashtags = json.hashtags || [];
 
     console.log(`[arxiu] ${state.files.length} archivos cargados`);
     renderHashtags();
     renderFiles();
-    schedulePublishedReconcile();
   } catch (err) {
     console.error("[arxiu] error al cargar datos:", err);
     dom.fileGrid.innerHTML = `<p id="empty-msg">error al cargar archivos.</p>`;
@@ -183,11 +144,7 @@ function renderFiles() {
   dom.fileGrid.innerHTML = "";
 
   const visible = state.files.filter(f => {
-    /* ocultar hasta que esté realmente publicado en github pages */
-    if (f.is_published === false) return false;
-    /* ocultar +18 si el modo no está activo */
     if (f.is_18_plus && !state.mode18) return false;
-    /* filtrar por hashtag activo */
     if (state.activeTag && !(f.hashtags || []).includes(state.activeTag)) return false;
     return true;
   });
@@ -205,8 +162,7 @@ function renderFiles() {
 function createFileCard(file) {
   const card = document.createElement("a");
   card.className = "file-card";
-  /* abrir en github pages (ruta pública del repo) */
-  card.href      = getPdfUrl(file.filename);
+  card.href      = getPdfUrl(file);
   card.target    = "_blank";
   card.rel       = "noopener noreferrer";
   card.title     = file.filename;
@@ -252,8 +208,8 @@ function createFileCard(file) {
   return card;
 }
 
-function getPdfUrl(filename) {
-  return `data/${encodeURIComponent(filename)}`;
+function getPdfUrl(file) {
+  return `${CONFIG.API_URL}/files/${encodeURIComponent(file.id)}`;
 }
 
 /* SVG pixel-art de documento (16×20 viewbox) */
@@ -414,11 +370,6 @@ function handleFileSelection(file) {
 }
 
 
-/* ============================================================
-   SUBIDA VIA CLOUDFLARE WORKER
-   el worker actúa de proxy seguro: guarda el token de github
-   como variable de entorno y el visitante no necesita nada.
-   ============================================================ */
 async function handleUpload(e) {
   e.preventDefault();
 
@@ -428,65 +379,32 @@ async function handleUpload(e) {
     return;
   }
 
-  /* parsear campos */
-  const author = dom.inputAuthor.value.trim() || null;
+  const author = dom.inputAuthor.value.trim();
   const hashtags = dom.inputHashtags.value
     .split(",")
     .map(t => t.trim().replace(/^#/, "").toLowerCase())
-    .filter(t => t.length > 0);
+    .filter(t => t.length > 0)
+    .join(",");
 
   const filename = sanitizeFilename(file.name);
 
-  /* cambiar a vista de progreso */
   switchToProgress(filename);
   dom.btnSubmit.disabled = true;
 
   try {
-    /* paso 1: leer archivo como base64 */
-    updateProgress("leyendo archivo...", 10);
-    const base64 = await fileToBase64(file);
-
-    /* paso 2: subir el pdf via worker */
-    updateProgress("subiendo pdf...", 30);
-    const uploadRes = await workerPost("upload_pdf", {
-      filename: filename,
-      content_base64: base64,
+    updateProgress("subiendo...", 20);
+    const renamed = new File([file], filename, { type: "application/pdf" });
+    const res = await uploadToApi(renamed, { author, hashtags, is_18_plus: false }, p => {
+      updateProgress("subiendo...", Math.max(20, Math.min(90, 20 + Math.round(p * 70))));
     });
-    if (!uploadRes.ok) throw new Error(uploadRes.error || "error al subir pdf");
 
-    /* paso 3: actualizar el índice via worker */
-    updateProgress("indexando...", 65);
-    const entry = {
-      id:          generateId(),
-      filename:    filename,
-      author:      author,
-      hashtags:    hashtags,
-      is_18_plus:  false,
-      upload_date: new Date().toISOString(),
-    };
-    const indexRes = await workerPost("update_index", { entry });
-    if (!indexRes.ok && !indexRes.files) throw new Error(indexRes.error || "error al indexar");
+    if (!res.ok) throw new Error(res.error || "error al subir");
 
-    /* paso 4: esperar a que github pages sirva el pdf y luego refrescar */
-    updateProgress("esperando publicación en github pages...", 80);
-    const published = await waitForPdfOnPages(filename, updateProgress);
+    updateProgress("actualizando lista...", 95);
+    await loadData();
+    updateProgress("¡listo!", 100);
 
-    if (published) {
-      updateProgress("confirmando publicación...", 92);
-      await markPublished(entry.id);
-      updateProgress("actualizando lista...", 98);
-      await loadData();
-      updateProgress("¡listo!", 100);
-    } else {
-      updateProgress("subido e indexado; aparecerá al publicarse en pages.", 100);
-      schedulePublishedReconcile();
-    }
-
-    /* cerrar el modal tras un breve momento */
-    setTimeout(() => {
-      closeModal();
-    }, published ? 800 : 1400);
-
+    setTimeout(closeModal, 700);
   } catch (err) {
     console.error("[arxiu] error en la subida:", err);
     updateProgress(`error: ${err.message}`, 0);
@@ -644,51 +562,20 @@ async function handleCreateText(e) {
   dom.btnCreateSubmit.disabled = true;
 
   try {
-    /* paso 1: generar el PDF */
     editorUpdateProgress("generando pdf...", 15);
-    const pdfBase64 = await markdownToPdfBase64(title, content);
+    const pdfBlob = await markdownToPdfBlob(title, content);
+    const pdfFile = new File([pdfBlob], filename, { type: "application/pdf" });
 
-    /* paso 2: subir el PDF via worker */
-    editorUpdateProgress("subiendo pdf...", 40);
-    const uploadRes = await workerPost("upload_pdf", {
-      filename: filename,
-      content_base64: pdfBase64,
-    });
-    if (!uploadRes.ok) throw new Error(uploadRes.error || "error al subir pdf");
+    editorUpdateProgress("subiendo...", 40);
+    const hashtagsStr = hashtags.join(",");
+    const res = await uploadToApi(pdfFile, { author: author || "", hashtags: hashtagsStr, is_18_plus: false });
+    if (!res.ok) throw new Error(res.error || "error al subir");
 
-    /* paso 3: actualizar el índice */
-    editorUpdateProgress("indexando...", 70);
-    const entry = {
-      id:          generateId(),
-      filename:    filename,
-      author:      author,
-      hashtags:    hashtags,
-      is_18_plus:  false,
-      upload_date: new Date().toISOString(),
-    };
-    const indexRes = await workerPost("update_index", { entry });
-    if (!indexRes.ok && !indexRes.files) throw new Error(indexRes.error || "error al indexar");
+    editorUpdateProgress("actualizando lista...", 90);
+    await loadData();
+    editorUpdateProgress("¡listo!", 100);
 
-    /* paso 4: esperar a que github pages sirva el pdf y luego refrescar */
-    editorUpdateProgress("esperando publicación en github pages...", 80);
-    const published = await waitForPdfOnPages(filename, editorUpdateProgress);
-
-    if (published) {
-      editorUpdateProgress("confirmando publicación...", 92);
-      await markPublished(entry.id);
-      editorUpdateProgress("actualizando lista...", 98);
-      await loadData();
-      editorUpdateProgress("¡listo!", 100);
-    } else {
-      editorUpdateProgress("subido e indexado; aparecerá al publicarse en pages.", 100);
-      schedulePublishedReconcile();
-    }
-
-    /* cerrar el modal tras un breve momento */
-    setTimeout(() => {
-      closeEditorModal();
-    }, published ? 800 : 1400);
-
+    setTimeout(closeEditorModal, 700);
   } catch (err) {
     console.error("[arxiu] error al crear texto:", err);
     editorUpdateProgress(`error: ${err.message}`, 0);
@@ -704,7 +591,7 @@ async function handleCreateText(e) {
    soporta: # h1, ## h2, ### h3, **bold**, *italic*,
    - listas, 1. listas numeradas, --- separador
    ============================================================ */
-function markdownToPdfBase64(title, markdown) {
+function markdownToPdfBlob(title, markdown) {
   return new Promise((resolve) => {
 
     /* ---- parámetros de página A4 ---- */
@@ -1005,159 +892,44 @@ function markdownToPdfBase64(title, markdown) {
     pdf += `trailer\n<< /Size ${objCount + 1} /Root ${catalogId} 0 R >>\n`;
     pdf += `startxref\n${xrefOffset}\n%%EOF`;
 
-    /* base64 — el PDF es puro latin1 así que btoa funciona directo */
-    const base64 = btoa(pdf);
-    resolve(base64);
+    const bytes = new Uint8Array(pdf.length);
+    for (let i = 0; i < pdf.length; i++) bytes[i] = pdf.charCodeAt(i) & 0xff;
+    resolve(new Blob([bytes], { type: "application/pdf" }));
   });
 }
 
 
-/* ============================================================
-   HELPER: llamada al worker
-   ============================================================ */
-async function workerPost(action, data = {}) {
-  const res = await fetch(CONFIG.WORKER_URL, {
-    method:  "POST",
-    headers: { "Content-Type": "application/json" },
-    body:    JSON.stringify({ action, ...data }),
-  });
-  return res.json();
-}
+function uploadToApi(file, fields, onProgress) {
+  const fd = new FormData();
+  fd.append("file", file, file.name);
+  if (fields.author)    fd.append("author", fields.author);
+  if (fields.hashtags)  fd.append("hashtags", fields.hashtags);
+  if (fields.is_18_plus) fd.append("is_18_plus", "1");
 
-async function markPublished(fileId) {
-  const res = await workerPost("mark_published", { id: fileId });
-  const errorMsg = String(res.error || "").toLowerCase();
-  if (!res.ok && (errorMsg.includes("acción desconocida") || errorMsg.includes("accion desconocida"))) {
-    /* compatibilidad con workers antiguos sin esta acción */
-    return { ok: true, legacy: true };
+  if (!onProgress) {
+    return fetch(`${CONFIG.API_URL}/upload`, { method: "POST", body: fd }).then(r => r.json());
   }
-  if (!res.ok) {
-    throw new Error(res.error || "error al confirmar publicación");
-  }
-  return res;
-}
 
-
-/* ============================================================
-   UTILIDADES
-   ============================================================ */
-function fileToBase64(file) {
   return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload  = () => resolve(reader.result.split(",")[1]);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", `${CONFIG.API_URL}/upload`);
+    xhr.upload.onprogress = e => {
+      if (e.lengthComputable) onProgress(e.loaded / e.total);
+    };
+    xhr.onload = () => {
+      try { resolve(JSON.parse(xhr.responseText)); }
+      catch { reject(new Error("respuesta inválida")); }
+    };
+    xhr.onerror = () => reject(new Error("error de red"));
+    xhr.send(fd);
   });
 }
 
-async function waitForPdfOnPages(filename, updateProgressFn) {
-  const start = Date.now();
-  const deadline = start + CONFIG.PAGES_TIMEOUT_MS;
-
-  while (Date.now() < deadline) {
-    const published = await isPdfPublishedOnPages(filename);
-    if (published) return true;
-
-    const elapsed = Date.now() - start;
-    const ratio = Math.min(elapsed / CONFIG.PAGES_TIMEOUT_MS, 1);
-    const percent = Math.min(96, Math.round(80 + ratio * 16));
-    updateProgressFn("esperando publicación en github pages...", percent);
-
-    await sleep(CONFIG.PAGES_POLL_MS);
-  }
-
-  return false;
-}
-
-function schedulePublishedReconcile(delay = CONFIG.PAGES_RECONCILE_POLL_MS) {
-  if (state.reconcileScheduled) return;
-  state.reconcileScheduled = true;
-
-  setTimeout(() => {
-    state.reconcileScheduled = false;
-    void reconcilePublishedFiles();
-  }, delay);
-}
-
-async function reconcilePublishedFiles() {
-  if (state.reconcilingPublished) return;
-
-  const pending = state.files.filter(f => f.is_published === false);
-  if (pending.length === 0) return;
-
-  state.reconcilingPublished = true;
-  let changed = false;
-
-  try {
-    for (const file of pending) {
-      const published = await isPdfPublishedOnPages(file.filename);
-      if (!published) continue;
-
-      try {
-        await markPublished(file.id);
-        changed = true;
-      } catch (err) {
-        console.warn("[arxiu] no se pudo confirmar publicación:", err);
-      }
-    }
-  } finally {
-    state.reconcilingPublished = false;
-  }
-
-  if (changed) {
-    await loadData();
-    return;
-  }
-
-  if (state.files.some(f => f.is_published === false)) {
-    schedulePublishedReconcile();
-  }
-}
-
-function normalizeFiles(files) {
-  return files.map(file => ({
-    ...file,
-    is_published: file.is_published !== false,
-  }));
-}
-
-async function isPdfPublishedOnPages(filename) {
-  const url = new URL(getPdfUrl(filename), window.location.href).toString();
-
-  try {
-    const headRes = await fetch(url, { method: "HEAD", cache: "no-store" });
-    if (headRes.ok) return true;
-    if (headRes.status !== 403 && headRes.status !== 405) return false;
-  } catch {
-    return false;
-  }
-
-  try {
-    const getRes = await fetch(url, {
-      method: "GET",
-      headers: { Range: "bytes=0-0" },
-      cache: "no-store",
-    });
-    return getRes.ok || getRes.status === 206;
-  } catch {
-    return false;
-  }
-}
-
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-/* limpia el nombre pero conserva caracteres unicode (acentos, ñ, etc.) */
 function sanitizeFilename(name) {
   return name
     .trim()
     .replace(/\s+/g, "_")
     .replace(/[<>:"/\\|?*]/g, "");
-}
-
-function generateId() {
-  return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 }
 
 

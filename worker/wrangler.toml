@@ -1,11 +1,34 @@
-# configuración del cloudflare worker para arxiu
-# documentación: https://developers.cloudflare.com/workers/
-
 name = "arxiu-worker"
 main = "worker.js"
-compatibility_date = "2024-01-01"
+compatibility_date = "2024-09-23"
 
-# las variables secretas (GITHUB_TOKEN, ALLOWED_ORIGIN)
-# se configuran con:
-#   npx wrangler secret put GITHUB_TOKEN
-#   npx wrangler secret put ALLOWED_ORIGIN
+# cloudflare pages (frontend) se conecta aparte; este worker es solo api.
+# custom domain api.arxiu.meowrhino.studio configurado desde el dashboard
+# (workers > arxiu-worker > settings > domains & routes).
+
+# crons:
+#   diario 03:00 utc → reindexa la tabla hashtags
+#   domingos 04:00 utc → backup d1 + r2 al repo github (requiere GITHUB_TOKEN)
+[triggers]
+crons = ["0 3 * * *", "0 4 * * 7"]
+
+# d1 (rellena database_id tras `wrangler d1 create arxiu-db`)
+[[d1_databases]]
+binding       = "DB"
+database_name = "arxiu-db"
+database_id   = "e1f85ca6-db76-4139-88c5-d3c7a9c9a860"
+
+# r2 (crea con `wrangler r2 bucket create arxiu-pdfs`)
+[[r2_buckets]]
+binding     = "STORAGE"
+bucket_name = "arxiu-pdfs"
+
+# kv para rate-limit (rellena id tras `wrangler kv:namespace create RATE_LIMIT`)
+[[kv_namespaces]]
+binding = "RATE_LIMIT"
+id      = "224fd9135ca74d2bad88a95237716b26"
+
+# secrets (via `wrangler secret put`):
+#   ALLOWED_ORIGIN      — url del frontend, ej. https://arxiu.meowrhino.studio
+#   MODERATION_TOKEN    — token arbitrario para el endpoint POST /moderate
+#   GITHUB_TOKEN        — pat con scope 'repo' (solo para backup semanal)

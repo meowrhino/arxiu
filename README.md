@@ -1,102 +1,151 @@
 # arxiu
 
-un sistema de archivo de PDFs minimalista, anónimo y auto-alojado. la interfaz es una simple página web que imita un explorador de archivos retro. cualquiera puede subir un PDF sin necesidad de tener cuenta de github.
+archivo de pdfs minimalista, anónimo y auto-alojado sobre cloudflare.
 
-![screenshot de arxiu](https://raw.githubusercontent.com/meowrhino/arxiu/main/manus/screenshot.png)
+interfaz web estilo explorador de archivos retro. cualquiera puede subir un pdf sin cuenta.
+
+![screenshot](https://raw.githubusercontent.com/meowrhino/arxiu/main/manus/screenshot.png)
 
 ---
 
-## cómo funciona
+## arquitectura
 
-el sistema se divide en tres partes que se comunican entre sí:
+100% cloudflare:
 
-1.  **frontend (github pages)**: la página web estática (html/css/js) que ve el visitante. desde aquí se pueden ver los archivos y subir nuevos.
-2.  **backend (cloudflare worker)**: un pequeño script que actúa como intermediario seguro. recibe los archivos del visitante y los sube a github usando tu token personal.
-3.  **base de datos (github repo)**: el propio repositorio de github actúa como base de datos. los PDFs se guardan en la carpeta `/data` y el índice de archivos en `data.json`.
+- **frontend**: cloudflare pages (html/css/js vainilla).
+- **api**: cloudflare worker (`worker/worker.js`).
+- **almacén de pdfs**: r2 bucket `arxiu-pdfs` (privado, servido a través del worker).
+- **índice**: d1 database `arxiu-db` (tablas `files` y `hashtags`).
+- **rate-limit**: kv namespace `RATE_LIMIT`.
+- **backup**: cron semanal sincroniza d1→`data.json` y r2→`/data/` en este mismo repo github.
 
 ```mermaid
 graph TD
-    A[visitante] -->|1. sube pdf| B(frontend);
-    B -->|2. envía pdf al worker| C(cloudflare worker);
-    C -->|3. usa tu token para subir a github| D(github repo);
-    D -->|4. guarda pdf en /data| D;
-    D -->|5. actualiza data.json| D;
+  U[visitante] -->|1. sube pdf| F[pages: arxiu.meowrhino.studio]
+  F -->|2. POST /upload multipart| W[worker: api.arxiu.meowrhino.studio]
+  W -->|3. pdf| R[r2: arxiu-pdfs]
+  W -->|4. metadata| D[d1: arxiu-db]
+  F -->|GET /files| W
+  W -->|GET /files/:id| R
+  W -.->|cron diario: reindexa hashtags| D
+  W -.->|cron semanal: backup| G[github repo: /data + data.json]
 ```
 
-este método permite que cualquiera suba archivos sin que tú tengas que exponer tu token de github en el código del frontend.
+---
+
+## endpoints del worker
+
+- `GET  /files`        → lista pdfs publicados + hashtags
+- `POST /upload`       → multipart: `file`, `author`, `hashtags`, `is_18_plus`
+- `GET  /files/:id`    → sirve el pdf (content-type application/pdf)
+- `POST /moderate`     → flag/unflag/delete (requiere header `x-moderation-token`)
+- `GET  /health`       → ping
 
 ---
 
-## stack tecnológico
+## deploy desde cero
 
--   **frontend**: html, css y javascript vainilla (sin frameworks).
--   **backend**: cloudflare workers (javascript).
--   **automatización**: github actions (para re-indexar hashtags y filtrar contenido).
--   **hosting**: github pages (frontend) y cloudflare (backend), ambos gratuitos.
+requisitos: cuenta cloudflare, `npx wrangler` (no hace falta instalar global), dominio `meowrhino.studio` gestionado en cloudflare, pat github con scope `repo` para el backup.
+
+### 1. crear recursos cloudflare
+
+```bash
+cd worker
+
+# d1
+npx wrangler d1 create arxiu-db
+# → copia el database_id a wrangler.toml
+
+# r2
+npx wrangler r2 bucket create arxiu-pdfs
+
+# kv
+npx wrangler kv namespace create RATE_LIMIT
+# → copia el id a wrangler.toml
+```
+
+### 2. cargar schema y migrar datos
+
+```bash
+# desde worker/
+./migrate.sh
+```
+
+esto:
+1. aplica `schema.sql` en d1 remoto.
+2. inserta los 13 registros actuales desde `migrate-data.sql`.
+3. sube los pdfs de `/data/` a r2 con key `<id>.pdf`.
+
+idempotente: se puede re-ejecutar sin romper nada (los inserts son `OR IGNORE`).
+
+### 3. configurar secrets
+
+```bash
+npx wrangler secret put ALLOWED_ORIGIN
+# pega: https://arxiu.meowrhino.studio  (o la url de tu pages)
+
+npx wrangler secret put MODERATION_TOKEN
+# pega: token arbitrario largo, lo necesitas para POST /moderate
+
+npx wrangler secret put GITHUB_TOKEN
+# pega: pat con scope 'repo' (solo para el cron de backup semanal)
+```
+
+### 4. desplegar el worker
+
+```bash
+npx wrangler deploy
+```
+
+primera vez: funcionará en `arxiu-worker.<tu-subdominio>.workers.dev`.
+
+### 5. conectar al dominio (opcional pero recomendado)
+
+en el dashboard de cloudflare → dns:
+- crea un record `a` o `aaaa` proxied para `api.arxiu.meowrhino.studio`.
+
+luego descomenta el bloque `[[routes]]` en `wrangler.toml` y redeploy:
+
+```toml
+[[routes]]
+pattern = "api.arxiu.meowrhino.studio/*"
+zone_name = "meowrhino.studio"
+```
+
+```bash
+npx wrangler deploy
+```
+
+### 6. frontend en cloudflare pages
+
+en el dashboard → pages → conectar con este repo:
+- build command: (vacío)
+- output dir: `/`
+- custom domain: `arxiu.meowrhino.studio`
+
+actualiza `app.js` línea 2 con la url final de la api (`https://api.arxiu.meowrhino.studio`).
+
+### 7. verificar
+
+- abre `https://arxiu.meowrhino.studio` y debes ver los 13 archivos.
+- sube un pdf nuevo desde la interfaz.
+- clica un archivo → debe abrirse el pdf.
+- `curl https://api.arxiu.meowrhino.studio/health` → `{"ok":true}`.
 
 ---
 
-## setup y mantenimiento (guía para el dueño del repo)
+## moderación
 
-para que todo funcione, necesitas configurar tres cosas: el **frontend**, el **backend (worker)** y los **workflows**.
+```bash
+# marcar como flagged (deja de aparecer en listados)
+curl -X POST https://api.arxiu.meowrhino.studio/moderate \
+  -H "x-moderation-token: TU_TOKEN" \
+  -H "content-type: application/json" \
+  -d '{"id":"<id>","action":"flag"}'
 
-### paso 1: desplegar el frontend en github pages
-
-1.  ve a la pestaña `settings` de tu repositorio en github.
-2.  en el menú de la izquierda, ve a `pages`.
-3.  en `source`, selecciona la rama `main` y la carpeta `/ (root)`.
-4.  haz clic en `save`.
-
-en unos minutos, tu página estará disponible en `https://TUNOMBRE.github.io/arxiu`.
-
-### paso 2: desplegar el backend en cloudflare workers
-
-1.  **instala wrangler**, la herramienta de línea de comandos de cloudflare:
-    ```bash
-    npm install -g wrangler
-    ```
-2.  **inicia sesión** en tu cuenta de cloudflare:
-    ```bash
-    wrangler login
-    ```
-3.  **navega a la carpeta `worker`** del proyecto:
-    ```bash
-    cd worker
-    ```
-4.  **publica el worker** por primera vez:
-    ```bash
-    wrangler deploy
-    ```
-    la primera vez te hará algunas preguntas. puedes aceptar los valores por defecto. al final te dará una url tipo `https://arxiu-worker.TUNOMBRE.workers.dev`.
-
-5.  **configura las variables secretas**:
-    -   **`GITHUB_TOKEN`**: necesitas un [personal access token](https://github.com/settings/tokens/new) con permisos de `repo` (control total de repositorios privados y públicos).
-        ```bash
-        wrangler secret put GITHUB_TOKEN
-        ```
-        pega tu token (empieza por `ghp_...`) y pulsa enter.
-
-    -   **`ALLOWED_ORIGIN`**: la url de tu github pages para evitar que otras webs usen tu worker.
-        ```bash
-        wrangler secret put ALLOWED_ORIGIN
-        ```
-        pega la url de tu github pages (ej: `https://meowrhino.github.io`).
-
-6.  **actualiza la url del worker en `app.js`**:
-    -   abre el archivo `app.js`.
-    -   en la línea 5, cambia la `WORKER_URL` por la url que te dio wrangler en el paso 4.
-    -   guarda, haz commit y push de este cambio.
-
-### paso 3: subir los workflows de github actions
-
-el token de integración de manus no tiene permisos para crear workflows (es una restricción de seguridad de github). tienes que subirlos tú manualmente:
-
-1.  en la web de github, ve a tu repositorio.
-2.  haz clic en `add file > create new file`.
-3.  en el nombre del archivo, escribe `.github/workflows/update-hashtags.yml`.
-4.  copia y pega el contenido del archivo `update-hashtags.yml` que está en la carpeta `worker` de este proyecto.
-5.  haz clic en `commit new file`.
-6.  repite los pasos 2-5 para el archivo `content-filter.yml`.
+# borrar del todo (borra de r2 y marca como deleted en d1)
+curl ... -d '{"id":"<id>","action":"delete"}'
+```
 
 ---
 
@@ -104,21 +153,18 @@ el token de integración de manus no tiene permisos para crear workflows (es una
 
 ```
 /arxiu
-├── .github/workflows/   # automatizaciones
-│   ├── content-filter.yml # revisa pdfs en busca de palabrotas
-│   └── update-hashtags.yml# actualiza la lista de hashtags
-├── data/                # aquí se guardan los pdfs subidos
-│   └── .gitkeep         # placeholder para que la carpeta exista
-├── manus/               # notas del proceso de creación
-│   └── ...
-├── worker/              # código del backend (cloudflare worker)
-│   ├── worker.js        # la lógica del proxy seguro
-│   └── wrangler.toml    # configuración del worker
-├── app.js               # toda la lógica del frontend
-├── data.json            # el índice de todos los archivos
-├── index.html           # la estructura de la página
-├── README.md            # esta guía
-└── style.css            # todos los estilos visuales
+├── index.html          # frontend
+├── style.css
+├── app.js
+├── favicon.svg
+├── data/               # backup automático de pdfs (cron semanal)
+├── data.json           # backup automático del índice (cron semanal)
+└── worker/
+    ├── worker.js       # api rest + crons
+    ├── wrangler.toml
+    ├── schema.sql
+    ├── migrate-data.sql
+    └── migrate.sh
 ```
 
 ---
