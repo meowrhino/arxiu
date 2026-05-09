@@ -1,4 +1,18 @@
 {
-  "files": [],
-  "hashtags": []
+  "files": [
+    {
+      "id": "moq3ixjmhuhy",
+      "filename": "test.pdf",
+      "author": "manu",
+      "hashtags": [
+        "test"
+      ],
+      "is_18_plus": false,
+      "upload_date": "2026-05-03T18:20:28.882Z",
+      "is_published": true
+    }
+  ],
+  "hashtags": [
+    "test"
+  ]
 }
