@@ -10,9 +10,33 @@
       "is_18_plus": false,
       "upload_date": "2026-05-03T18:20:28.882Z",
       "is_published": true
+    },
+    {
+      "id": "mp3ztg9ol636",
+      "filename": "Estoy_cansado.pdf",
+      "author": "David",
+      "hashtags": [
+        "<<<<<<<<<<<<<3"
+      ],
+      "is_18_plus": false,
+      "upload_date": "2026-05-13T11:45:27.708Z",
+      "is_published": true
+    },
+    {
+      "id": "mp3zu55xdrs2",
+      "filename": "fafa.pdf",
+      "author": "aa",
+      "hashtags": [
+        "palabra"
+      ],
+      "is_18_plus": false,
+      "upload_date": "2026-05-13T11:45:59.973Z",
+      "is_published": true
     }
   ],
   "hashtags": [
+    "<<<<<<<<<<<<<3",
+    "palabra",
     "test"
   ]
 }
