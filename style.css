@@ -421,6 +421,11 @@ body::after {
   font-size:      10px;
   font-family:    var(--font-mono);
   color:          var(--text-muted);
+  text-decoration: none;
+}
+
+#status-info:hover {
+  text-decoration: underline;
 }
 
 
@@ -477,11 +482,6 @@ body.mode-18 .file-card:hover {
   line-height:    1.2;
   word-break:     break-word;
   overflow-wrap:  break-word;
-  /* máximo 2 líneas */
-  display:        -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow:       hidden;
 }
 
 /* autor debajo del nombre */

@@ -258,7 +258,7 @@ function isPdfMagicBytes(bytes) {
 
 function sanitizeFilename(name) {
   const cleaned = name.trim()
-    .replace(/\s+/g, "_")
+    .replace(/\s+/g, " ")
     .replace(/[<>:"/\\|?*\x00-\x1f]/g, "");
   return cleaned.toLowerCase().endsWith(".pdf") ? cleaned : `${cleaned}.pdf`;
 }

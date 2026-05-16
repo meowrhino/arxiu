@@ -928,7 +928,7 @@ function uploadToApi(file, fields, onProgress) {
 function sanitizeFilename(name) {
   return name
     .trim()
-    .replace(/\s+/g, "_")
+    .replace(/\s+/g, " ")
     .replace(/[<>:"/\\|?*]/g, "");
 }
 
