@@ -1,0 +1,31 @@
+name = "arxiu-worker"
+main = "worker/worker.js"
+compatibility_date = "2024-09-23"
+
+[assets]
+directory = "./"
+binding = "ASSETS"
+
+# crons:
+#   diario 03:00 utc → reindexa la tabla hashtags
+#   domingos 04:00 utc → backup d1 + r2 al repo github (requiere GITHUB_TOKEN)
+[triggers]
+crons = ["0 3 * * *", "0 4 * * 7"]
+
+[[d1_databases]]
+binding       = "DB"
+database_name = "arxiu-db"
+database_id   = "e1f85ca6-db76-4139-88c5-d3c7a9c9a860"
+
+[[r2_buckets]]
+binding     = "STORAGE"
+bucket_name = "arxiu-pdfs"
+
+[[kv_namespaces]]
+binding = "RATE_LIMIT"
+id      = "224fd9135ca74d2bad88a95237716b26"
+
+# secrets (via `wrangler secret put`):
+#   ALLOWED_ORIGIN      — url del frontend, ej. https://arxiu.meowrhino.studio
+#   MODERATION_TOKEN    — token arbitrario para el endpoint POST /moderate
+#   GITHUB_TOKEN        — pat con scope 'repo' (solo para backup semanal)

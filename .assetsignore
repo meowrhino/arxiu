@@ -1,0 +1,15 @@
+.git
+.gitignore
+.DS_Store
+.claude
+.vscode
+.wrangler
+node_modules
+worker
+data
+manus
+README.md
+TODO.md
+wrangler.toml
+.assetsignore
+*.log

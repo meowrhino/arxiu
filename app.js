@@ -1,5 +1,5 @@
 const CONFIG = {
-  API_URL:       "https://api.arxiu.meowrhino.studio",
+  API_URL:       "",
   MAX_FILE_SIZE: 2 * 1024 * 1024,
 };
 
