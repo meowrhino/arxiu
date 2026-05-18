@@ -19,7 +19,7 @@ export default {
       if (isRead          && path.startsWith("/files/"))      return cors(request, env, await serveFile(path.slice(7), env));
       if (method === "POST" && path === "/moderate")          return cors(request, env, await moderate(request, env));
       if (isRead          && path === "/health")              return cors(request, env, json(200, { ok: true }));
-      return cors(request, env, json(404, { error: "not found" }));
+      return env.ASSETS.fetch(request);
     } catch (err) {
       return cors(request, env, json(500, { error: err.message }));
     }
