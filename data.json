@@ -1,42 +1,86 @@
 {
   "files": [
     {
-      "id": "moq3ixjmhuhy",
-      "filename": "test.pdf",
-      "author": "manu",
+      "id": "mp896jcdfjc6",
+      "filename": "soy no-binarie y no es una fase.pdf",
+      "author": "anónime",
       "hashtags": [
-        "test"
+        "género",
+        "no-binarie",
+        "identidad"
       ],
       "is_18_plus": false,
-      "upload_date": "2026-05-03T18:20:28.882Z",
+      "upload_date": "2026-05-16T11:18:39.469Z",
       "is_published": true
     },
     {
-      "id": "mp3ztg9ol636",
-      "filename": "Estoy_cansado.pdf",
-      "author": "David",
+      "id": "mp896k3onkjc",
+      "filename": "si veo robar en el súper, miro pa otro lado.pdf",
+      "author": "anónime",
       "hashtags": [
-        "<<<<<<<<<<<<<3"
+        "clase",
+        "comida",
+        "capitalismo"
       ],
       "is_18_plus": false,
-      "upload_date": "2026-05-13T11:45:27.708Z",
+      "upload_date": "2026-05-16T11:18:40.452Z",
       "is_published": true
     },
     {
-      "id": "mp3zu55xdrs2",
-      "filename": "fafa.pdf",
-      "author": "aa",
+      "id": "mp896kgza10h",
+      "filename": "si no es gratis, no es público.pdf",
+      "author": "anónime",
       "hashtags": [
-        "palabra"
+        "transporte",
+        "público",
+        "ciudad"
       ],
       "is_18_plus": false,
-      "upload_date": "2026-05-13T11:45:59.973Z",
+      "upload_date": "2026-05-16T11:18:40.931Z",
+      "is_published": true
+    },
+    {
+      "id": "mp896ksqtosu",
+      "filename": "sí, pago la pública aunque tenga mutua.pdf",
+      "author": "anónime",
+      "hashtags": [
+        "sanidad",
+        "pública",
+        "mutuas"
+      ],
+      "is_18_plus": false,
+      "upload_date": "2026-05-16T11:18:41.354Z",
+      "is_published": true
+    },
+    {
+      "id": "mp896l4dqbrj",
+      "filename": "follar bien es hablar mucho, no menos.pdf",
+      "author": "anónime",
+      "hashtags": [
+        "consenso",
+        "sexo",
+        "explícito"
+      ],
+      "is_18_plus": true,
+      "upload_date": "2026-05-16T11:18:41.773Z",
       "is_published": true
     }
   ],
   "hashtags": [
-    "<<<<<<<<<<<<<3",
-    "palabra",
-    "test"
+    "capitalismo",
+    "ciudad",
+    "clase",
+    "comida",
+    "consenso",
+    "explícito",
+    "género",
+    "identidad",
+    "mutuas",
+    "no-binarie",
+    "pública",
+    "público",
+    "sanidad",
+    "sexo",
+    "transporte"
   ]
 }
