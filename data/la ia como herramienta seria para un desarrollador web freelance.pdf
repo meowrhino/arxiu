@@ -1,0 +1,576 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [7 0 R 9 0 R 11 0 R 13 0 R 15 0 R] /Count 5 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Oblique /Encoding /WinAnsiEncoding >>
+endobj
+6 0 obj
+<< /Length 4025 >>
+stream
+BT /F2 28 Tf 60 754 Td (la ia como herramienta seria para un desarrollador web freelance) Tj ET
+BT 60 690 Td
+/F3 11 Tf (Investigación hecha con IA \(Claude\). Documento sobre usar modelos de IA como) Tj
+ET
+BT 60 674 Td
+/F1 11 Tf (herramienta seria en un flujo de desarrollo web freelance: modelos grandes vs) Tj
+ET
+BT 60 658 Td
+/F1 11 Tf (locales, y el experimento de fine-tuning "Frankenstein".) Tj
+ET
+BT /F2 22 Tf 60 618 Td (TL;DR) Tj ET
+BT 60 582 Td
+/F1 11 Tf (  - ) Tj
+/F1 11 Tf (Un modelo "mejor" suele ser más grande porque las ) Tj
+/F2 11 Tf (leyes de escalado) Tj
+/F1 11 Tf ( dicen que) Tj
+ET
+BT 60 566 Td
+/F1 11 Tf (    ) Tj
+/F1 11 Tf (más parámetros + más datos + más cómputo = menos errores; pero los modelos) Tj
+ET
+BT 60 550 Td
+/F1 11 Tf (    ) Tj
+/F1 11 Tf (frontera \(cientos de miles de millones de parámetros\) necesitan cientos de GB o) Tj
+ET
+BT 60 534 Td
+/F1 11 Tf (    ) Tj
+/F1 11 Tf (TB de memoria y muchas GPUs en un centro de datos. Un MacBook Air M5 con 16-32) Tj
+ET
+BT 60 518 Td
+/F1 11 Tf (    ) Tj
+/F1 11 Tf (GB solo corre modelos pequeños \(hasta ~30B con cuantización\), no los grandes.) Tj
+ET
+BT /F1 11 Tf 60 502 Td (  - Para trabajo web real \(HTML/CSS/JS a mano, sitios estáticos\), los modelos) Tj ET
+BT /F1 11 Tf 60 486 Td (    locales gratis en Ollama \(Qwen3-Coder 30B, Qwen2.5-Coder, Llama 3.x\) bastan) Tj ET
+BT /F1 11 Tf 60 470 Td (    para bocetos, snippets, autocompletado y tareas repetitivas. Para razonamiento) Tj ET
+BT /F1 11 Tf 60 454 Td (    largo, proyectos multi-archivo y gusto estético, Claude Sonnet/Opus siguen) Tj ET
+BT /F1 11 Tf 60 438 Td (    siendo claramente superiores.) Tj ET
+BT 60 422 Td
+/F1 11 Tf (  - ) Tj
+/F1 11 Tf (División práctica: ) Tj
+/F2 11 Tf (Haiku) Tj
+/F1 11 Tf ( para lo mecánico, ) Tj
+/F2 11 Tf (Sonnet) Tj
+/F1 11 Tf ( como caballo de batalla,) Tj
+ET
+BT 60 406 Td
+/F1 11 Tf (    ) Tj
+/F2 11 Tf (Opus/Fable) Tj
+/F1 11 Tf ( para arquitectura y depuración difícil.) Tj
+ET
+BT /F1 11 Tf 60 390 Td (  - Para el experimento "Frankenstein" \(100 webs -> 5 propuestas nuevas\), lo más) Tj ET
+BT /F1 11 Tf 60 374 Td (    efectivo NO es entrenar nada: usa contexto largo / Projects / few-shot con un) Tj ET
+BT /F1 11 Tf 60 358 Td (    modelo grande. El fine-tuning LoRA con MLX en tu Mac es un experimento) Tj ET
+BT /F1 11 Tf 60 342 Td (    divertido que aprenderá tu estilo pero no te dará inteligencia, y con 100) Tj ET
+BT /F1 11 Tf 60 326 Td (    ejemplos sobreajusta rápido. Entrenar desde cero es inviable \(millones de) Tj ET
+BT /F1 11 Tf 60 310 Td (    dólares\).) Tj ET
+BT /F2 22 Tf 60 270 Td (Key findings) Tj ET
+BT 60 234 Td
+/F1 11 Tf (  1. ) Tj
+/F2 11 Tf (Los parámetros son los "mandos" ajustables del modelo.) Tj
+/F1 11 Tf ( Un modelo de 70.000) Tj
+ET
+BT 60 218 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (millones de parámetros tiene 70.000 millones de números afinados en el) Tj
+ET
+BT 60 202 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (entrenamiento. La regla de Chinchilla \(Hoffmann et al., DeepMind, 2022\) fija) Tj
+ET
+BT 60 186 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (~20 tokens de entrenamiento por parámetro para el óptimo de cómputo.) Tj
+ET
+BT 60 170 Td
+/F1 11 Tf (  2. ) Tj
+/F2 11 Tf (Las leyes de escalado explican por qué "más grande" = "mejor".) Tj
+/F1 11 Tf ( El error baja) Tj
+ET
+BT 60 154 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (de forma predecible al subir parámetros y datos, pero con rendimientos) Tj
+ET
+BT 60 138 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (decrecientes \(ley de potencia\): cada mejora cuesta cada vez más cómputo.) Tj
+ET
+BT 60 122 Td
+/F1 11 Tf (  3. ) Tj
+/F2 11 Tf (La familia Claude \(Haiku -> Sonnet -> Opus -> Fable\) refleja esto.) Tj
+/F1 11 Tf ( Más grande) Tj
+ET
+BT 60 106 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (= más capaz, más caro y más lento. Precios: Haiku 4.5 ~$1/$5 por millón de) Tj
+ET
+BT 60 90 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (tokens, Sonnet ~$3/$15, Opus 4.8 $5/$25, Fable 5 $10/$50.) Tj
+ET
+BT 60 74 Td
+/F1 11 Tf (  4. ) Tj
+/F2 11 Tf (Los modelos grandes NECESITAN centros de datos.) Tj
+/F1 11 Tf ( Un 70B necesita ~140 GB solo) Tj
+ET
+
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 6 0 R /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> >>
+endobj
+8 0 obj
+<< /Length 4313 >>
+stream
+BT 60 766 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (para los pesos en FP16; los frontera \(a GPT-4 se le atribuye ~1 billón de) Tj
+ET
+BT 60 750 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (parámetros, sin confirmar\) necesitan cientos de GB o TB repartidos entre) Tj
+ET
+BT 60 734 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (muchas GPUs. Un MacBook Air M5 tiene 16-32 GB.) Tj
+ET
+BT 60 718 Td
+/F1 11 Tf (  5. ) Tj
+/F2 11 Tf (Entrenar es mucho más caro que usar \(inferencia\).) Tj
+/F1 11 Tf ( Sam Altman confirmó que) Tj
+ET
+BT 60 702 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (entrenar GPT-4 costó ">$100 millones"; se estima ~25.000 GPUs A100 durante) Tj
+ET
+BT 60 686 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (~100 días. Usar el modelo \(inferencia\) es lo que haces con Claude Code o con) Tj
+ET
+BT 60 670 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (modelos locales pequeños en tu Mac.) Tj
+ET
+BT 60 654 Td
+/F1 11 Tf (  6. ) Tj
+/F2 11 Tf (Los modelos locales han cruzado un umbral útil.) Tj
+/F1 11 Tf ( Qwen3-Coder 30B \(arquitectura) Tj
+ET
+BT 60 638 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (MoE, 30,5B totales pero solo ~3,3B activos por token\) corre bien en un Mac de) Tj
+ET
+BT 60 622 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (32 GB a decenas de tokens/segundo y da buena calidad para código. Pero sigue) Tj
+ET
+BT 60 606 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (por detrás de Sonnet/Opus en las tareas difíciles.) Tj
+ET
+BT 60 590 Td
+/F1 11 Tf (  7. ) Tj
+/F2 11 Tf (Para tu experimento, RAG/contexto largo > fine-tuning para 100 ejemplos.) Tj
+/F1 11 Tf ( El) Tj
+ET
+BT 60 574 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (fine-tuning ajusta estilo, no conocimiento ni razonamiento; con 100 ejemplos) Tj
+ET
+BT 60 558 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (sobreajusta rápido. LoRA con MLX es viable \(un 8B se afina en ~1 hora en 16) Tj
+ET
+BT 60 542 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (GB\) pero para inspiración creativa el contexto largo de un modelo grande rinde) Tj
+ET
+BT 60 526 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (más.) Tj
+ET
+BT /F2 22 Tf 60 486 Td (Por qué un mejor modelo suele ser uno más) Tj ET
+BT /F2 22 Tf 60 456 Td (grande) Tj ET
+BT /F1 11 Tf 60 420 Td (Cada parámetro es como una perilla de una gigantesca mesa de mezclas: un número que) Tj ET
+BT /F1 11 Tf 60 404 Td (el modelo ajusta en el entrenamiento. Un token es el trozo de texto que lee y) Tj ET
+BT /F1 11 Tf 60 388 Td (escribe. Durante el entrenamiento el modelo lee tokens y gira las perillas para) Tj ET
+BT /F1 11 Tf 60 372 Td (reducir errores; en inferencia las perillas están fijas.) Tj ET
+BT /F1 11 Tf 60 346 Td (La regla de Chinchilla \(Hoffmann et al., 2022\) dice ~20 tokens por parámetro para) Tj ET
+BT /F1 11 Tf 60 330 Td (el óptimo de cómputo. En la práctica se entrena con muchos más: Llama 3 se) Tj ET
+BT /F1 11 Tf 60 314 Td (preentrenó con "más de 15 billones de tokens", porque interesa un modelo más) Tj ET
+BT /F1 11 Tf 60 298 Td (pequeño \(barato de usar\) aunque cueste más entrenarlo.) Tj ET
+BT /F1 11 Tf 60 272 Td (Analogía de las leyes de escalado: estudiar para un examen tienes tres recursos --) Tj ET
+BT /F1 11 Tf 60 256 Td (tamaño de cerebro \(parámetros\), cuántos libros lees \(datos\) y cuántas horas) Tj ET
+BT /F1 11 Tf 60 240 Td (estudias \(cómputo\). Si los subes de forma equilibrada, la nota sube de forma) Tj ET
+BT /F1 11 Tf 60 224 Td (predecible. Pero son rendimientos decrecientes: para bajar el error a la mitad) Tj ET
+BT /F1 11 Tf 60 208 Td (puede que necesites 10x más de todo.) Tj ET
+BT 60 182 Td
+/F2 11 Tf (Memoria:) Tj
+/F1 11 Tf ( para funcionar, todos los pesos deben estar cargados en memoria a la vez.) Tj
+ET
+BT 60 166 Td
+/F1 11 Tf (En FP16 \(2 bytes/parámetro\) un 70B pide ~140 GB; con cuantización a 4 bits baja a) Tj
+ET
+BT 60 150 Td
+/F1 11 Tf (~40 GB. Un frontera de cientos de miles de millones es imposible en una máquina de) Tj
+ET
+BT 60 134 Td
+/F1 11 Tf (consumo. Además importa el ancho de banda de memoria \(el MacBook Air M5 da 153 GB/s) Tj
+ET
+BT 60 118 Td
+/F1 11 Tf (de memoria unificada\). El Neural Engine acelera modelos pequeños que quepan en RAM,) Tj
+ET
+BT 60 102 Td
+/F1 11 Tf (pero no hace que un 400B quepa en 32 GB.) Tj
+ET
+BT 60 76 Td
+/F2 11 Tf (Técnicas que cambian el cálculo:) Tj
+/F1 11 Tf ( cuantización \(menos bits por peso, ~3,5x menos) Tj
+ET
+BT 60 60 Td
+/F1 11 Tf (memoria a 4 bits\), destilación \(un modelo grande "profesor" enseña a uno pequeño\),) Tj
+ET
+
+endstream
+endobj
+9 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 8 0 R /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> >>
+endobj
+10 0 obj
+<< /Length 3966 >>
+stream
+BT 60 766 Td
+/F1 11 Tf (Mixture-of-Experts \(MoE: muchos expertos y un enrutador que activa solo unos pocos) Tj
+ET
+BT 60 750 Td
+/F1 11 Tf (por token\), y calidad de datos + RLHF \(un modelo bien entrenado y alineado puede) Tj
+ET
+BT 60 734 Td
+/F1 11 Tf (superar a uno más grande peor entrenado\).) Tj
+ET
+BT /F2 22 Tf 60 694 Td (Modelos locales gratuitos para tu trabajo) Tj ET
+BT /F2 22 Tf 60 664 Td (web) Tj ET
+BT /F1 11 Tf 60 628 Td (Regla a 4 bits: ~0,5-0,7 GB de RAM por cada mil millones de parámetros, más margen) Tj ET
+BT /F1 11 Tf 60 612 Td (para sistema y contexto. Modelos concretos vía Ollama:) Tj ET
+BT 60 586 Td
+/F1 11 Tf (  - ) Tj
+/F2 11 Tf (Qwen3-Coder 30B \(A3B / "Flash"\):) Tj
+/F1 11 Tf ( probablemente tu mejor opción local. MoE,) Tj
+ET
+BT 60 570 Td
+/F1 11 Tf (    ) Tj
+/F1 11 Tf (~3,3B activos, muy rápido; la build Q4_K_M pesa ~19 GB \(mejor en 32 GB\).) Tj
+ET
+BT 60 554 Td
+/F1 11 Tf (  - ) Tj
+/F2 11 Tf (Qwen2.5-Coder \(7B, 14B, 32B\):) Tj
+/F1 11 Tf ( el 7B ideal para autocompletado; el 32B rinde) Tj
+ET
+BT 60 538 Td
+/F1 11 Tf (    ) Tj
+/F1 11 Tf (comparable a GPT-4o en benchmarks de código pero es lento.) Tj
+ET
+BT 60 522 Td
+/F1 11 Tf (  - ) Tj
+/F2 11 Tf (Llama 3.x) Tj
+/F1 11 Tf ( \(8B general; 70B solo con 64 GB\), ) Tj
+/F2 11 Tf (DeepSeek-R1 destilados) Tj
+/F1 11 Tf ( \(7B/14B,) Tj
+ET
+BT 60 506 Td
+/F1 11 Tf (    ) Tj
+/F1 11 Tf (buenos para razonar\), y Gemma/Mistral/Codegemma/Starcoder2 \(ligeros, para) Tj
+ET
+BT 60 490 Td
+/F1 11 Tf (    ) Tj
+/F1 11 Tf (autocompletado\).) Tj
+ET
+BT /F1 11 Tf 60 464 Td (Los locales manejan bien el 70-80% de las tareas cotidianas de código: bocetos,) Tj ET
+BT /F1 11 Tf 60 448 Td (snippets vanilla, autocompletado, tareas mecánicas, documentación. Se quedan cortos) Tj ET
+BT /F1 11 Tf 60 432 Td (frente a Sonnet/Opus en razonamiento largo, coherencia multi-archivo, instrucciones) Tj ET
+BT /F1 11 Tf 60 416 Td (matizadas, gusto estético y frameworks poco comunes.) Tj ET
+BT 60 390 Td
+/F2 11 Tf (Herramientas:) Tj
+/F1 11 Tf ( Ollama \(API local en localhost:11434\), LM Studio \(GUI\), Continue.dev) Tj
+ET
+BT 60 374 Td
+/F1 11 Tf (\(extensión para VS Code/JetBrains\), Zed \(editor en Rust con Ollama nativo\), Aider) Tj
+ET
+BT 60 358 Td
+/F1 11 Tf (\(CLI para repos\). Consejo: usa modelos "FIM" \(fill-in-the-middle\) como) Tj
+ET
+BT 60 342 Td
+/F1 11 Tf (qwen2.5-coder o starcoder2 para autocompletado; los de chat genéricos dan mal) Tj
+ET
+BT 60 326 Td
+/F1 11 Tf (resultado ahí.) Tj
+ET
+BT /F2 22 Tf 60 286 Td (Qué tarea darle a cada Claude) Tj ET
+BT 60 250 Td
+/F1 11 Tf (  - ) Tj
+/F2 11 Tf (Haiku 4.5) Tj
+/F1 11 Tf ( \($1/$5\): tareas mecánicas -- renombrar, convertir formatos, extraer) Tj
+ET
+BT 60 234 Td
+/F1 11 Tf (    ) Tj
+/F1 11 Tf (datos, clasificar, primeros borradores, lectura de archivos como sub-agente.) Tj
+ET
+BT 60 218 Td
+/F1 11 Tf (  - ) Tj
+/F2 11 Tf (Sonnet) Tj
+/F1 11 Tf ( \($3/$15\): tu caballo de batalla -- la mayoría del código diario,) Tj
+ET
+BT 60 202 Td
+/F1 11 Tf (    ) Tj
+/F1 11 Tf (componentes, refactors, revisión, uso de herramientas.) Tj
+ET
+BT 60 186 Td
+/F1 11 Tf (  - ) Tj
+/F2 11 Tf (Opus 4.8) Tj
+/F1 11 Tf ( \($5/$25\): arquitectura, decisiones de diseño, proyectos multi-archivo,) Tj
+ET
+BT 60 170 Td
+/F1 11 Tf (    ) Tj
+/F1 11 Tf (depuración difícil, planificación de sesiones largas.) Tj
+ET
+BT 60 154 Td
+/F1 11 Tf (  - ) Tj
+/F2 11 Tf (Fable 5) Tj
+/F1 11 Tf ( \($10/$50\): solo cuando la capacidad extra cambia el resultado; ten) Tj
+ET
+BT 60 138 Td
+/F1 11 Tf (    ) Tj
+/F1 11 Tf (Opus/Sonnet como fallback más barato.) Tj
+ET
+BT 60 112 Td
+/F1 11 Tf (El output domina la factura \(Fable cuesta 10x el output de Haiku\). Todos menos) Tj
+ET
+BT 60 96 Td
+/F1 11 Tf (Haiku tienen ventana de 1M de tokens \(Haiku, 200K\). El prompt caching ahorra hasta) Tj
+ET
+BT 60 80 Td
+/F1 11 Tf (el 90% en tokens de entrada repetidos \(system prompt, ejemplos, referencias) Tj
+ET
+BT 60 64 Td
+/F1 11 Tf (estables\) -- clave si reutilizas tu librería de componentes. El Batch API da 50% de) Tj
+ET
+
+endstream
+endobj
+11 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 10 0 R /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> >>
+endobj
+12 0 obj
+<< /Length 3786 >>
+stream
+BT 60 766 Td
+/F1 11 Tf (descuento para trabajo no urgente. Truco de estilo del Claude Cookbook: Claude) Tj
+ET
+BT 60 750 Td
+/F1 11 Tf (tiende a converger en diseños genéricos \("AI slop"\) salvo que le pidas) Tj
+ET
+BT 60 734 Td
+/F1 11 Tf (explícitamente tipografía, color y movimiento con criterio.) Tj
+ET
+BT /F2 22 Tf 60 694 Td (El experimento "Frankenstein": 100 webs) Tj ET
+BT /F2 22 Tf 60 664 Td (-> 5 propuestas nuevas) Tj ET
+BT 60 628 Td
+/F2 11 Tf (Opción A \(recomendada\) -- no entrenar nada: RAG / contexto largo / few-shot.) Tj
+/F1 11 Tf ( Casi) Tj
+ET
+BT 60 612 Td
+/F1 11 Tf (con seguridad la más efectiva para 100 ejemplos. El fine-tuning enseña estilo, no) Tj
+ET
+BT 60 596 Td
+/F1 11 Tf (conocimiento ni razonamiento; RAG y el contexto largo "inyectan" ejemplos que el) Tj
+ET
+BT 60 580 Td
+/F1 11 Tf (modelo combina con su inteligencia intacta. Cómo: usa un modelo grande con contexto) Tj
+ET
+BT 60 564 Td
+/F1 11 Tf (largo \(o Projects\), dale 5-15 de tus mejores webs como few-shot, y pídele que) Tj
+ET
+BT 60 548 Td
+/F1 11 Tf (combine patrones. Ventajas: cero coste, cero sobreajuste, cambias los ejemplos al) Tj
+ET
+BT 60 532 Td
+/F1 11 Tf (instante. Escribe un DESIGN.md con tu lenguaje visual y pásalo como contexto.) Tj
+ET
+BT 60 506 Td
+/F2 11 Tf (Opción B -- fine-tuning de un open-weight pequeño \(LoRA/QLoRA con MLX\).) Tj
+/F1 11 Tf ( Buen) Tj
+ET
+BT 60 490 Td
+/F1 11 Tf (proyecto de aprendizaje. MLX \(framework de Apple para Apple Silicon\) da LoRA con un) Tj
+ET
+BT 60 474 Td
+/F1 11 Tf (solo comando: un 8B se afina en ~1 hora en 16 GB; un 3B a 4 bits con 90 ejemplos) Tj
+ET
+BT 60 458 Td
+/F1 11 Tf (tardó 3-4 minutos con ~5 GB de pico. LoRA congela el modelo base y entrena matrices) Tj
+ET
+BT 60 442 Td
+/F1 11 Tf (pequeñas \(<1% de los parámetros\); QLoRA añade cuantización a 4 bits. mlx-lm espera) Tj
+ET
+BT 60 426 Td
+/F1 11 Tf (JSONL \(formatos chat/tools/completions/text\); divide cada web en secciones \(nav,) Tj
+ET
+BT 60 410 Td
+/F1 11 Tf (hero, tarjetas, footer\) para multiplicar ejemplos, usa --mask-prompt para calcular) Tj
+ET
+BT 60 394 Td
+/F1 11 Tf (la pérdida solo sobre el código. El paper WebSight \(arXiv 2403.09029\) halló que) Tj
+ET
+BT 60 378 Td
+/F1 11 Tf (ejemplos sintéticos y limpios rinden mejor que HTML real desordenado. ¿100 webs) Tj
+ET
+BT 60 362 Td
+/F1 11 Tf (bastan? Es poco: el mínimo práctico de estilo suele citarse en 100-500; por debajo) Tj
+ET
+BT 60 346 Td
+/F1 11 Tf (el modelo memoriza en vez de generalizar \(el survey PEFT, arXiv 2504.14117, lo) Tj
+ET
+BT 60 330 Td
+/F1 11 Tf (confirma\). Usa early stopping. Qué esperar: aprende tu estilo y formato, NO gana) Tj
+ET
+BT 60 314 Td
+/F1 11 Tf (inteligencia nueva.) Tj
+ET
+BT 60 288 Td
+/F2 11 Tf (Opción C -- entrenar desde cero: inviable.) Tj
+/F1 11 Tf ( Cuesta millones de dólares, billones de) Tj
+ET
+BT 60 272 Td
+/F1 11 Tf (tokens y miles de GPUs. No es opción para un individuo.) Tj
+ET
+BT 60 246 Td
+/F2 11 Tf (Licencias \(importante con webs de clientes\):) Tj
+/F1 11 Tf ( en la UE/España el autor es el primer) Tj
+ET
+BT 60 230 Td
+/F1 11 Tf (titular del copyright; el pago del cliente no transfiere derechos salvo cesión por) Tj
+ET
+BT 60 214 Td
+/F1 11 Tf (escrito. Muchos contratos freelance incluyen "work for hire" o cesión total. Lo más) Tj
+ET
+BT 60 198 Td
+/F1 11 Tf (seguro: entrena/inspira solo con webs tuyas o con permiso explícito.) Tj
+ET
+BT /F2 22 Tf 60 158 Td (Recomendaciones) Tj ET
+BT 60 122 Td
+/F2 11 Tf (Fase 0 \(ahora, sin coste\):) Tj
+/F1 11 Tf ( sigue con Claude Code + Sonnet como caballo de batalla;) Tj
+ET
+BT 60 106 Td
+/F1 11 Tf (Haiku para volumen mecánico, Opus para arquitectura y depuración, Fable solo si) Tj
+ET
+BT 60 90 Td
+/F1 11 Tf (justifica el precio. Activa prompt caching. Añade a tu CLAUDE.md instrucciones) Tj
+ET
+BT 60 74 Td
+/F1 11 Tf (anti-"AI slop".) Tj
+ET
+
+endstream
+endobj
+13 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 12 0 R /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> >>
+endobj
+14 0 obj
+<< /Length 2452 >>
+stream
+BT 60 766 Td
+/F2 11 Tf (Fase 1 \(Frankenstein sensato\):) Tj
+/F1 11 Tf ( empieza por la Opción A -- crea un Project con 10-15) Tj
+ET
+BT 60 750 Td
+/F1 11 Tf (de tus mejores webs propias y pide variaciones combinatorias. Estructura tu) Tj
+ET
+BT 60 734 Td
+/F1 11 Tf (librería de bloques en un DESIGN.md como ejemplos few-shot.) Tj
+ET
+BT 60 708 Td
+/F2 11 Tf (Fase 2 \(local para lo cotidiano\):) Tj
+/F1 11 Tf ( en Ollama, Qwen3-Coder 30B \(con 32 GB\) o) Tj
+ET
+BT 60 692 Td
+/F1 11 Tf (Qwen2.5-Coder 7B/14B para el Air. Conecta un modelo local al editor con) Tj
+ET
+BT 60 676 Td
+/F1 11 Tf (Continue.dev o Zed.) Tj
+ET
+BT 60 650 Td
+/F2 11 Tf (Fase 3 \(aprender fine-tuning, opcional\):) Tj
+/F1 11 Tf ( prueba LoRA con mlx-lm sobre Qwen2.5-Coder) Tj
+ET
+BT 60 634 Td
+/F1 11 Tf (3B/7B usando SOLO tus webs propias, con early stopping. Evalúa honestamente: si) Tj
+ET
+BT 60 618 Td
+/F1 11 Tf (solo imita tu estilo pero no propone nada creativo, confirmarás que la Opción A era) Tj
+ET
+BT 60 602 Td
+/F1 11 Tf (el camino.) Tj
+ET
+BT 60 576 Td
+/F2 11 Tf (Umbrales que cambian la recomendación:) Tj
+/F1 11 Tf ( con un Mac de 64 GB+ correr un 70B local o) Tj
+ET
+BT 60 560 Td
+/F1 11 Tf (afinar un 32B se vuelve práctico; si tu factura de Claude supera el coste de) Tj
+ET
+BT 60 544 Td
+/F1 11 Tf (configurar local, mueve tareas repetitivas a Ollama; si necesitas privacidad) Tj
+ET
+BT 60 528 Td
+/F1 11 Tf (\(código de cliente\), usa local por defecto.) Tj
+ET
+BT /F2 22 Tf 60 488 Td (Cautelas) Tj ET
+BT /F1 11 Tf 60 452 Td (Precios y modelos cambian rápido \(los de Claude son de mediados de 2026; Sonnet 5) Tj ET
+BT /F1 11 Tf 60 436 Td (salió el 30 de junio de 2026 con precio introductorio -- verifica en la web) Tj ET
+BT /F1 11 Tf 60 420 Td (oficial\). Anthropic no publica el número de parámetros de sus modelos: "nombre más) Tj ET
+BT /F1 11 Tf 60 404 Td (grande = modelo más grande" es una inferencia razonable, no un dato confirmado. Las) Tj ET
+BT /F1 11 Tf 60 388 Td (cifras de RAM y tokens/segundo son órdenes de magnitud, no garantías. Los datos de) Tj ET
+BT /F1 11 Tf 60 372 Td (entrenamiento de GPT-4 provienen de declaraciones y estimaciones \(Semafor, Stanford) Tj ET
+BT /F1 11 Tf 60 356 Td (AI Index\), no de cifras oficiales de OpenAI. El "mínimo de 1.000 ejemplos" para) Tj ET
+BT /F1 11 Tf 60 340 Td (fine-tuning es una regla general, no ciencia establecida. El aspecto legal es una) Tj ET
+BT /F1 11 Tf 60 324 Td (guía general, no asesoramiento jurídico.) Tj ET
+
+endstream
+endobj
+15 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 14 0 R /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> >>
+endobj
+xref
+0 16
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000142 00000 n 
+0000000239 00000 n 
+0000000341 00000 n 
+0000000446 00000 n 
+0000004523 00000 n 
+0000004669 00000 n 
+0000009034 00000 n 
+0000009180 00000 n 
+0000013199 00000 n 
+0000013347 00000 n 
+0000017186 00000 n 
+0000017334 00000 n 
+0000019839 00000 n 
+trailer
+<< /Size 16 /Root 1 0 R >>
+startxref
+19987
+%%EOF

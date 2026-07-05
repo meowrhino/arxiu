@@ -1,0 +1,828 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [7 0 R 9 0 R 11 0 R 13 0 R 15 0 R 17 0 R 19 0 R] /Count 7 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Oblique /Encoding /WinAnsiEncoding >>
+endobj
+6 0 obj
+<< /Length 3934 >>
+stream
+BT /F2 28 Tf 60 754 Td (the best ai music tools for a vocational producer in barcelona) Tj ET
+BT 60 690 Td
+/F3 11 Tf (Research made with AI \(Claude\). A survey of the best AI music tools for a) Tj
+ET
+BT 60 674 Td
+/F1 11 Tf (vocational producer in Barcelona who already owns Ableton + Logic, wants) Tj
+ET
+BT 60 658 Td
+/F1 11 Tf (commercially usable output, and prefers free-first. State of the field as of June) Tj
+ET
+BT 60 642 Td
+/F1 11 Tf (2026.) Tj
+ET
+BT /F2 22 Tf 60 602 Td (TL;DR) Tj ET
+BT /F1 11 Tf 60 566 Td (  - For your situation \(you own Ableton + Logic, want commercially usable output,) Tj ET
+BT /F1 11 Tf 60 550 Td (    no budget ceiling but free-first instinct\), the single highest-leverage spend) Tj ET
+BT /F1 11 Tf 60 534 Td (    is NOT a full-song generator -- it's the in-DAW AI you already partly own:) Tj ET
+BT /F1 11 Tf 60 518 Td (    Logic Pro 12's free Stem Splitter + Chord ID + AI Session Players, Ableton Live) Tj ET
+BT /F1 11 Tf 60 502 Td (    12.3's free local stem separation, and one paid mastering path. Treat full-song) Tj ET
+BT /F1 11 Tf 60 486 Td (    generators \(Suno/Udio/etc.\) as sketchpads and stem/sample sources, not your) Tj ET
+BT /F1 11 Tf 60 470 Td (    release pipeline, because of unresolved copyright-ownership questions and the) Tj ET
+BT /F1 11 Tf 60 454 Td (    still-active Sony litigation.) Tj ET
+BT 60 438 Td
+/F1 11 Tf (  - ) Tj
+/F2 11 Tf (When to start paying:) Tj
+/F1 11 Tf ( the moment you \(1\) want to commercially release a) Tj
+ET
+BT 60 422 Td
+/F1 11 Tf (    ) Tj
+/F1 11 Tf (generated track \(free tiers are non-commercial -- you need Suno Pro at $8/mo) Tj
+ET
+BT 60 406 Td
+/F1 11 Tf (    ) Tj
+/F1 11 Tf (annual or ElevenLabs Starter at $5/mo\), \(2\) need WAV/stem export or) Tj
+ET
+BT 60 390 Td
+/F1 11 Tf (    ) Tj
+/F1 11 Tf (watermark-free output, or \(3\) are mastering 5+ tracks a year \(a LANDR/eMastered) Tj
+ET
+BT 60 374 Td
+/F1 11 Tf (    ) Tj
+/F1 11 Tf (subscription beats per-track human mastering\). A sensible starter paid stack) Tj
+ET
+BT 60 358 Td
+/F1 11 Tf (    ) Tj
+/F1 11 Tf (runs ~25-35 EUR/month; an all-in setup ~70-90 EUR/month plus a few one-time) Tj
+ET
+BT 60 342 Td
+/F1 11 Tf (    ) Tj
+/F1 11 Tf (plugin purchases \(~650-700 EUR\).) Tj
+ET
+BT 60 326 Td
+/F1 11 Tf (  - ) Tj
+/F2 11 Tf (Biggest reliability caveat:) Tj
+/F1 11 Tf ( Suno \(Warner-licensed; still fighting Sony/UMG on) Tj
+ET
+BT 60 310 Td
+/F1 11 Tf (    ) Tj
+/F1 11 Tf (fair use\) still lets you download audio; Udio has had all downloads -- audio,) Tj
+ET
+BT 60 294 Td
+/F1 11 Tf (    ) Tj
+/F1 11 Tf (video, AND stems -- DISABLED since its October 2025 UMG settlement, and they) Tj
+ET
+BT 60 278 Td
+/F1 11 Tf (    ) Tj
+/F1 11 Tf (were still off as of June 2026, making Udio effectively unusable for getting) Tj
+ET
+BT 60 262 Td
+/F1 11 Tf (    ) Tj
+/F1 11 Tf (audio into your DAW right now.) Tj
+ET
+BT /F2 22 Tf 60 222 Td (Key findings) Tj ET
+BT 60 186 Td
+/F1 11 Tf (  1. ) Tj
+/F2 11 Tf (You don't need full-song generators for "real" production.) Tj
+/F1 11 Tf ( Pure-AI output) Tj
+ET
+BT 60 170 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (generally cannot be registered for copyright. Per the U.S. Copyright Office) Tj
+ET
+BT 60 154 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf ("Copyright and Artificial Intelligence" Report Part 2 \(Jan. 29, 2025\), outputs) Tj
+ET
+BT 60 138 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (are protectable "only where a human author has determined sufficient) Tj
+ET
+BT 60 122 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (expressive elements... but not the mere provision of prompts." The EU position) Tj
+ET
+BT 60 106 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (is similar. So generators are best as idea generators or stem fodder you build) Tj
+ET
+BT 60 90 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (on -- the genuinely useful AI for you lives inside the DAWs you already own.) Tj
+ET
+BT 60 74 Td
+/F1 11 Tf (  2. ) Tj
+/F2 11 Tf (Two tools you already paid for got dramatically better in early 2026.) Tj
+/F1 11 Tf ( Logic) Tj
+ET
+
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 6 0 R /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> >>
+endobj
+8 0 obj
+<< /Length 4587 >>
+stream
+BT 60 766 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (Pro 12 \(Jan 28, 2026\) added Synth Player \(AI Session Player generating synth) Tj
+ET
+BT 60 750 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (bass/chord parts\) and Chord ID \(audio/MIDI -> chord track\). Ableton Live 12.3) Tj
+ET
+BT 60 734 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (added free, local, offline stem separation \(Music.AI/Moises engine\) plus) Tj
+ET
+BT 60 718 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (in-DAW Splice search. These cost 0 extra.) Tj
+ET
+BT 60 702 Td
+/F1 11 Tf (  3. ) Tj
+/F2 11 Tf (Commercial rights gate on the paid tier, not the song.) Tj
+/F1 11 Tf ( Suno free =) Tj
+ET
+BT 60 686 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (non-commercial; Pro/Premier = commercial use for songs made while subscribed) Tj
+ET
+BT 60 670 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (\(no retroactive rights for free-tier songs\). Udio free = commercial with) Tj
+ET
+BT 60 654 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (attribution; paid = commercial without attribution -- but downloads are off) Tj
+ET
+BT 60 638 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (entirely.) Tj
+ET
+BT 60 622 Td
+/F1 11 Tf (  4. ) Tj
+/F2 11 Tf (The legal cloud is real but asymmetric.) Tj
+/F1 11 Tf ( Warner settled with both Suno and Udio) Tj
+ET
+BT 60 606 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (\(late 2025\); UMG settled with Udio only \(Oct. 29, 2025, a per-generation) Tj
+ET
+BT 60 590 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (royalty reported at $0.002-$0.005\); Sony is still litigating both. Stable) Tj
+ET
+BT 60 574 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (Audio, ElevenLabs Music, and Google Lyria are trained on licensed/owned data) Tj
+ET
+BT 60 558 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (and are the "clean" choices for sync/commercial reliability.) Tj
+ET
+BT 60 542 Td
+/F1 11 Tf (  5. ) Tj
+/F2 11 Tf (For mastering, AI is genuinely good enough for hobbyist/vocational release.) Tj
+ET
+BT 60 526 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (Ozone 12 \(one-time, in-DAW, maximum control\) vs. LANDR/eMastered \(cloud) Tj
+ET
+BT 60 510 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (subscription, zero-skill\). You already have Logic's free Mastering Assistant) Tj
+ET
+BT 60 494 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (as a baseline.) Tj
+ET
+BT 60 478 Td
+/F1 11 Tf (  6. ) Tj
+/F2 11 Tf (EU/Spain note:) Tj
+/F1 11 Tf ( plugin prices are usually quoted incl. VAT in EUR \(Spain VAT) Tj
+ET
+BT 60 462 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (21%\); US SaaS often shows USD ex-VAT and adds Spanish VAT at checkout. Google) Tj
+ET
+BT 60 446 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (Lyria 3 full access is available in the EU. No major tool is EU-blocked, but) Tj
+ET
+BT 60 430 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (US SaaS \(Suno, ElevenLabs, LANDR\) process audio on US servers -- a GDPR) Tj
+ET
+BT 60 414 Td
+/F1 11 Tf (     ) Tj
+/F1 11 Tf (consideration for unreleased material; local tools keep audio on your machine.) Tj
+ET
+BT /F2 22 Tf 60 374 Td (Category A -- Full-song generators) Tj ET
+BT /F2 22 Tf 60 344 Td (\(text/prompt-to-song\)) Tj ET
+BT 60 308 Td
+/F2 11 Tf (Suno \(v5 / v5.5; "Suno Studio" on Premier\).) Tj
+/F1 11 Tf ( Free/Basic $0 \(50 credits/day,) Tj
+ET
+BT 60 292 Td
+/F1 11 Tf (non-commercial, attribution\). Pro $10/mo or $8/mo annual \(2,500 credits, commercial) Tj
+ET
+BT 60 276 Td
+/F1 11 Tf (rights, up to 12 stems, stem separation\). Premier $30/mo or $24/mo annual \(Suno) Tj
+ET
+BT 60 260 Td
+/F2 11 Tf (Studio in-browser DAW with MIDI export\). Co) Tj
+/F1 11 Tf (mmercial rights nuance: Pro/Premier) Tj
+ET
+BT 60 244 Td
+/F1 11 Tf (grant commercial use for songs made while subscribed, but Suno's ToS says "Suno) Tj
+ET
+BT 60 228 Td
+/F1 11 Tf (makes no representation or warranty that any copyright will vest in any Output,") Tj
+ET
+BT 60 212 Td
+/F1 11 Tf (and the Help Center adds "you generally are not considered the owner of the songs.") Tj
+ET
+BT 60 196 Td
+/F1 11 Tf (Legal: settled with Warner \(Nov 2025\); still litigating Sony and UMG \(who moved to) Tj
+ET
+BT 60 180 Td
+/F1 11 Tf (add 61,026 works\). Suno raised $400M Series D \(Bond Capital, June 3, 2026\) at a) Tj
+ET
+BT 60 164 Td
+/F1 11 Tf ($5.4B valuation; passed 2M subscribers Feb 2026. Technical: v5 outputs 44.1kHz;) Tj
+ET
+BT 60 148 Td
+/F1 11 Tf (vocals widely considered more human than Udio's; up to 12-stem separation on Pro) Tj
+ET
+BT 60 132 Td
+/F1 11 Tf (\(this matters -- pull stems into Ableton/Logic\). Credit trap: failed/regen) Tj
+ET
+BT 60 116 Td
+/F1 11 Tf (generations still burn credits. Why: fastest idea-to-song, best vocals, stem) Tj
+ET
+BT 60 100 Td
+/F1 11 Tf (export. Don't rely on it for a flagship commercial release given the ownership) Tj
+ET
+BT 60 84 Td
+/F1 11 Tf (ambiguity.) Tj
+ET
+
+endstream
+endobj
+9 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 8 0 R /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> >>
+endobj
+10 0 obj
+<< /Length 4514 >>
+stream
+BT 60 766 Td
+/F2 11 Tf (Udio \(48kHz; "Sessions" editor\).) Tj
+/F1 11 Tf ( Free \(10 credits/day + 100/mo, commercial with) Tj
+ET
+BT 60 750 Td
+/F1 11 Tf (attribution\). Standard $10/mo \(~9 EUR; 2,400 credits, commercial without) Tj
+ET
+BT 60 734 Td
+/F1 11 Tf (attribution\). Pro $30/mo. CRITICAL LIMITATION: per Udio's Help Center, since its) Tj
+ET
+BT 60 718 Td
+/F1 11 Tf (Oct 29, 2025 UMG partnership, downloading of audio, video and stems has been) Tj
+ET
+BT 60 702 Td
+/F1 11 Tf (disabled, still in force as of June 2026. "Udio is the Photoshop, Suno is the) Tj
+ET
+BT 60 686 Td
+/F1 11 Tf (Canva." Why not: on pure audio fidelity and control it's the best, but the download) Tj
+ET
+BT 60 670 Td
+/F1 11 Tf (lockout is disqualifying until resolved. Monitor for the 2026 licensed-platform) Tj
+ET
+BT 60 654 Td
+/F1 11 Tf (launch.) Tj
+ET
+BT 60 628 Td
+/F2 11 Tf (Stable Audio \(Stability AI; hosted 3.0 + open weights\).) Tj
+/F1 11 Tf ( Free tier \(non-commercial\);) Tj
+ET
+BT 60 612 Td
+/F1 11 Tf (paid creator tiers unlock full model + commercial rights. Open weights \(Stable) Tj
+ET
+BT 60 596 Td
+/F1 11 Tf (Audio Open\) free to self-host; you only need a paid Enterprise license if your) Tj
+ET
+BT 60 580 Td
+/F1 11 Tf (yearly revenue exceeds USD $1M -- so for you it's effectively free to use) Tj
+ET
+BT 60 564 Td
+/F1 11 Tf (commercially. Cleanest legal story: Stable Audio 3.0 \(May 2026\) trained on) Tj
+ET
+BT 60 548 Td
+/F1 11 Tf (AudioSparx's 806,284 licensed files + Freesound Creative Commons, with Audible) Tj
+ET
+BT 60 532 Td
+/F1 11 Tf (Magic copyright screening. 44.1kHz, up to ~3-min structured instrumentals. No) Tj
+ET
+BT 60 516 Td
+/F1 11 Tf (vocals -- instrumental/sound-design only; self-hostable. Why: best for instrumental) Tj
+ET
+BT 60 500 Td
+/F1 11 Tf (beds, textures, electronic/ambient/cinematic and sound design with a clean legal) Tj
+ET
+BT 60 484 Td
+/F1 11 Tf (story.) Tj
+ET
+BT 60 458 Td
+/F2 11 Tf (Google Lyria 3 / Lyria 3 Pro \(in Gemini, Flow Music, Vertex AI\).) Tj
+/F1 11 Tf ( Lyria 3 \(30-sec) Tj
+ET
+BT 60 442 Td
+/F1 11 Tf (clips\) Feb 2026; Lyria 3 Pro \(full 3-min structured songs\) March 25, 2026. Free) Tj
+ET
+BT 60 426 Td
+/F1 11 Tf (test in Google AI Studio \(limited\); Gemini AI Plus $19.99/mo; API ~$0.08 per full) Tj
+ET
+BT 60 410 Td
+/F1 11 Tf (song. Flow Music \(flowmusic.app, launched April 18, 2026\) reportedly offers) Tj
+ET
+BT 60 394 Td
+/F1 11 Tf (full-length Lyria 3 songs free. Commercial rights for paid subscribers; Google) Tj
+ET
+BT 60 378 Td
+/F1 11 Tf (offers copyright indemnification; all output carries an inaudible SynthID watermark) Tj
+ET
+BT 60 362 Td
+/F1 11 Tf (that survives compression. 48kHz stereo, vocals + timed lyrics) Tj
+ET
+BT 60 346 Td
+/F1 11 Tf (\(English/Spanish/French/Japanese -- useful in Barcelona\), explicit structural) Tj
+ET
+BT 60 330 Td
+/F1 11 Tf (control \(intro/verse/chorus/bridge\) and section-level regeneration -- the best) Tj
+ET
+BT 60 314 Td
+/F1 11 Tf (structural control of any generator. Why: best when a track must hit specific) Tj
+ET
+BT 60 298 Td
+/F1 11 Tf (structural beats; cleanest big-tech legal posture; EU-available. SynthID may flag) Tj
+ET
+BT 60 282 Td
+/F1 11 Tf (as AI at distributors.) Tj
+ET
+BT 60 256 Td
+/F2 11 Tf (ElevenLabs Music \(Eleven Music, Aug 2025; Marketplace March 2026\).) Tj
+/F1 11 Tf ( Free \(no) Tj
+ET
+BT 60 240 Td
+/F1 11 Tf (commercial license\). Starter $5/mo \(commercial license begins here\). Creator) Tj
+ET
+BT 60 224 Td
+/F1 11 Tf ($11/mo. Pro $99/mo \(44.1kHz PCM via API\). The "licensed-first" play -- preemptive) Tj
+ET
+BT 60 208 Td
+/F1 11 Tf (deals with Merlin \(30,000 indie labels\) and Kobalt, ~50/50 royalty parity split.) Tj
+ET
+BT 60 192 Td
+/F1 11 Tf (Designed commercially safe for production-music/sync/brand work. Why: cleanest) Tj
+ET
+BT 60 176 Td
+/F1 11 Tf (licensing story of the vocal-capable generators and the cheapest commercial entry) Tj
+ET
+BT 60 160 Td
+/F1 11 Tf (\($5/mo\). The legally-safe alternative to Suno/Udio.) Tj
+ET
+BT 60 134 Td
+/F2 11 Tf (Riffusion \(FUZZ model; folding into Google Flow Music\).) Tj
+/F1 11 Tf ( Free \(core generation\).) Tj
+ET
+BT 60 118 Td
+/F1 11 Tf (Commercial rights poorly documented -- a genuine risk; contact them before) Tj
+ET
+BT 60 102 Td
+/F1 11 Tf (commercial use. FUZZ generates full ~3-min songs from text/audio/image prompts. The) Tj
+ET
+BT 60 86 Td
+/F1 11 Tf (product is being absorbed into Google Flow Music branding. Why not: free) Tj
+ET
+BT 60 70 Td
+/F1 11 Tf (experimentation only; not for commercial reliability given undocumented licensing.) Tj
+ET
+
+endstream
+endobj
+11 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 10 0 R /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> >>
+endobj
+12 0 obj
+<< /Length 4166 >>
+stream
+BT 60 766 Td
+/F2 11 Tf (Honorable mentions:) Tj
+/F1 11 Tf ( Mubert \(cleanest legal story -- curated artist pool\), Boomy) Tj
+ET
+BT 60 750 Td
+/F1 11 Tf (\(built-in Spotify pipeline\), AIVA \(250+ styles, editable\), Soundverse, Soundraw.) Tj
+ET
+BT 60 734 Td
+/F1 11 Tf (None beats Suno on vocals or Stable Audio on instrumental cleanliness for this use) Tj
+ET
+BT 60 718 Td
+/F1 11 Tf (case.) Tj
+ET
+BT /F2 22 Tf 60 678 Td (Category B -- In-DAW /) Tj ET
+BT /F2 22 Tf 60 648 Td (production-assistance AI) Tj ET
+BT 60 612 Td
+/F2 11 Tf (Stem separation.) Tj
+/F1 11 Tf ( You already own the two best zero-cost options: Logic Pro Stem) Tj
+ET
+BT 60 596 Td
+/F2 11 Tf (Splitter \(free i) Tj
+/F1 11 Tf (n Logic, vocal/drums/bass/other, in-session lossless\) and Ableton) Tj
+ET
+BT 60 580 Td
+/F1 11 Tf (Live 12.3 Stem Separation \(free in Suite, Music.AI/Moises engine, runs) Tj
+ET
+BT 60 564 Td
+/F1 11 Tf (locally/offline\). Add Demucs \(HTDemucs via UVR/StemRoller, free, open-source, best) Tj
+ET
+BT 60 548 Td
+/F1 11 Tf (quality outside enterprise, needs a GPU\). Others: Moises \(cloud + app, free 5) Tj
+ET
+BT 60 532 Td
+/F1 11 Tf (tracks/mo\), RipX DAW/Pro \(~$60/$160 one-time, note-level editing + audio-to-MIDI\),) Tj
+ET
+BT 60 516 Td
+/F1 11 Tf (iZotope RX 12 Music Rebalance \($399+, lossless\). Verdict: built-in DAW separators) Tj
+ET
+BT 60 500 Td
+/F1 11 Tf (rate surprisingly well \(Ableton's particularly strong\); add Demucs for top quality;) Tj
+ET
+BT 60 484 Td
+/F1 11 Tf (only buy RipX for note-level remix surgery + audio-to-MIDI. Bass stems are the) Tj
+ET
+BT 60 468 Td
+/F1 11 Tf (weakest category across every tool -- recreate basslines yourself when fidelity) Tj
+ET
+BT 60 452 Td
+/F1 11 Tf (matters.) Tj
+ET
+BT 60 426 Td
+/F2 11 Tf (AI mixing/mastering plugins \(in-DAW, one-time -- never expire\).) Tj
+/F1 11 Tf ( iZotope Ozone 12) Tj
+ET
+BT 60 410 Td
+/F1 11 Tf (\(Elements $55 / Standard $219 / Advanced $499\): AI Master Assistant with Custom) Tj
+ET
+BT 60 394 Td
+/F1 11 Tf (flow, Stem EQ, Bass Control, Unlimiter, IRC 5 limiter -- the industry standard,) Tj
+ET
+BT 60 378 Td
+/F1 11 Tf (works in Ableton & Logic. iZotope Neutron 5 \(mixing, ~$224\), Nectar 4 \(vocals,) Tj
+ET
+BT 60 362 Td
+/F1 11 Tf (~$224\), Music Production Suite 9 \($799, bundles it all\). sonible smart:EQ 4 \(~45-89) Tj
+ET
+BT 60 346 Td
+/F1 11 Tf (EUR, AI spectral balancing + multi-track unmasking\), smart:limit \(~40 EUR\);) Tj
+ET
+BT 60 330 Td
+/F1 11 Tf (smart:bundle saves 40%.) Tj
+ET
+BT 60 304 Td
+/F2 11 Tf (AI mastering services \(cloud subscription\).) Tj
+/F1 11 Tf ( LANDR \(from ~4 EUR/mo basic; Pro $19/mo) Tj
+ET
+BT 60 288 Td
+/F1 11 Tf (= unlimited masters + distribution to 150+ platforms; DAW plugin for in-session) Tj
+ET
+BT 60 272 Td
+/F1 11 Tf (mastering -- best default if you release regularly and want distribution bundled\).) Tj
+ET
+BT 60 256 Td
+/F1 11 Tf (eMastered \(~$15/mo annual up to $49.99/mo; more manual control, reference matching,) Tj
+ET
+BT 60 240 Td
+/F1 11 Tf (Stemify; better warmth for R&B/soul/acoustic/singer-songwriter; mastering only, no) Tj
+ET
+BT 60 224 Td
+/F1 11 Tf (distribution\). Logic Pro Mastering Assistant \(free -- your zero-cost baseline\).) Tj
+ET
+BT 60 208 Td
+/F2 11 Tf (Verdict:) Tj
+/F1 11 Tf ( try Logic's free Mastering Assistant first; for consistent EP results,) Tj
+ET
+BT 60 192 Td
+/F1 11 Tf (eMastered \(quality/control\) or LANDR \(if you also want distribution\); buy Ozone 12) Tj
+ET
+BT 60 176 Td
+/F1 11 Tf (to own the tool and master in-DAW.) Tj
+ET
+BT 60 150 Td
+/F2 11 Tf (AI sample / loop / MIDI generation \(DAW-integrated\).) Tj
+/F1 11 Tf ( Splice \(now native in Ableton) Tj
+ET
+BT 60 134 Td
+/F1 11 Tf (Live 12.3\): Sounds+ $12.99/mo, Creator $19.99/mo, or Splice x Ableton $12.99/mo;) Tj
+ET
+BT 60 118 Td
+/F1 11 Tf ("Search with Sound" AI -- drag a clip in, it returns matching loops in your) Tj
+ET
+BT 60 102 Td
+/F1 11 Tf (key/tempo; samples cleared for commercial use. Audialab Emergent Drums 2 \(one-time) Tj
+ET
+BT 60 86 Td
+/F1 11 Tf (~$59 / ~$99-104 bundle\): AI generates infinite original royalty-free drum samples) Tj
+ET
+BT 60 70 Td
+/F1 11 Tf (from scratch \(clean training\), VST3/AU + NKS. Lemonaide \(Seeds/Spawn\): AI MIDI +) Tj
+ET
+
+endstream
+endobj
+13 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 12 0 R /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> >>
+endobj
+14 0 obj
+<< /Length 4259 >>
+stream
+BT 60 766 Td
+/F1 11 Tf (48kHz audio loops, "fairly trained," royalty-free under 1M streams. Output) Tj
+ET
+BT 60 750 Td
+/F1 11 Tf (\(Arcade/Co-Producer\) and Suno stems also viable as loop sources.) Tj
+ET
+BT 60 724 Td
+/F2 11 Tf (AI music-theory / chord / melody assistants.) Tj
+/F1 11 Tf ( Scaler 3 \(~79-99 EUR\): chord) Tj
+ET
+BT 60 708 Td
+/F1 11 Tf (suggestion + detection, 1,000+ chord sets, Dynamic Circle of Fifths, modulation) Tj
+ET
+BT 60 692 Td
+/F1 11 Tf (suggestions, standalone + plugin, supports Ableton AND Logic -- best overall chord) Tj
+ET
+BT 60 676 Td
+/F1 11 Tf (assistant. Captain Plugins / Mixed in Key \(~$99 bundle, beginner-friendly\).) Tj
+ET
+BT 60 660 Td
+/F1 11 Tf (Hooktheory Hookpad + Aria AI \(MIDI generation, educational\). Logic Pro 12 Chord ID) Tj
+ET
+BT 60 644 Td
+/F1 11 Tf (+ Session Players \(FREE in Logic\): Chord ID turns any audio/MIDI into a chord) Tj
+ET
+BT 60 628 Td
+/F1 11 Tf (progression; Synth/Bass/Keyboard/Drummer players follow it, can drive third-party) Tj
+ET
+BT 60 612 Td
+/F1 11 Tf (plugins and convert to MIDI. You already own this -- it overlaps heavily with) Tj
+ET
+BT 60 596 Td
+/F1 11 Tf (Scaler, so buy Scaler only for deeper harmonic exploration.) Tj
+ET
+BT 60 570 Td
+/F2 11 Tf (AI "tutor" / conversational in-DAW assistants.) Tj
+/F1 11 Tf ( MixingGPT \(in-DAW chat assistant,) Tj
+ET
+BT 60 554 Td
+/F2 11 Tf (VST/AU/A) Tj
+/F1 11 Tf (AX; screenshot a plugin UI for feedback; trained on real mixes; rolling out) Tj
+ET
+BT 60 538 Td
+/F1 11 Tf (via waitlist -- the most relevant live tutoring option\). MixMate AI \(~$9.99/mo) Tj
+ET
+BT 60 522 Td
+/F1 11 Tf (chat-based mix advice\). WavTool \(browser DAW with GPT-4 "Conductor" -- taken) Tj
+ET
+BT 60 506 Td
+/F1 11 Tf (offline, likely acquired, not currently usable\). FL Studio AI, Roland Melody Flip:) Tj
+ET
+BT 60 490 Td
+/F1 11 Tf (emerging. Verdict: for tutoring inside your DAW, MixingGPT is the most relevant) Tj
+ET
+BT 60 474 Td
+/F1 11 Tf (live option; for theory, Logic 12's free Chord ID/Session Players plus Scaler 3) Tj
+ET
+BT 60 458 Td
+/F1 11 Tf (cover you.) Tj
+ET
+BT /F2 22 Tf 60 418 Td (When to pay -- decision framework) Tj ET
+BT 60 382 Td
+/F2 11 Tf (Stay free if) Tj
+/F1 11 Tf ( you're sketching ideas, learning, or making non-commercial/personal) Tj
+ET
+BT 60 366 Td
+/F1 11 Tf (music. Free stack: Logic Stem Splitter + Mastering Assistant + Chord ID/Session) Tj
+ET
+BT 60 350 Td
+/F1 11 Tf (Players, Ableton 12.3 stems, Demucs, Suno free / Stable Audio Open / Lyria in AI) Tj
+ET
+BT 60 334 Td
+/F2 11 Tf (Studio, free) Tj
+/F1 11 Tf ( Splice samples.) Tj
+ET
+BT 60 308 Td
+/F2 11 Tf (Pay when you cross a threshold:) Tj
+/F1 11 Tf ( \(1\) commercial release of a generated track -> you) Tj
+ET
+BT 60 292 Td
+/F1 11 Tf (MUST be on a paid tier \(Suno Pro $8/mo annual; ElevenLabs Starter $5/mo; Stable) Tj
+ET
+BT 60 276 Td
+/F1 11 Tf (Audio effectively free under the $1M revenue threshold\); free-tier output for sale) Tj
+ET
+BT 60 260 Td
+/F1 11 Tf (violates ToS. \(2\) Need WAV/stem export or watermark removal -> paid tier. \(3\)) Tj
+ET
+BT 60 244 Td
+/F1 11 Tf (Hitting generation limits repeatedly -> Pro tier. \(4\) Mastering 5+ tracks/year ->) Tj
+ET
+BT 60 228 Td
+/F1 11 Tf (LANDR/eMastered \(~$19-30/mo\) beats $150+/track human mastering. \(5\) Want better) Tj
+ET
+BT 60 212 Td
+/F1 11 Tf (fidelity/control inside the DAW -> one-time plugin purchases \(Ozone, Scaler,) Tj
+ET
+BT 60 196 Td
+/F1 11 Tf (Emergent Drums\) -- no subscription, never expire.) Tj
+ET
+BT 60 170 Td
+/F2 11 Tf (Recommended STARTER paid stack \(~25-35 EUR/mo equivalent\):) Tj
+/F1 11 Tf ( Suno Pro \($8/mo annual,) Tj
+ET
+BT 60 154 Td
+/F1 11 Tf (commercial generation + 12-stem export\) + eMastered or LANDR \(~$18-28/mo, or skip) Tj
+ET
+BT 60 138 Td
+/F1 11 Tf (if Logic's free Mastering Assistant is enough\) + Splice x Ableton \($12.99/mo\) only) Tj
+ET
+BT 60 122 Td
+/F1 11 Tf (if you want in-DAW sample search. Everything else free.) Tj
+ET
+BT 60 96 Td
+/F2 11 Tf (Recommended ALL-IN setup \(no budget limit\):) Tj
+/F1 11 Tf ( Suno Premier \($24/mo annual, Suno) Tj
+ET
+BT 60 80 Td
+/F1 11 Tf (Studio + MIDI\) + ElevenLabs Creator \($11/mo, licensed-safe vocals\) + Stable Audio) Tj
+ET
+BT 60 64 Td
+/F1 11 Tf (paid + LANDR Pro \($19/mo\) + Splice Creator \($19.99/mo\). One-time: Ozone 12 Advanced) Tj
+ET
+
+endstream
+endobj
+15 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 14 0 R /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> >>
+endobj
+16 0 obj
+<< /Length 3964 >>
+stream
+BT 60 766 Td
+/F1 11 Tf (\($499\), Scaler 3 \(~89 EUR\), Emergent Drums 2 \(~$59\), sonible smart:bundle. Net:) Tj
+ET
+BT 60 750 Td
+/F1 11 Tf (~70-90 EUR/month recurring + ~650-700 EUR one-time plugins.) Tj
+ET
+BT /F2 22 Tf 60 710 Td (Recommendations \(staged\)) Tj ET
+BT 60 674 Td
+/F2 11 Tf (Stage 0 \(this week, 0 EUR\):) Tj
+/F1 11 Tf ( update to Logic Pro 12 and Ableton Live 12.3. Learn) Tj
+ET
+BT 60 658 Td
+/F1 11 Tf (Logic's Chord ID + Session Players and Ableton's local stem separation. Run Suno) Tj
+ET
+BT 60 642 Td
+/F1 11 Tf (free, Stable Audio Open and Lyria \(AI Studio\) to find which generator's character) Tj
+ET
+BT 60 626 Td
+/F1 11 Tf (you like. Master a track with Logic's free Mastering Assistant. This alone covers) Tj
+ET
+BT 60 610 Td
+/F1 11 Tf (most hobbyist needs.) Tj
+ET
+BT 60 584 Td
+/F2 11 Tf (Stage 1 \(first paid step, ~8-13 EUR/mo\):) Tj
+/F1 11 Tf ( when you want to release commercially,) Tj
+ET
+BT 60 568 Td
+/F1 11 Tf (subscribe to Suno Pro \(best vocals + stem export\) or ElevenLabs Starter \(cheapest,) Tj
+ET
+BT 60 552 Td
+/F1 11 Tf (cleanest licensing\). Disclose AI use to your distributor -- DistroKid, RouteNote) Tj
+ET
+BT 60 536 Td
+/F1 11 Tf (and Amuse accept AI with disclosure; CD Baby and TuneCore reject 100%-AI tracks.) Tj
+ET
+BT 60 520 Td
+/F1 11 Tf (Keep subscription receipts and creation dates.) Tj
+ET
+BT 60 494 Td
+/F2 11 Tf (Stage 2 \(quality tools you own, one-time\):) Tj
+/F1 11 Tf ( buy Scaler 3 \(~89 EUR\) for deeper) Tj
+ET
+BT 60 478 Td
+/F1 11 Tf (harmony, Emergent Drums 2 \(~$59\) for original royalty-free drums, and Ozone 12) Tj
+ET
+BT 60 462 Td
+/F2 11 Tf (Standard \($219\) or the sonible smart:bundl) Tj
+/F1 11 Tf (e for mastering control you keep forever.) Tj
+ET
+BT 60 436 Td
+/F2 11 Tf (Stage 3 \(scale up\):) Tj
+/F1 11 Tf ( if releasing regularly, add LANDR Pro \($19/mo, mastering +) Tj
+ET
+BT 60 420 Td
+/F1 11 Tf (distribution\) or eMastered for warmth, and Splice for in-DAW AI sample search.) Tj
+ET
+BT 60 394 Td
+/F2 11 Tf (Benchmarks that change the plan:) Tj
+/F1 11 Tf ( the Suno fair-use ruling -- a summary-judgment) Tj
+ET
+BT 60 378 Td
+/F1 11 Tf (hearing in the District of Massachusetts \(before Chief Judge F. Dennis Saylor IV\)) Tj
+ET
+BT 60 362 Td
+/F1 11 Tf (was reported for July 2026, though one docket-tracker reports the UMG v. Suno) Tj
+ET
+BT 60 346 Td
+/F1 11 Tf (motions pushed to Jan. 8, 2027; confirm the date. If Suno loses on fair use, expect) Tj
+ET
+BT 60 330 Td
+/F1 11 Tf (price/terms upheaval -- favor Stable Audio/ElevenLabs/Lyria \(licensed\) for anything) Tj
+ET
+BT 60 314 Td
+/F1 11 Tf (you monetize. If Udio's 2026 licensed platform restores exports, re-evaluate it for) Tj
+ET
+BT 60 298 Td
+/F1 11 Tf (its 48kHz fidelity. Crossing ~5 mastered tracks/year flips the math toward a) Tj
+ET
+BT 60 282 Td
+/F1 11 Tf (mastering subscription.) Tj
+ET
+BT /F2 22 Tf 60 242 Td (Caveats) Tj ET
+BT /F1 11 Tf 60 206 Td (Copyright is not the same as a commercial license: paid AI tiers grant permission) Tj ET
+BT /F1 11 Tf 60 190 Td (to use/sell, not registrable copyright. Pure-AI output generally isn't) Tj ET
+BT /F1 11 Tf 60 174 Td (copyrightable in the US/EU without meaningful human authorship -- so your human) Tj ET
+BT /F1 11 Tf 60 158 Td (production work \(arrangement, mixing, added instrumentation in Ableton/Logic\) is) Tj ET
+BT /F1 11 Tf 60 142 Td (what makes a release defensible. Use generators as stems/ideas you build on, not as) Tj ET
+BT /F1 11 Tf 60 126 Td (finished masters. Distributor risk: uploading undisclosed AI music risks takedowns) Tj ET
+BT /F1 11 Tf 60 110 Td (and withheld royalties; detection is increasingly automated -- disclose and) Tj ET
+BT /F1 11 Tf 60 94 Td (document your human contribution. Pricing is volatile; USD figures are list prices) Tj ET
+BT /F1 11 Tf 60 78 Td (and Spanish VAT \(21%\) is typically added at checkout -- verify on each vendor's) Tj ET
+BT /F1 11 Tf 60 62 Td (page. Udio is currently a dead end for DAW work until downloads return. Riffusion's) Tj ET
+
+endstream
+endobj
+17 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 16 0 R /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> >>
+endobj
+18 0 obj
+<< /Length 412 >>
+stream
+BT /F1 11 Tf 60 766 Td (commercial terms are undocumented. Data/EU: US SaaS process your audio on US) Tj ET
+BT /F1 11 Tf 60 750 Td (servers \(a GDPR consideration for unreleased material\); local tools keep audio on) Tj ET
+BT /F1 11 Tf 60 734 Td (your machine. The court-date conflict noted above is unresolved in public reporting) Tj ET
+BT /F1 11 Tf 60 718 Td (-- treat the litigation timeline as fluid.) Tj ET
+
+endstream
+endobj
+19 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 18 0 R /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> >>
+endobj
+xref
+0 20
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000156 00000 n 
+0000000253 00000 n 
+0000000355 00000 n 
+0000000460 00000 n 
+0000004446 00000 n 
+0000004592 00000 n 
+0000009231 00000 n 
+0000009377 00000 n 
+0000013944 00000 n 
+0000014092 00000 n 
+0000018311 00000 n 
+0000018459 00000 n 
+0000022771 00000 n 
+0000022919 00000 n 
+0000026936 00000 n 
+0000027084 00000 n 
+0000027548 00000 n 
+trailer
+<< /Size 20 /Root 1 0 R >>
+startxref
+27696
+%%EOF

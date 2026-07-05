@@ -1,33 +1,7 @@
 {
   "files": [
     {
-      "id": "mp896jcdfjc6",
-      "filename": "soy no-binarie y no es una fase.pdf",
-      "author": "anónime",
-      "hashtags": [
-        "género",
-        "no-binarie",
-        "identidad"
-      ],
-      "is_18_plus": false,
-      "upload_date": "2026-05-16T11:18:39.469Z",
-      "is_published": true
-    },
-    {
-      "id": "mp896k3onkjc",
-      "filename": "si veo robar en el súper, miro pa otro lado.pdf",
-      "author": "anónime",
-      "hashtags": [
-        "clase",
-        "comida",
-        "capitalismo"
-      ],
-      "is_18_plus": false,
-      "upload_date": "2026-05-16T11:18:40.452Z",
-      "is_published": true
-    },
-    {
-      "id": "mp896kgza10h",
+      "id": "mr6vsx6su9mj",
       "filename": "si no es gratis, no es público.pdf",
       "author": "anónime",
       "hashtags": [
@@ -36,11 +10,11 @@
         "ciudad"
       ],
       "is_18_plus": false,
-      "upload_date": "2026-05-16T11:18:40.931Z",
+      "upload_date": "2026-07-04T21:35:47.716Z",
       "is_published": true
     },
     {
-      "id": "mp896ksqtosu",
+      "id": "mr6w7cu7h4mg",
       "filename": "sí, pago la pública aunque tenga mutua.pdf",
       "author": "anónime",
       "hashtags": [
@@ -49,11 +23,37 @@
         "mutuas"
       ],
       "is_18_plus": false,
-      "upload_date": "2026-05-16T11:18:41.354Z",
+      "upload_date": "2026-07-04T21:47:01.183Z",
       "is_published": true
     },
     {
-      "id": "mp896l4dqbrj",
+      "id": "mr6w8vngjqd3",
+      "filename": "si veo robar en el súper, miro pa otro lado.pdf",
+      "author": "anónime",
+      "hashtags": [
+        "clase",
+        "comida",
+        "capitalismo"
+      ],
+      "is_18_plus": false,
+      "upload_date": "2026-07-04T21:48:12.220Z",
+      "is_published": true
+    },
+    {
+      "id": "mr6wafdhp02t",
+      "filename": "soy no-binarie y no es una fase.pdf",
+      "author": "anónime",
+      "hashtags": [
+        "género",
+        "no-binarie",
+        "identidad"
+      ],
+      "is_18_plus": false,
+      "upload_date": "2026-07-04T21:49:24.437Z",
+      "is_published": true
+    },
+    {
+      "id": "mr6wbqfcikrk",
       "filename": "follar bien es hablar mucho, no menos.pdf",
       "author": "anónime",
       "hashtags": [
@@ -62,7 +62,63 @@
         "explícito"
       ],
       "is_18_plus": true,
-      "upload_date": "2026-05-16T11:18:41.773Z",
+      "upload_date": "2026-07-04T21:50:25.416Z",
+      "is_published": true
+    },
+    {
+      "id": "mr7l5vdxnnq4",
+      "filename": "la ia como herramienta seria para un desarrollador web freelance.pdf",
+      "author": "claude",
+      "hashtags": [
+        "ia",
+        "claude",
+        "modelos",
+        "desarrollo"
+      ],
+      "is_18_plus": false,
+      "upload_date": "2026-07-05T09:25:42.309Z",
+      "is_published": true
+    },
+    {
+      "id": "mr7l5vdxhda5",
+      "filename": "gran acopio de fuentes tipográficas alternativas e independientes.pdf",
+      "author": "claude",
+      "hashtags": [
+        "ia",
+        "claude",
+        "tipografía",
+        "diseño"
+      ],
+      "is_18_plus": false,
+      "upload_date": "2026-07-05T09:25:43.309Z",
+      "is_published": true
+    },
+    {
+      "id": "mr7l5vdx8ug3",
+      "filename": "la saga benzene de vocaloid, investigación sobre garuna (owata-p).pdf",
+      "author": "claude",
+      "hashtags": [
+        "ia",
+        "claude",
+        "vocaloid",
+        "música"
+      ],
+      "is_18_plus": false,
+      "upload_date": "2026-07-05T09:25:44.309Z",
+      "is_published": true
+    },
+    {
+      "id": "mr7l5vdxqh62",
+      "filename": "the best ai music tools for a vocational producer in barcelona.pdf",
+      "author": "claude",
+      "hashtags": [
+        "ia",
+        "claude",
+        "música",
+        "producción"
+      ],
+      "is_18_plus": false,
+      "upload_date": "2026-07-05T09:25:45.309Z",
       "is_published": true
     }
   ],
@@ -70,17 +126,26 @@
     "capitalismo",
     "ciudad",
     "clase",
+    "claude",
     "comida",
     "consenso",
+    "desarrollo",
+    "diseño",
     "explícito",
     "género",
+    "ia",
     "identidad",
+    "modelos",
     "mutuas",
+    "música",
     "no-binarie",
+    "producción",
     "pública",
     "público",
     "sanidad",
     "sexo",
-    "transporte"
+    "tipografía",
+    "transporte",
+    "vocaloid"
   ]
 }
