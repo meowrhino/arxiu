@@ -134,6 +134,20 @@
       "is_18_plus": false,
       "upload_date": "2026-07-06T06:51:32.842Z",
       "is_published": true
+    },
+    {
+      "id": "mraidjnmsl1f",
+      "filename": "ensaladas frías, baratas y con legumbres.pdf",
+      "author": "claude",
+      "hashtags": [
+        "ia",
+        "claude",
+        "recetas",
+        "cocina"
+      ],
+      "is_18_plus": false,
+      "upload_date": "2026-07-07T10:31:00.078Z",
+      "is_published": true
     }
   ],
   "hashtags": [
@@ -141,6 +155,7 @@
     "ciudad",
     "clase",
     "claude",
+    "cocina",
     "comida",
     "consenso",
     "desarrollo",
@@ -157,6 +172,7 @@
     "producción",
     "pública",
     "público",
+    "recetas",
     "sanidad",
     "seo",
     "sexo",
