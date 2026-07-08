@@ -1,0 +1,168 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [7 0 R 9 0 R] /Count 2 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Oblique /Encoding /WinAnsiEncoding >>
+endobj
+6 0 obj
+<< /Length 3126 >>
+stream
+BT /F2 28 Tf 60 754 Td (small web, indieweb y creative) Tj ET
+BT /F2 28 Tf 60 718 Td (coding) Tj ET
+BT 60 682 Td
+/F3 11 Tf (Recopilación IA \(Claude\). Comunidades, foros y directorios de la escena small web /) Tj
+ET
+BT 60 666 Td
+/F1 11 Tf (IndieWeb y del creative coding: dónde está la gente que hace webs personales a) Tj
+ET
+BT 60 650 Td
+/F1 11 Tf (mano, y cómo descubrir sitios afines. Orientado a un portfolio indie tipo) Tj
+ET
+BT 60 634 Td
+/F1 11 Tf (meowrhino.studio.) Tj
+ET
+BT /F2 22 Tf 60 594 Td (Small web / IndieWeb \(la escena\)) Tj ET
+BT 60 558 Td
+/F1 11 Tf (  - ) Tj
+/F2 11 Tf (Neocities) Tj
+/F1 11 Tf ( -- hosting de sitios personales estáticos, el epicentro del revival) Tj
+ET
+BT 60 542 Td
+/F1 11 Tf (    ) Tj
+/F1 11 Tf (tipo Geocities. Tiene directorio y explorador de vecinos, y su "Frontpage) Tj
+ET
+BT 60 526 Td
+/F1 11 Tf (    ) Tj
+/F1 11 Tf (Friday".) Tj
+ET
+BT 60 510 Td
+/F1 11 Tf (  - ) Tj
+/F2 11 Tf (IndieWeb wiki) Tj
+/F1 11 Tf ( -- más su lista de eventos: Homebrew Website Club e IndieWebCamp.) Tj
+ET
+BT 60 494 Td
+/F1 11 Tf (  - ) Tj
+/F2 11 Tf (32-Bit Cafe) Tj
+/F1 11 Tf ( -- comunidad muy activa de gente que hace webs personales a mano.) Tj
+ET
+BT 60 478 Td
+/F1 11 Tf (  - ) Tj
+/F2 11 Tf (Melonland Forum) Tj
+/F1 11 Tf ( -- foro retro-web con mucha vida.) Tj
+ET
+BT 60 462 Td
+/F1 11 Tf (  - ) Tj
+/F2 11 Tf (Yesterweb) Tj
+/F1 11 Tf ( -- más inactivo ya, pero su Discord y sus archivos siguen siendo) Tj
+ET
+BT 60 446 Td
+/F1 11 Tf (    ) Tj
+/F1 11 Tf (referencia.) Tj
+ET
+BT 60 430 Td
+/F1 11 Tf (  - ) Tj
+/F2 11 Tf (Webrings) Tj
+/F1 11 Tf ( -- el mecanismo clásico para descubrir sitios afines. Busca "webring") Tj
+ET
+BT 60 414 Td
+/F1 11 Tf (    ) Tj
+/F1 11 Tf (+ tu temática: hay rings de creative coding, de sitios hechos a mano y de arte) Tj
+ET
+BT 60 398 Td
+/F1 11 Tf (    ) Tj
+/F1 11 Tf (digital.) Tj
+ET
+BT /F2 22 Tf 60 358 Td (Creative coding) Tj ET
+BT 60 322 Td
+/F1 11 Tf (  - ) Tj
+/F2 11 Tf (CreativeCode) Tj
+/F1 11 Tf ( -- la etiqueta #creativecoding en Mastodon, Bluesky e Instagram.) Tj
+ET
+BT 60 306 Td
+/F1 11 Tf (  - ) Tj
+/F2 11 Tf (Genuary) Tj
+/F1 11 Tf ( -- cada enero, un reto diario de arte generativo con una comunidad) Tj
+ET
+BT 60 290 Td
+/F1 11 Tf (    ) Tj
+/F1 11 Tf (enorme.) Tj
+ET
+BT 60 274 Td
+/F1 11 Tf (  - ) Tj
+/F2 11 Tf (The Coding Train) Tj
+/F1 11 Tf ( -- el Discord de Daniel Shiffman.) Tj
+ET
+BT 60 258 Td
+/F1 11 Tf (  - ) Tj
+/F2 11 Tf (OpenProcessing) Tj
+/F1 11 Tf (, ) Tj
+/F2 11 Tf (p5.js showcase) Tj
+/F1 11 Tf ( y ) Tj
+/F2 11 Tf (Shadertoy) Tj
+/F1 11 Tf ( \(estos dos últimos tiran más a) Tj
+ET
+BT 60 242 Td
+/F1 11 Tf (    ) Tj
+/F1 11 Tf (WebGL\).) Tj
+ET
+BT /F2 22 Tf 60 202 Td (Descubrimiento de sitios) Tj ET
+BT 60 166 Td
+/F1 11 Tf (  - ) Tj
+/F2 11 Tf (ooh.directory) Tj
+/F1 11 Tf ( -- directorio curado de blogs personales.) Tj
+ET
+BT 60 150 Td
+/F1 11 Tf (  - ) Tj
+/F2 11 Tf (personalsit.es) Tj
+/F1 11 Tf (, ) Tj
+/F2 11 Tf (nownownow.com) Tj
+/F1 11 Tf (, ) Tj
+/F2 11 Tf (blogroll.org) Tj
+/F1 11 Tf (.) Tj
+ET
+BT /F1 11 Tf 60 134 Td (  - Búsquedas útiles: "made by hand website", "digital garden", "small web".) Tj ET
+BT /F2 22 Tf 60 94 Td (Términos exactos para buscar) Tj ET
+
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 6 0 R /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> >>
+endobj
+8 0 obj
+<< /Length 207 >>
+stream
+BT /F1 11 Tf 60 766 Td (small web, indieweb, personal website community, webring creative coding, handmade) Tj ET
+BT /F1 11 Tf 60 750 Td (web, digital garden, frontpage friday \(Neocities\), Genuary.) Tj ET
+
+endstream
+endobj
+9 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 8 0 R /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> >>
+endobj
+xref
+0 10
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000121 00000 n 
+0000000218 00000 n 
+0000000320 00000 n 
+0000000425 00000 n 
+0000003603 00000 n 
+0000003749 00000 n 
+0000004007 00000 n 
+trailer
+<< /Size 10 /Root 1 0 R >>
+startxref
+4153
+%%EOF
