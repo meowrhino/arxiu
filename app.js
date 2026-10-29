@@ -684,55 +684,43 @@ function markdownToPdfBlob(title, markdown) {
       /* lista desordenada */
       const ulMatch = trimmed.match(/^[-*+]\s+(.*)$/);
       if (ulMatch) {
-        const s = SIZES.body;
-        const prefix = "  - ";
-        const maxC = approxCharsPerLine(s.size) - prefix.length;
-        const wrapped = wrapLine(ulMatch[1], maxC);
-        wrapped.forEach((wl, i) => {
-          blocks.push({ type: "text", text: (i === 0 ? prefix : "    ") + wl, font: s.font, size: s.size, lineH: s.lineH });
-        });
+        pushBody(ulMatch[1], "  - ", "    ");
         return;
       }
 
       /* lista ordenada */
       const olMatch = trimmed.match(/^(\d+)\.\s+(.*)$/);
       if (olMatch) {
-        const s = SIZES.body;
-        const prefix = `  ${olMatch[1]}. `;
-        const maxC = approxCharsPerLine(s.size) - prefix.length;
-        const wrapped = wrapLine(olMatch[2], maxC);
-        wrapped.forEach((wl, i) => {
-          blocks.push({ type: "text", text: (i === 0 ? prefix : "      ") + wl, font: s.font, size: s.size, lineH: s.lineH });
+        pushBody(olMatch[2], `  ${olMatch[1]}. `, "      ");
+        return;
+      }
+
+      /* texto normal */
+      pushBody(trimmed);
+    });
+
+    /* ---- cuerpo (párrafo o item de lista) con **bold** y *italic* inline ---- */
+    function pushBody(text, firstPrefix = "", restPrefix = "") {
+      const s = SIZES.body;
+      const maxC = approxCharsPerLine(s.size) - firstPrefix.length;
+      const prefixAt = i => (i === 0 ? firstPrefix : restPrefix);
+
+      if (!/\*/.test(text)) {
+        wrapLine(text, maxC).forEach((wl, i) => {
+          blocks.push({ type: "text", text: prefixAt(i) + wl, font: s.font, size: s.size, lineH: s.lineH });
         });
         return;
       }
 
-      /* texto normal con inline markdown (**bold**, *italic*) */
-      const s = SIZES.body;
-      const maxC = approxCharsPerLine(s.size);
-
-      /* quitar markdown inline para medir el wrap (texto plano) */
-      const plainText = trimmed.replace(/\*\*(.+?)\*\*/g, "$1").replace(/\*(.+?)\*/g, "$1");
-      const wrappedPlain = wrapLine(plainText, maxC);
-
-      /* para cada línea wrapeada, reconstruir los segments inline */
-      /* simplificación: si tiene inline md, parsear segmentos */
-      if (/\*/.test(trimmed)) {
-        /* parsear la línea completa en segmentos y luego wrapear */
-        const segments = parseInlineMarkdown(trimmed);
-        const flatText = segments.map(s => s.text).join("");
-        const wrapped = wrapLine(flatText, maxC);
-
-        wrapped.forEach(wl => {
-          /* mapear los segmentos a esta línea wrapeada */
-          blocks.push({ type: "richtext", segments: mapSegmentsToLine(segments, wl), lineH: s.lineH });
-        });
-      } else {
-        wrappedPlain.forEach(wl => {
-          blocks.push({ type: "text", text: wl, font: s.font, size: s.size, lineH: s.lineH });
-        });
-      }
-    });
+      /* parsear la línea completa en segmentos, wrapear el texto plano y mapear */
+      const segments = parseInlineMarkdown(text);
+      const flatText = segments.map(seg => seg.text).join("");
+      wrapLine(flatText, maxC).forEach((wl, i) => {
+        const lineSegs = mapSegmentsToLine(segments, wl);
+        if (prefixAt(i)) lineSegs.unshift({ text: prefixAt(i), font: s.font, size: s.size });
+        blocks.push({ type: "richtext", segments: lineSegs, lineH: s.lineH });
+      });
+    }
 
     /* ---- parsear inline markdown (**bold**, *italic*) ---- */
     function parseInlineMarkdown(text) {
@@ -794,13 +782,13 @@ function markdownToPdfBlob(title, markdown) {
     const pageBlocks = [[]]; /* array de páginas, cada una array de bloques */
     let curY = pageH - margin;
 
-    /* primera página: título del documento */
-    const titleLineH = SIZES.h1.lineH;
+    /* primera página: título del documento, envuelto como un h1 */
     curY -= SIZES.h1.size; /* bajar al baseline del título */
-
-    /* título como primer bloque especial */
-    pageBlocks[0].push({ type: "title", text: title, y: curY });
-    curY -= titleLineH + 12; /* espacio después del título */
+    wrapLine(title, approxCharsPerLine(SIZES.h1.size)).forEach(line => {
+      pageBlocks[0].push({ type: "title", text: line, y: curY });
+      curY -= SIZES.h1.lineH;
+    });
+    curY -= 12; /* espacio después del título */
 
     blocks.forEach(block => {
       let blockH;

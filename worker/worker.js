@@ -1,5 +1,4 @@
 const MAX_SIZE       = 2 * 1024 * 1024;
-const RL_MAX_PER_HR  = 5;
 const GITHUB_USER    = "meowrhino";
 const GITHUB_REPO    = "arxiu";
 const GITHUB_BRANCH  = "main";
@@ -60,11 +59,6 @@ async function listFiles(env) {
 
 
 async function uploadFile(request, env) {
-  const ip = request.headers.get("cf-connecting-ip") || "unknown";
-  if (!(await checkRateLimit(ip, env))) {
-    return json(429, { error: "demasiadas subidas, espera una hora" });
-  }
-
   const ct = request.headers.get("content-type") || "";
   if (!ct.includes("multipart/form-data")) {
     return json(400, { error: "se espera multipart/form-data" });
@@ -240,15 +234,6 @@ async function backupToRepo(env) {
   await githubPut(env, "data.json", utf8ToBase64(json), "backup: data.json", indexSha);
 }
 
-
-async function checkRateLimit(ip, env) {
-  if (!env.RATE_LIMIT) return true;
-  const key = `rl:${ip}`;
-  const hits = parseInt(await env.RATE_LIMIT.get(key) || "0", 10);
-  if (hits >= RL_MAX_PER_HR) return false;
-  await env.RATE_LIMIT.put(key, String(hits + 1), { expirationTtl: 3600 });
-  return true;
-}
 
 function isPdfMagicBytes(bytes) {
   return bytes.length >= 5 &&

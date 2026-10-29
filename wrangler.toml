@@ -21,10 +21,6 @@ database_id   = "e1f85ca6-db76-4139-88c5-d3c7a9c9a860"
 binding     = "STORAGE"
 bucket_name = "arxiu-pdfs"
 
-[[kv_namespaces]]
-binding = "RATE_LIMIT"
-id      = "224fd9135ca74d2bad88a95237716b26"
-
 # secrets (via `wrangler secret put`):
 #   ALLOWED_ORIGIN      — url del frontend, ej. https://arxiu.meowrhino.studio
 #   MODERATION_TOKEN    — token arbitrario para el endpoint POST /moderate

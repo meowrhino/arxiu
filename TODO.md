@@ -10,7 +10,6 @@ producción vacía y funcional. todo lo importante está en marcha:
 - api: https://api.arxiu.meowrhino.studio (cloudflare worker)
 - almacén: r2 bucket `arxiu-pdfs` (privado, servido a través del worker)
 - índice: d1 database `arxiu-db` (tablas `files` y `hashtags`)
-- rate-limit: kv namespace `RATE_LIMIT` (5 uploads/h por ip)
 - cron diario 03:00 utc → reindexa hashtags
 - cron semanal domingo 04:00 utc → backup d1+r2 al repo
 
@@ -21,7 +20,7 @@ probado end-to-end:
 - listado refresca al instante (no espera al cron)
 - modo +18 oculta archivos flagged
 - /moderate borra de r2 + d1 y devuelve 410 después
-- cors, magic bytes %PDF-, rate-limit funcionando
+- cors, magic bytes %PDF- funcionando
 
 ## info clave
 

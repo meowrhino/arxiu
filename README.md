@@ -16,7 +16,6 @@ interfaz web estilo explorador de archivos retro. cualquiera puede subir un pdf 
 - **api**: cloudflare worker (`worker/worker.js`).
 - **almacén de pdfs**: r2 bucket `arxiu-pdfs` (privado, servido a través del worker).
 - **índice**: d1 database `arxiu-db` (tablas `files` y `hashtags`).
-- **rate-limit**: kv namespace `RATE_LIMIT`.
 - **backup**: cron semanal sincroniza d1→`data.json` y r2→`/data/` en este mismo repo github.
 
 ```mermaid
@@ -58,10 +57,6 @@ npx wrangler d1 create arxiu-db
 
 # r2
 npx wrangler r2 bucket create arxiu-pdfs
-
-# kv
-npx wrangler kv namespace create RATE_LIMIT
-# → copia el id a wrangler.toml
 ```
 
 ### 2. cargar schema y migrar datos

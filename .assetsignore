@@ -13,3 +13,4 @@ TODO.md
 wrangler.toml
 .assetsignore
 *.log
+textos/
