@@ -1,0 +1,176 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [7 0 R 9 0 R 11 0 R] /Count 3 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Oblique /Encoding /WinAnsiEncoding >>
+endobj
+6 0 obj
+<< /Length 3232 >>
+stream
+BT /F2 28 Tf 60 754 Td (qué ia necesitas de verdad para) Tj ET
+BT /F2 28 Tf 60 718 Td (hacer webs) Tj ET
+BT /F1 11 Tf 60 654 Td (Hago webs a mano y uso modelos de IA todos los días. Y cada dos por tres alguien me) Tj ET
+BT /F1 11 Tf 60 638 Td (pregunta si no sería mejor "tener mi propio modelo", local, en mi portátil,) Tj ET
+BT /F1 11 Tf 60 622 Td (entrenado con mis webs. Me puse a entender cómo funciona esto de verdad para) Tj ET
+BT /F1 11 Tf 60 606 Td (contestar con fundamento. La respuesta corta: no, y entender por qué te ahorra) Tj ET
+BT /F1 11 Tf 60 590 Td (dinero y semanas.) Tj ET
+BT /F2 22 Tf 60 550 Td (Por qué el modelo bueno es el grande) Tj ET
+BT /F1 11 Tf 60 514 Td (Un modelo de lenguaje es una colección enorme de números ajustables, los) Tj ET
+BT /F1 11 Tf 60 498 Td (parámetros. Uno de 70.000 millones de parámetros tiene 70.000 millones de perillas) Tj ET
+BT /F1 11 Tf 60 482 Td (que se giraron durante el entrenamiento para fallar menos. La regla es bastante) Tj ET
+BT /F1 11 Tf 60 466 Td (predecible: más parámetros, más datos y más cómputo dan menos errores, con) Tj ET
+BT /F1 11 Tf 60 450 Td (rendimientos decrecientes. Para bajar el error a la mitad puedes necesitar diez) Tj ET
+BT /F1 11 Tf 60 434 Td (veces de todo.) Tj ET
+BT /F1 11 Tf 60 408 Td (Y hay un detalle físico que lo cambia todo: para funcionar, todos esos números) Tj ET
+BT /F1 11 Tf 60 392 Td (tienen que estar en memoria a la vez. Un modelo de 70.000 millones pide unos 140 GB) Tj ET
+BT /F1 11 Tf 60 376 Td (en precisión normal, o unos 40 comprimido a 4 bits. Los modelos de frontera, los) Tj ET
+BT /F1 11 Tf 60 360 Td (que usas en Claude o en ChatGPT, son mucho más grandes y viven repartidos entre) Tj ET
+BT /F1 11 Tf 60 344 Td (muchas tarjetas gráficas en un centro de datos. Un portátil con 16 o 32 GB corre) Tj ET
+BT /F1 11 Tf 60 328 Td (modelos pequeños, hasta unos 30.000 millones comprimidos. No es una limitación de) Tj ET
+BT /F1 11 Tf 60 312 Td (software: es que no caben.) Tj ET
+BT /F2 22 Tf 60 272 Td (Lo que sí puedes correr en casa) Tj ET
+BT /F1 11 Tf 60 236 Td (Los modelos locales gratis han cruzado un umbral útil. Con Ollama, en un Mac de 32) Tj ET
+BT /F1 11 Tf 60 220 Td (GB, Qwen3-Coder de 30.000 millones \(que solo activa unos 3.000 millones por) Tj ET
+BT /F1 11 Tf 60 204 Td (palabra, por eso es rápido\) resuelve bien el 70 u 80 por ciento del trabajo) Tj ET
+BT /F1 11 Tf 60 188 Td (cotidiano: bocetos, trozos de HTML y CSS, autocompletar, documentar, renombrar.) Tj ET
+BT /F1 11 Tf 60 172 Td (Para autocompletado en el editor, un modelo pequeño de 7.000 millones hecho para) Tj ET
+BT /F1 11 Tf 60 156 Td (eso rinde mejor que uno de chat grande.) Tj ET
+BT /F1 11 Tf 60 130 Td (Donde se quedan cortos: razonar durante mucho rato, mantener coherente un proyecto) Tj ET
+BT /F1 11 Tf 60 114 Td (con muchos archivos, instrucciones con matices y, sobre todo, gusto. Para eso los) Tj ET
+BT /F1 11 Tf 60 98 Td (modelos grandes de pago siguen estando claramente por delante. La división que me) Tj ET
+BT /F1 11 Tf 60 82 Td (funciona: el modelo pequeño y barato para lo mecánico, el mediano como caballo de) Tj ET
+BT /F1 11 Tf 60 66 Td (batalla, el grande solo cuando la diferencia cambia el resultado. Y vigilar la) Tj ET
+
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 6 0 R /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> >>
+endobj
+8 0 obj
+<< /Length 3407 >>
+stream
+BT /F1 11 Tf 60 766 Td (factura: lo que cuesta es lo que el modelo escribe, no lo que lee.) Tj ET
+BT /F2 22 Tf 60 726 Td (Lo de entrenar tu propio modelo) Tj ET
+BT /F1 11 Tf 60 690 Td (Tres opciones, de mejor a peor:) Tj ET
+BT 60 664 Td
+/F1 11 Tf (  1. ) Tj
+/F2 11 Tf (No entrenar nada.) Tj
+/F1 11 Tf ( Darle al modelo grande diez o quince de tus mejores webs) Tj
+ET
+BT 60 648 Td
+/F1 11 Tf (      ) Tj
+/F1 11 Tf (como ejemplos y pedirle que combine. Cero coste, cero riesgo, cambias los) Tj
+ET
+BT 60 632 Td
+/F1 11 Tf (      ) Tj
+/F1 11 Tf (ejemplos cuando quieras. Para cien ejemplos o menos es casi seguro lo más) Tj
+ET
+BT 60 616 Td
+/F1 11 Tf (      ) Tj
+/F1 11 Tf (efectivo. Un documento con tu lenguaje visual \(tipografía, color, movimiento\)) Tj
+ET
+BT 60 600 Td
+/F1 11 Tf (      ) Tj
+/F1 11 Tf (pasado como contexto hace más que cualquier entrenamiento.) Tj
+ET
+BT 60 584 Td
+/F1 11 Tf (  2. ) Tj
+/F2 11 Tf (Afinar un modelo pequeño) Tj
+/F1 11 Tf ( \(lo que llaman LoRA\). En un Mac se hace en una hora) Tj
+ET
+BT 60 568 Td
+/F1 11 Tf (      ) Tj
+/F1 11 Tf (con herramientas gratuitas de Apple. Es un proyecto bonito para aprender. Pero) Tj
+ET
+BT 60 552 Td
+/F1 11 Tf (      ) Tj
+/F1 11 Tf (afinar enseña estilo, no inteligencia: el modelo imitará cómo escribes HTML y) Tj
+ET
+BT 60 536 Td
+/F1 11 Tf (      ) Tj
+/F1 11 Tf (no propondrá nada que no supiera ya. Y con cien ejemplos tiende a memorizar en) Tj
+ET
+BT 60 520 Td
+/F1 11 Tf (      ) Tj
+/F1 11 Tf (vez de generalizar.) Tj
+ET
+BT 60 504 Td
+/F1 11 Tf (  3. ) Tj
+/F2 11 Tf (Entrenar desde cero.) Tj
+/F1 11 Tf ( Millones de dólares, miles de tarjetas gráficas, billones) Tj
+ET
+BT 60 488 Td
+/F1 11 Tf (      ) Tj
+/F1 11 Tf (de palabras. No es una opción para una persona.) Tj
+ET
+BT /F1 11 Tf 60 462 Td (Un aviso legal que no es menor: en España el autor es el primer titular de los) Tj ET
+BT /F1 11 Tf 60 446 Td (derechos de una web, y que un cliente te la haya pagado no se los transfiere si no) Tj ET
+BT /F1 11 Tf 60 430 Td (hay cesión por escrito. Para inspirar o entrenar, usa solo webs tuyas o con) Tj ET
+BT /F1 11 Tf 60 414 Td (permiso.) Tj ET
+BT /F2 22 Tf 60 374 Td (Lo que te van a decir y la respuesta) Tj ET
+BT /F1 11 Tf 60 338 Td (  1. "Con un Mac potente corres lo mismo que ChatGPT." -- No. Ni con el Mac más) Tj ET
+BT /F1 11 Tf 60 322 Td (      caro de la tienda. Corres modelos pequeños, que están bien para lo que están) Tj ET
+BT /F1 11 Tf 60 306 Td (      bien.) Tj ET
+BT /F1 11 Tf 60 290 Td (  2. "La IA hace diseños genéricos." -- Si no le dices nada, sí: tiende a lo que) Tj ET
+BT /F1 11 Tf 60 274 Td (      más ha visto. Pídele tipografía, color y movimiento con criterio y se le pasa.) Tj ET
+BT /F1 11 Tf 60 258 Td (  3. "Entrena un modelo con tus webs y tendrás tu estilo." -- Tendrás tu estilo con) Tj ET
+BT /F1 11 Tf 60 242 Td (      menos cabeza. Dale tus webs como ejemplos a un modelo grande y tendrás tu) Tj ET
+BT /F1 11 Tf 60 226 Td (      estilo con toda la cabeza.) Tj ET
+BT /F2 22 Tf 60 186 Td (Y ya) Tj ET
+BT /F1 11 Tf 60 150 Td (El modelo local es para lo mecánico y para cuando el código es de un cliente y no) Tj ET
+BT /F1 11 Tf 60 134 Td (debe salir de tu máquina. El modelo grande es para pensar. Entrenar el tuyo es un) Tj ET
+BT /F1 11 Tf 60 118 Td (hobby, no una herramienta. Y tu estilo no está en un modelo: está en los ejemplos) Tj ET
+BT /F1 11 Tf 60 102 Td (que le das.) Tj ET
+q 0.7 G 0.5 w 60 82 m 535 82 l S Q
+
+endstream
+endobj
+9 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 8 0 R /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> >>
+endobj
+10 0 obj
+<< /Length 850 >>
+stream
+BT /F1 11 Tf 60 766 Td (Fuentes: Hoffmann y otros, "Training Compute-Optimal Large Language Models") Tj ET
+BT /F1 11 Tf 60 750 Td (\(DeepMind, 2022, la regla de Chinchilla\); documentación de Ollama y de MLX \(Apple\);) Tj ET
+BT /F1 11 Tf 60 734 Td (WebSight \(arXiv 2403.09029\) sobre entrenar con HTML sintético; survey sobre ajuste) Tj ET
+BT /F1 11 Tf 60 718 Td (eficiente de parámetros \(arXiv 2504.14117\); Ley de Propiedad Intelectual española) Tj ET
+BT /F1 11 Tf 60 702 Td (sobre la titularidad de la obra. Cifras de mediados de 2026; los modelos cambian) Tj ET
+BT /F1 11 Tf 60 686 Td (cada pocos meses, la física de la memoria no. Texto redactado con una IA a partir) Tj ET
+BT /F1 11 Tf 60 670 Td (de esas fuentes, a petición de meowrhino. arxiu es un archivo libre: sube el tuyo,) Tj ET
+BT /F1 11 Tf 60 654 Td (con citas o sin ellas.) Tj ET
+
+endstream
+endobj
+11 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 10 0 R /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> >>
+endobj
+xref
+0 12
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000128 00000 n 
+0000000225 00000 n 
+0000000327 00000 n 
+0000000432 00000 n 
+0000003716 00000 n 
+0000003862 00000 n 
+0000007321 00000 n 
+0000007467 00000 n 
+0000008369 00000 n 
+trailer
+<< /Size 12 /Root 1 0 R >>
+startxref
+8517
+%%EOF
